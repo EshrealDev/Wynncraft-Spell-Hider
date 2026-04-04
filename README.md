@@ -8,8 +8,8 @@ A Fabric client-side mod for Minecraft 1.21.1 that gives you full control over h
 ### Spell Customization
 Each spell effect is broken down into groups that can be individually configured:
 - **Hide / Show** — remove specific spell effects entirely from your screen
-- **Scale** — make effects larger or smaller on the X, Y, and Z axes independently, with an optional lock to scale all axes uniformly
-- **Offset** — shift effects along the X, Y, and Z axes
+- **Scale** — make effects larger or smaller
+- **Offset** — shift effects along the X, Y, and Z axes relative to the models orientation. 
 - **Transparency** — set a per-group alpha value from fully visible to fully invisible
 
 ### Particle Hider
