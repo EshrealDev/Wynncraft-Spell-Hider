@@ -1,0 +1,31 @@
+{
+	"schemaVersion": 1,
+	"id": "wynncraftspellhider",
+	"version": "${version}",
+	"name": "wynncraftspellhider",
+	"description": "A mod that allows you to hide and customize spells in wynncraft.",
+	"authors": [
+		"Eshreal"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/",
+		"sources": "https://github.com/FabricMC/fabric-example-mod"
+	},
+	"license": "LGPL-2.1",
+	"icon": "assets/wynncraftspellhider/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"client": [
+			"com.wynncraftspellhider.WynncraftSpellHider"
+		]
+	},
+	"mixins": [
+		"wynncraftspellhider.mixins.json"
+	],
+	"depends": {
+		"fabricloader": ">=0.18.4",
+		"minecraft": "~1.21.10",
+		"java": ">=21",
+		"fabric-api": "*"
+	}
+}

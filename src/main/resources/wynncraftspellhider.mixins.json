@@ -1,0 +1,19 @@
+{
+	"required": true,
+	"package": "com.wynncraftspellhider.mixins.mixins",
+	"compatibilityLevel": "JAVA_21",
+	"mixins": [
+		"EntityRendererMixin",
+		"DisplayEntityRenderStateMixin",
+		"DisplayRendererMixin",
+		"ItemDisplayRendererMixin",
+		"ArrowRendererMixin",
+		"ParticleEngineMixin"
+	],
+	"injectors": {
+		"defaultRequire": 1
+	},
+	"overwrites": {
+		"requireAnnotations": true
+	}
+}
