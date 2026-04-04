@@ -62,7 +62,8 @@ public class DisplayRendererMixin {
     )
     private SubmitNodeCollector wrapCollectorForAlpha(SubmitNodeCollector submitNodeCollector) {
         SpellGroup group = CURRENT_GROUP.get();
-        if (group == null || group.alpha >= 1.0f) return submitNodeCollector;
-        return new AlphaSubmitNodeCollector(submitNodeCollector, group.alpha);
+        if (group == null || group.alpha <= 0.0f) return submitNodeCollector;
+        float transparency = 1.0f - group.alpha;
+        return new AlphaSubmitNodeCollector(submitNodeCollector, transparency);
     }
 }

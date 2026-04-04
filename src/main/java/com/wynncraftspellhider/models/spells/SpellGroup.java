@@ -11,7 +11,7 @@ public class SpellGroup {
     public boolean hidden;
     public float scaleX = 1.0f, scaleY = 1.0f, scaleZ = 1.0f;
     public float offsetX = 0.0f, offsetY = 0.0f, offsetZ = 0.0f;
-    public float alpha = 1.0f;
+    public float alpha = 0.0f;
 
     public SpellGroup(String name, List<MatchRule> rules) {
         this.name = name;

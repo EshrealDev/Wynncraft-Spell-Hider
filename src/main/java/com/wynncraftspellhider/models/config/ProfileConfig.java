@@ -168,7 +168,7 @@ public class ProfileConfig {
                     snap.offsetX = getOrDefault(g, "offsetX", 0.0f);
                     snap.offsetY = getOrDefault(g, "offsetY", 0.0f);
                     snap.offsetZ = getOrDefault(g, "offsetZ", 0.0f);
-                    snap.alpha   = getOrDefault(g, "alpha",   1.0f);
+                    snap.alpha   = getOrDefault(g, "alpha",   0.0f);
                     profile.spellGroups.put(entry.getKey(), snap);
                 }
             }
