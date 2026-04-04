@@ -52,6 +52,7 @@ public class DisplayRendererMixin {
         CURRENT_GROUP.set(group);
     }
 
+    /*
     @ModifyArg(
             method = "submit*",
             at = @At(
@@ -66,4 +67,5 @@ public class DisplayRendererMixin {
         float transparency = 1.0f - group.alpha;
         return new AlphaSubmitNodeCollector(submitNodeCollector, transparency);
     }
+    */
 }
