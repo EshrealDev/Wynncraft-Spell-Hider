@@ -1,6 +1,6 @@
 # WynncraftSpellHider
 
-A Fabric client-side mod for Minecraft 1.21.1 that gives you full control over how Wynncraft spell effects are rendered.
+A mod that gives you full control over how Wynncraft spell effects are rendered.
 ---
 
 ## Features
