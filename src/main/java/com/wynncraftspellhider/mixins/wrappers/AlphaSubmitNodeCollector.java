@@ -39,7 +39,6 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
         this.alpha = alpha;
     }
 
-    // --- The important one: intercept custom geometry and wrap the VertexConsumer ---
     @Override
     public void submitCustomGeometry(PoseStack poseStack, RenderType renderType,
                                      SubmitNodeCollector.CustomGeometryRenderer renderer) {
@@ -47,7 +46,6 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
                 (pose, vertexConsumer) -> renderer.render(pose, new AlphaVertexConsumer(vertexConsumer, alpha)));
     }
 
-    // --- Item submit: intercept BakedQuad list and tint alpha ---
     @Override
     public void submitItem(PoseStack poseStack, ItemDisplayContext itemDisplayContext,
                            int i, int j, int k, int[] tints, List<BakedQuad> quads,
