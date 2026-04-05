@@ -122,7 +122,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
                 int transparencyStartY  = offsetStartY + 95;
                 guiGraphics.drawString(font, "Scale:",  listRight + 8, scaleStartY  - 10, 0xFFAAAAAA, false);
                 guiGraphics.drawString(font, "Offset:", listRight + 8, offsetStartY - 10, 0xFFAAAAAA, false);
-                //guiGraphics.drawString(font, "Transparency:", listRight + 8, transparencyStartY  - 10, 0xFFAAAAAA, false);
+                guiGraphics.drawString(font, "Transparency:", listRight + 8, transparencyStartY  - 10, 0xFFAAAAAA, false);
             }
         } else {
             int centerX = listRight + panelWidth / 2;
