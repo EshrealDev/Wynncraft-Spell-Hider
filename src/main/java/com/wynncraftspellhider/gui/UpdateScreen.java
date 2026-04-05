@@ -22,7 +22,9 @@ public class UpdateScreen extends Screen {
                         Component.literal("Download Update"),
                         btn -> {
                             try {
-                                java.awt.Desktop.getDesktop().browse(new URI(UpdateChecker.DOWNLOAD_URL));
+                                net.minecraft.util.Util.getPlatform().openUri(
+                                        new java.net.URI(UpdateChecker.DOWNLOAD_URL)
+                                );
                             } catch (Exception e) {
                                 // silently fail if browser can't be opened
                             }
