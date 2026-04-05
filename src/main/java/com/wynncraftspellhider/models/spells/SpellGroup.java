@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 
 public class SpellGroup {
     // =========================================================
-    //  Defaults (single source of truth)
+    //  Defaults
     // =========================================================
     public static class Defaults {
         public static final boolean HIDDEN = false;
