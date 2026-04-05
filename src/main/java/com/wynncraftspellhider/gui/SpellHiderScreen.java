@@ -21,15 +21,15 @@ public class SpellHiderScreen extends BaseHiderScreen {
     private SpellGroup hoveredGroup = null;
 
     // --- Scale sliders ---
-    private ScaleSlider scaleSliderX, scaleSliderY, scaleSliderZ;
+    private Slider scaleSliderX, scaleSliderY, scaleSliderZ;
     private Button scaleLockButton;
     private boolean lockScale = true;
 
     // --- Offset sliders ---
-    private ScaleSlider offsetSliderX, offsetSliderY, offsetSliderZ;
+    private Slider offsetSliderX, offsetSliderY, offsetSliderZ;
 
     // --- Transparency slider ---
-    //private ScaleSlider alphaSlider;
+    private Slider transparencySlider;
 
     // --- Detail buttons ---
     private Button groupHideButton;
@@ -119,10 +119,10 @@ public class SpellHiderScreen extends BaseHiderScreen {
                 int baseY        = LIST_TOP + 32 + (selectedSpell.groups.size() * 12) + 4;
                 int scaleStartY  = baseY + 58;
                 int offsetStartY = scaleStartY + 95;
-                int alphaStartY  = offsetStartY + 95;
+                int transparencyStartY  = offsetStartY + 95;
                 guiGraphics.drawString(font, "Scale:",  listRight + 8, scaleStartY  - 10, 0xFFAAAAAA, false);
                 guiGraphics.drawString(font, "Offset:", listRight + 8, offsetStartY - 10, 0xFFAAAAAA, false);
-                //guiGraphics.drawString(font, "Transparency:", listRight + 8, alphaStartY  - 10, 0xFFAAAAAA, false);
+                //guiGraphics.drawString(font, "Transparency:", listRight + 8, transparencyStartY  - 10, 0xFFAAAAAA, false);
             }
         } else {
             int centerX = listRight + panelWidth / 2;
@@ -185,12 +185,12 @@ public class SpellHiderScreen extends BaseHiderScreen {
         removeIfNotNull(offsetSliderX);
         removeIfNotNull(offsetSliderY);
         removeIfNotNull(offsetSliderZ);
-        //removeIfNotNull(alphaSlider);
+        removeIfNotNull(transparencySlider);
         removeIfNotNull(groupHideButton);
         removeIfNotNull(groupResetButton);
         scaleSliderX = scaleSliderY = scaleSliderZ = null;
         offsetSliderX = offsetSliderY = offsetSliderZ = null;
-        //alphaSlider = null;
+        transparencySlider = null;
         scaleLockButton = null;
         groupHideButton = null;
         groupResetButton = null;
@@ -222,14 +222,14 @@ public class SpellHiderScreen extends BaseHiderScreen {
         groupResetButton = Button.builder(
                         Component.literal("Reset"),
                         btn -> {
-                            selectedGroup.hidden  = false;
-                            selectedGroup.scaleX  = 1f;
-                            selectedGroup.scaleY  = 1f;
-                            selectedGroup.scaleZ  = 1f;
-                            selectedGroup.offsetX = 0f;
-                            selectedGroup.offsetY = 0f;
-                            selectedGroup.offsetZ = 0f;
-                            selectedGroup.alpha   = 1f;
+                            selectedGroup.hidden  = SpellGroup.Defaults.HIDDEN;
+                            selectedGroup.scaleX  = SpellGroup.Defaults.SCALE_X;
+                            selectedGroup.scaleY  = SpellGroup.Defaults.SCALE_Y;
+                            selectedGroup.scaleZ  = SpellGroup.Defaults.SCALE_Z;
+                            selectedGroup.offsetX = SpellGroup.Defaults.OFFSET_X;
+                            selectedGroup.offsetY = SpellGroup.Defaults.OFFSET_Y;
+                            selectedGroup.offsetZ = SpellGroup.Defaults.OFFSET_Z;
+                            selectedGroup.transparency   = SpellGroup.Defaults.TRANSPARENCY;
                             if (groupHideButton != null)
                                 groupHideButton.setMessage(Component.literal("Hide \"" + selectedGroup.name + "\""));
                             rebuildDetailWidgets();
@@ -241,8 +241,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
         int scaleStartY  = baseY + 70;
         int offsetStartY = scaleStartY + 95;
 
-        scaleSliderX = new ScaleSlider(sliderXPos, scaleStartY, sliderWidth, "Scale X",
-                selectedGroup.scaleX, val -> {
+        scaleSliderX = new Slider(sliderXPos, scaleStartY, sliderWidth, "Scale X", selectedGroup.scaleX, val -> {
             selectedGroup.scaleX = val;
             if (lockScale) {
                 selectedGroup.scaleY = val; selectedGroup.scaleZ = val;
@@ -250,8 +249,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
                 if (scaleSliderZ != null) scaleSliderZ.forceValue(val);
             }
         });
-        scaleSliderY = new ScaleSlider(sliderXPos, scaleStartY + 25, sliderWidth, "Scale Y",
-                selectedGroup.scaleY, val -> {
+        scaleSliderY = new Slider(sliderXPos, scaleStartY + 25, sliderWidth, "Scale Y", selectedGroup.scaleY, val -> {
             selectedGroup.scaleY = val;
             if (lockScale) {
                 selectedGroup.scaleX = val; selectedGroup.scaleZ = val;
@@ -259,8 +257,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
                 if (scaleSliderZ != null) scaleSliderZ.forceValue(val);
             }
         });
-        scaleSliderZ = new ScaleSlider(sliderXPos, scaleStartY + 50, sliderWidth, "Scale Z",
-                selectedGroup.scaleZ, val -> {
+        scaleSliderZ = new Slider(sliderXPos, scaleStartY + 50, sliderWidth, "Scale Z", selectedGroup.scaleZ, val -> {
             selectedGroup.scaleZ = val;
             if (lockScale) {
                 selectedGroup.scaleX = val; selectedGroup.scaleY = val;
@@ -283,15 +280,15 @@ public class SpellHiderScreen extends BaseHiderScreen {
                         })
                 .pos(lockBtnX, scaleStartY + 12).size(lockBtnWidth, 50).build();
 
-        offsetSliderX = new ScaleSlider(sliderXPos, offsetStartY,      sliderWidth, "Offset X",
+        offsetSliderX = new Slider(sliderXPos, offsetStartY,      sliderWidth, "Offset X",
                 selectedGroup.offsetX, -3f, 3f, val -> selectedGroup.offsetX = val);
-        offsetSliderY = new ScaleSlider(sliderXPos, offsetStartY + 25, sliderWidth, "Offset Y",
+        offsetSliderY = new Slider(sliderXPos, offsetStartY + 25, sliderWidth, "Offset Y",
                 selectedGroup.offsetY, -3f, 3f, val -> selectedGroup.offsetY = val);
-        offsetSliderZ = new ScaleSlider(sliderXPos, offsetStartY + 50, sliderWidth, "Offset Z",
+        offsetSliderZ = new Slider(sliderXPos, offsetStartY + 50, sliderWidth, "Offset Z",
                 selectedGroup.offsetZ, -3f, 3f, val -> selectedGroup.offsetZ = val);
 
-        int alphaStartY = offsetStartY + 95;
-        //alphaSlider = new ScaleSlider(sliderXPos, alphaStartY, sliderWidth, "Transparency", selectedGroup.alpha, 0.0f, 1.0f, val -> selectedGroup.alpha = val);
+        int transparencyStartY = offsetStartY + 95;
+        transparencySlider = new Slider(sliderXPos, transparencyStartY, sliderWidth, "Transparency", selectedGroup.transparency, 0.0f, 1.0f, val -> selectedGroup.transparency = val);
 
         addRenderableWidget(groupHideButton);
         addRenderableWidget(groupResetButton);
@@ -302,7 +299,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
         addRenderableWidget(offsetSliderX);
         addRenderableWidget(offsetSliderY);
         addRenderableWidget(offsetSliderZ);
-        //addRenderableWidget(alphaSlider);
+        addRenderableWidget(transparencySlider);
     }
 
     // =========================================================

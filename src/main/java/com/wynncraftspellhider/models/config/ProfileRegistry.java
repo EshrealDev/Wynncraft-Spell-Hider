@@ -83,7 +83,8 @@ public class ProfileRegistry {
 
     public static ProfileConfig create(String name) {
         ProfileConfig profile = new ProfileConfig(name);
-        profile.capture();
+        profile.setToDefaults();
+        //profile.capture();
         profiles.add(profile);
         saveProfileToDisk(profile);
         return profile;

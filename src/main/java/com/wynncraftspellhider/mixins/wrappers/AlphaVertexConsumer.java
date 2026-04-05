@@ -1,6 +1,7 @@
 package com.wynncraftspellhider.mixins.wrappers;
 
 import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.wynncraftspellhider.WynncraftSpellHider;
 import net.minecraft.util.ARGB;
 
 public class AlphaVertexConsumer implements VertexConsumer {
@@ -22,6 +23,7 @@ public class AlphaVertexConsumer implements VertexConsumer {
         int a = (int)(ARGB.alpha(argb) * alpha);
         return delegate.setColor(ARGB.color(a, ARGB.red(argb), ARGB.green(argb), ARGB.blue(argb)));
     }
+
 
     @Override public VertexConsumer addVertex(float x, float y, float z) { return delegate.addVertex(x, y, z); }
     @Override public VertexConsumer setUv(float u, float v)               { return delegate.setUv(u, v); }

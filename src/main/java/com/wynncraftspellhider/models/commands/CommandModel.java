@@ -39,7 +39,7 @@ public class CommandModel {
                                 float value = FloatArgumentType.getFloat(ctx, "value");
                                 for (SpellConfig spell : SpellRegistry.getAllSpells()) {
                                     for (SpellGroup group : spell.groups) {
-                                        group.alpha = value;
+                                        group.transparency = value;
                                     }
                                 }
                                 ProfileRegistry.saveActiveProfile();

@@ -32,7 +32,7 @@ public class ProfileConfig {
         public boolean hidden;
         public float scaleX, scaleY, scaleZ;
         public float offsetX, offsetY, offsetZ;
-        public float alpha;
+        public float transparency;
 
         public SpellGroupSnapshot(SpellGroup group) {
             this.hidden  = group.hidden;
@@ -42,7 +42,7 @@ public class ProfileConfig {
             this.offsetX = group.offsetX;
             this.offsetY = group.offsetY;
             this.offsetZ = group.offsetZ;
-            this.alpha   = group.alpha;
+            this.transparency   = group.transparency;
         }
 
         // For deserialization
@@ -62,7 +62,7 @@ public class ProfileConfig {
     }
 
     // -------------------------------------------------------------------------
-    //  Capture / apply
+    //  Capture / apply / setToDefaults
     // -------------------------------------------------------------------------
 
     public void capture() {
@@ -94,7 +94,7 @@ public class ProfileConfig {
                     group.offsetX = snap.offsetX;
                     group.offsetY = snap.offsetY;
                     group.offsetZ = snap.offsetZ;
-                    group.alpha   = snap.alpha;
+                    group.transparency   = snap.transparency;
                 }
             }
         }
@@ -102,6 +102,31 @@ public class ProfileConfig {
         for (ParticleConfig config : ParticleRegistry.getParticles()) {
             Boolean hidden = particles.get(particleKey(config));
             if (hidden != null) config.hidden = hidden;
+        }
+    }
+
+    public void setToDefaults() {
+        spellGroups.clear();
+        for (SpellRegistry.WynnClass wynnClass : SpellRegistry.WynnClass.values()) {
+            for (SpellConfig spell : SpellRegistry.getSpells(wynnClass)) {
+                for (SpellGroup group : spell.groups) {
+                    SpellGroupSnapshot snap = new SpellGroupSnapshot();
+                    snap.hidden  = SpellGroup.Defaults.HIDDEN;
+                    snap.scaleX  = SpellGroup.Defaults.SCALE_X;
+                    snap.scaleY  = SpellGroup.Defaults.SCALE_Y;
+                    snap.scaleZ  = SpellGroup.Defaults.SCALE_Z;
+                    snap.offsetX = SpellGroup.Defaults.OFFSET_X;
+                    snap.offsetY = SpellGroup.Defaults.OFFSET_Y;
+                    snap.offsetZ = SpellGroup.Defaults.OFFSET_Z;
+                    snap.transparency   = SpellGroup.Defaults.TRANSPARENCY;
+                    spellGroups.put(groupKey(wynnClass, spell, group), snap);
+                }
+            }
+        }
+
+        particles.clear();
+        for (ParticleConfig config : ParticleRegistry.getParticles()) {
+            particles.put(particleKey(config), false); // Show all particles by default
         }
     }
 
@@ -124,7 +149,7 @@ public class ProfileConfig {
             g.addProperty("offsetX", snap.offsetX);
             g.addProperty("offsetY", snap.offsetY);
             g.addProperty("offsetZ", snap.offsetZ);
-            g.addProperty("alpha",   snap.alpha);
+            g.addProperty("transparency",   snap.transparency);
             groupsObj.add(entry.getKey(), g);
         }
         root.add("spellGroups", groupsObj);
@@ -161,14 +186,14 @@ public class ProfileConfig {
                 for (Map.Entry<String, JsonElement> entry : groupsObj.entrySet()) {
                     JsonObject g = entry.getValue().getAsJsonObject();
                     SpellGroupSnapshot snap = new SpellGroupSnapshot();
-                    snap.hidden  = getOrDefault(g, "hidden",  false);
-                    snap.scaleX  = getOrDefault(g, "scaleX",  1.0f);
-                    snap.scaleY  = getOrDefault(g, "scaleY",  1.0f);
-                    snap.scaleZ  = getOrDefault(g, "scaleZ",  1.0f);
-                    snap.offsetX = getOrDefault(g, "offsetX", 0.0f);
-                    snap.offsetY = getOrDefault(g, "offsetY", 0.0f);
-                    snap.offsetZ = getOrDefault(g, "offsetZ", 0.0f);
-                    snap.alpha   = getOrDefault(g, "alpha",   0.0f);
+                    snap.hidden  = getOrDefault(g, "hidden",  SpellGroup.Defaults.HIDDEN);
+                    snap.scaleX  = getOrDefault(g, "scaleX",  SpellGroup.Defaults.SCALE_X);
+                    snap.scaleY  = getOrDefault(g, "scaleY",  SpellGroup.Defaults.SCALE_Y);
+                    snap.scaleZ  = getOrDefault(g, "scaleZ",  SpellGroup.Defaults.SCALE_Z);
+                    snap.offsetX = getOrDefault(g, "offsetX", SpellGroup.Defaults.OFFSET_X);
+                    snap.offsetY = getOrDefault(g, "offsetY", SpellGroup.Defaults.OFFSET_Y);
+                    snap.offsetZ = getOrDefault(g, "offsetZ", SpellGroup.Defaults.OFFSET_Z);
+                    snap.transparency   = getOrDefault(g, "transparency",   SpellGroup.Defaults.TRANSPARENCY);
                     profile.spellGroups.put(entry.getKey(), snap);
                 }
             }

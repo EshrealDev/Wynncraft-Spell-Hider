@@ -3,18 +3,15 @@ package com.wynncraftspellhider.mixins.mixins;
 import com.wynncraftspellhider.mixins.accessors.DisplayEntityRenderStateAccessor;
 import net.minecraft.client.renderer.entity.DisplayRenderer;
 import net.minecraft.client.renderer.entity.state.ItemDisplayEntityRenderState;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.util.ProblemReporter;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.Display;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueOutput;
+import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.Objects;
+import java.util.List;
 
 @Mixin(DisplayRenderer.ItemDisplayRenderer.class)
 public class ItemDisplayRendererMixin {
@@ -26,24 +23,19 @@ public class ItemDisplayRendererMixin {
             float f,
             CallbackInfo ci
     ) {
-        ValueOutput view = TagValueOutput.createWithContext(
-                ProblemReporter.DISCARDING,
-                Objects.requireNonNull(net.minecraft.client.Minecraft.getInstance().getConnection()).registryAccess()
-        );
-        itemDisplay.saveWithoutId(view);
-        CompoundTag nbt = ((TagValueOutput) view).buildResult();
 
-        if (!nbt.contains("item")) return;
+        ItemStack stack = itemDisplay.getItemStack();
 
-        CompoundTag components = nbt.getCompoundOrEmpty("item").getCompoundOrEmpty("components");
-        if (!components.contains("minecraft:custom_model_data")) return;
+        var customModelData = stack.get(DataComponents.CUSTOM_MODEL_DATA);
 
-        ListTag floats = components.getCompoundOrEmpty("minecraft:custom_model_data").getListOrEmpty("floats");
+        if (customModelData == null) return;
+
+        List<Float> floats = customModelData.floats();
         if (floats.isEmpty()) return;
 
-        float modelIdFloat = floats.getFloatOr(0, Float.MAX_VALUE);
-        if (modelIdFloat == Float.MAX_VALUE) return;
+        float modelIdFloat = floats.get(0);
 
         ((DisplayEntityRenderStateAccessor) itemDisplayEntityRenderState).wynncraftspellhider_setModelId((int) modelIdFloat);
     }
+
 }

@@ -1,11 +1,10 @@
 package com.wynncraftspellhider.mixins.wrappers;
 
-import com.mojang.blaze3d.systems.RenderPass;
 import com.mojang.blaze3d.vertex.PoseStack;
+import com.wynncraftspellhider.WynncraftSpellHider;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.OrderedSubmitNodeCollector;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.block.MovingBlockRenderState;
@@ -13,11 +12,9 @@ import net.minecraft.client.renderer.block.model.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockStateModel;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.feature.ModelFeatureRenderer;
-import net.minecraft.client.renderer.feature.ParticleFeatureRenderer;
 import net.minecraft.client.renderer.item.ItemStackRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.client.renderer.state.QuadParticleRenderState;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.util.ARGB;
@@ -40,21 +37,22 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
     }
 
     @Override
-    public void submitCustomGeometry(PoseStack poseStack, RenderType renderType,
-                                     SubmitNodeCollector.CustomGeometryRenderer renderer) {
-        delegate.submitCustomGeometry(poseStack, renderType,
-                (pose, vertexConsumer) -> renderer.render(pose, new AlphaVertexConsumer(vertexConsumer, alpha)));
+    //This appears to be useless.
+    public void submitCustomGeometry(PoseStack poseStack, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer) {
+        delegate.submitCustomGeometry(poseStack, renderType, (pose, vertexConsumer) -> renderer.render(pose, new AlphaVertexConsumer(vertexConsumer, alpha)));
     }
 
     @Override
-    public void submitItem(PoseStack poseStack, ItemDisplayContext itemDisplayContext,
-                           int i, int j, int k, int[] tints, List<BakedQuad> quads,
-                           RenderType renderType, ItemStackRenderState.FoilType foilType) {
+    public void submitItem(PoseStack poseStack, ItemDisplayContext itemDisplayContext, int i, int j, int k, int[] tints, List<BakedQuad> quads, RenderType renderType, ItemStackRenderState.FoilType foilType) {
         int[] modifiedTints = new int[tints.length];
         for (int t = 0; t < tints.length; t++) {
             int argb = tints[t];
             int a = (int)(ARGB.alpha(argb) * alpha);
-            modifiedTints[t] = ARGB.color(a, ARGB.red(argb), ARGB.green(argb), ARGB.blue(argb));
+
+            //ARGB.color(a, ARGB.red(argb), ARGB.green(argb), ARGB.blue(argb));
+            //Setting it to that does not work. It will make textures work and then not. I spent 10 hours debugging but did not figure out why.
+            //The approach below seems to work fine.
+            modifiedTints[t] = ARGB.color(a, 255, 255, 255);
         }
         delegate.submitItem(poseStack, itemDisplayContext, i, j, k, modifiedTints, quads, renderType, foilType);
     }
@@ -64,7 +62,6 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
         return delegate.order(i);
     }
 
-    // --- Everything else delegates straight through ---
     @Override public void submitShadow(PoseStack p, float f, List<EntityRenderState.ShadowPiece> l) { delegate.submitShadow(p, f, l); }
     @Override public void submitNameTag(PoseStack p, @Nullable Vec3 v, int i, Component c, boolean bl, int j, double d, CameraRenderState cs) { delegate.submitNameTag(p, v, i, c, bl, j, d, cs); }
     @Override public void submitText(PoseStack p, float f, float g, FormattedCharSequence fcs, boolean bl, Font.DisplayMode dm, int i, int j, int k, int l) { delegate.submitText(p, f, g, fcs, bl, dm, i, j, k, l); }

@@ -38,6 +38,8 @@ public class WynncraftSpellHider implements ClientModInitializer {
 	public static KeyMapping clipboardKey;
 
 
+
+
 	public static void info(String msg) {
 		LOGGER.info(msg);
 	}
