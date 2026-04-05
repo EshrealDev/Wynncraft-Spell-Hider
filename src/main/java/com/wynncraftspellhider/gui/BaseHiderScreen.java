@@ -72,8 +72,7 @@ public abstract class BaseHiderScreen extends Screen {
     @Nullable private Button modalCloseButton = null;
 
     // Custom-modal widgets — added by subclass via addModalWidget(), removed on closeModal()
-    private final List<net.minecraft.client.gui.components.events.GuiEventListener> modalCustomWidgets
-            = new ArrayList<>();
+    private final List<GuiEventListener> modalCustomWidgets = new ArrayList<>();
 
     // =========================================================
     //  Constructor
@@ -164,21 +163,26 @@ public abstract class BaseHiderScreen extends Screen {
     protected void saveScrollState() {}
 
 // =========================================================
-//  Render — modal chrome drawn before widgets so widgets sit on top
+//  Render — page widgets first, then modal on top
 // =========================================================
 
     @Override
     public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         renderPageContent(guiGraphics, mouseX, mouseY, partialTick);
-        renderModalBackground(guiGraphics);
-        super.render(guiGraphics, mouseX, mouseY, partialTick); // buttons rendered here
-        renderNavBarDecorations(guiGraphics);                   // underline drawn on top
+
+        // Render all non-modal widgets via super (buttons, lists, sliders, etc.)
+        super.render(guiGraphics, mouseX, mouseY, partialTick);
+
+        // Render modal background and widgets on top
+        if (isModalOpen()) {
+            renderModalBackground(guiGraphics);
+            renderModalWidgets(guiGraphics, mouseX, mouseY, partialTick);
+        }
+
+        renderNavBarDecorations(guiGraphics);
     }
 
-    // Split renderModal into background (drawn early) and nothing else needed
     private void renderModalBackground(GuiGraphics guiGraphics) {
-        if (!isModalOpen()) return;
-
         int modalX = (width  - MODAL_WIDTH)  / 2;
         int modalY = (height - MODAL_HEIGHT) / 2;
 
@@ -194,6 +198,16 @@ public abstract class BaseHiderScreen extends Screen {
                 modalX + MODAL_WIDTH - MODAL_PADDING,
                 modalY + MODAL_TITLE_HEIGHT + MODAL_PADDING - 1,
                 0xFF555555);
+    }
+
+    private void renderModalWidgets(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
+        if (modalScrollList != null) modalScrollList.render(guiGraphics, mouseX, mouseY, partialTick);
+        if (modalCloseButton != null) modalCloseButton.render(guiGraphics, mouseX, mouseY, partialTick);
+        for (GuiEventListener widget : modalCustomWidgets) {
+            if (widget instanceof net.minecraft.client.gui.components.Renderable r) {
+                r.render(guiGraphics, mouseX, mouseY, partialTick);
+            }
+        }
     }
 
     private void renderNavBarDecorations(GuiGraphics guiGraphics) {
@@ -225,7 +239,7 @@ public abstract class BaseHiderScreen extends Screen {
 
         // Return only the modal widgets so ContainerEventHandler routes
         // clicks/focus/keyboard exclusively to them
-        List<net.minecraft.client.gui.components.events.GuiEventListener> modalOnly = new ArrayList<>();
+        List<GuiEventListener> modalOnly = new ArrayList<>();
         if (modalScrollList != null)  modalOnly.add(modalScrollList);
         if (modalCloseButton != null) modalOnly.add(modalCloseButton);
         modalOnly.addAll(modalCustomWidgets);
@@ -276,7 +290,7 @@ public abstract class BaseHiderScreen extends Screen {
         modalScrollList = new ModalScrollList(minecraft, MODAL_WIDTH - MODAL_PADDING * 2,
                 MODAL_SCROLL_HEIGHT, scrollY, wrappedLines);
         modalScrollList.setX(modalX + MODAL_PADDING);
-        addRenderableWidget(modalScrollList);  // was addWidget — must be addRenderableWidget to render
+        addRenderableWidget(modalScrollList);
         modalScrollList.setScrollAmount(0);
 
         modalCloseButton = Button.builder(Component.literal("Close"), btn -> closeModal())
@@ -305,9 +319,7 @@ public abstract class BaseHiderScreen extends Screen {
      * Use addRenderableWidget() for things that need to render and receive input,
      * but route through this so they get cleaned up properly.
      */
-    protected <T extends net.minecraft.client.gui.components.events.GuiEventListener
-            & net.minecraft.client.gui.components.Renderable
-            & net.minecraft.client.gui.narration.NarratableEntry> T addModalWidget(T widget) {
+    protected <T extends GuiEventListener & net.minecraft.client.gui.components.Renderable & net.minecraft.client.gui.narration.NarratableEntry> T addModalWidget(T widget) {
         modalCustomWidgets.add(widget);
         return addRenderableWidget(widget);
     }
@@ -322,38 +334,10 @@ public abstract class BaseHiderScreen extends Screen {
         modalCloseButton = null;
 
         // Remove custom-modal widgets
-        for (net.minecraft.client.gui.components.events.GuiEventListener w : modalCustomWidgets) {
+        for (GuiEventListener w : modalCustomWidgets) {
             removeWidget(w);
         }
         modalCustomWidgets.clear();
-    }
-
-    private void renderModal(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        if (!isModalOpen()) return;
-
-        int modalX = (width  - MODAL_WIDTH)  / 2;
-        int modalY = (height - MODAL_HEIGHT) / 2;
-
-        // Dim background
-        guiGraphics.fill(0, 0, width, height, 0xAA000000);
-
-        // Modal box
-        guiGraphics.fill(modalX, modalY, modalX + MODAL_WIDTH, modalY + MODAL_HEIGHT, 0xFF222222);
-        guiGraphics.renderOutline(modalX, modalY, MODAL_WIDTH, MODAL_HEIGHT, 0xFFAAAAAA);
-
-        // Title
-        guiGraphics.drawCenteredString(font, Component.literal(modalTitle),
-                modalX + MODAL_WIDTH / 2, modalY + MODAL_PADDING, 0xFFFFFFFF);
-
-        // Divider under title
-        guiGraphics.fill(modalX + MODAL_PADDING,
-                modalY + MODAL_TITLE_HEIGHT + MODAL_PADDING - 2,
-                modalX + MODAL_WIDTH - MODAL_PADDING,
-                modalY + MODAL_TITLE_HEIGHT + MODAL_PADDING - 1,
-                0xFF555555);
-
-        // Info-modal content (scroll list + close button are registered widgets, rendered by super)
-        // Custom-modal content widgets are also registered, rendered by super — nothing extra needed here
     }
 
     // =========================================================
@@ -434,7 +418,7 @@ public abstract class BaseHiderScreen extends Screen {
     //  Utilities
     // =========================================================
 
-    protected void removeIfNotNull(net.minecraft.client.gui.components.events.GuiEventListener widget) {
+    protected void removeIfNotNull(GuiEventListener widget) {
         if (widget != null) removeWidget(widget);
     }
 
