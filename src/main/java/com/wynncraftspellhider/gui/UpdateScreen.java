@@ -52,7 +52,7 @@ public class UpdateScreen extends Screen {
                 this.font,
                 "Wynncraft Spell Hider — Update Available!",
                 this.width / 2,
-                this.height / 2 - 30,
+                this.height / 2 - 45,
                 0xFFFFFFFF
         );
 
@@ -60,13 +60,21 @@ public class UpdateScreen extends Screen {
                 this.font,
                 "Current version: " + UpdateChecker.currentVersion(),
                 this.width / 2,
-                this.height / 2 - 15,
+                this.height / 2 - 30,
                 0xFFAAAAAA
         );
 
         graphics.drawCenteredString(
                 this.font,
                 "A new version is available on GitHub.",
+                this.width / 2,
+                this.height / 2 - 15,
+                0xFFAAAAAA
+        );
+
+        graphics.drawCenteredString(
+                this.font,
+                "Please contact Eshreal on discord if there is a problem.",
                 this.width / 2,
                 this.height / 2,
                 0xFFAAAAAA
