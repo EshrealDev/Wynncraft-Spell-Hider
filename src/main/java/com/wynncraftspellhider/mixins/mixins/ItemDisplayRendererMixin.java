@@ -25,9 +25,9 @@ public class ItemDisplayRendererMixin {
     ) {
 
         ItemStack stack = itemDisplay.getItemStack();
+        if (stack.isEmpty()) return;
 
         var customModelData = stack.get(DataComponents.CUSTOM_MODEL_DATA);
-
         if (customModelData == null) return;
 
         List<Float> floats = customModelData.floats();

@@ -8,10 +8,9 @@
 		"Eshreal"
 	],
 	"contact": {
-		"homepage": "https://fabricmc.net/",
-		"sources": "https://github.com/FabricMC/fabric-example-mod"
+		"sources": "https://github.com/EshrealDev/Wynncraft-Spell-Hider/tree/main"
 	},
-	"license": "LGPL-2.1",
+	"license": "CC0-1.0",
 	"icon": "assets/wynncraftspellhider/icon.png",
 	"environment": "*",
 	"entrypoints": {

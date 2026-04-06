@@ -1,5 +1,6 @@
 package com.wynncraftspellhider.models.texturepack;
 
+import com.wynncraftspellhider.models.spells.MatchRule;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -30,9 +31,11 @@ public class TexturepackModel {
     public Map<Integer, String> modelIdToKnownTexture = new HashMap<>();
     public Map<Integer, String> modelIdToFingerprint = new HashMap<>();
     public Map<String, List<Integer>> knownTextureToModelIds = new HashMap<>();
-
     public Map<Integer, String> modelIdToJson = new HashMap<>();
     public Map<Integer, List<Identifier>> modelIdToTextureIds = new HashMap<>();
+
+    private final Map<String, SpellGroup> entityTypeToGroupCache = new HashMap<>();
+    private final Map<Integer, SpellGroup> modelIdToGroupCache = new HashMap<>();
 
     private static final String HASH_JSON_FILENAME = "texture_hashes.json";
     private static final String JAR_HASH_ASSET = "/assets/wynncraftspellhider/" + HASH_JSON_FILENAME;
@@ -41,22 +44,58 @@ public class TexturepackModel {
         return !modelIdToKnownTexture.isEmpty();
     }
 
+    // mixin functions //
+
+    public SpellGroup getGroupForEntityType(String entityType) {
+        return entityTypeToGroupCache.get(entityType);
+    }
+
     public boolean isEntityTypeBlocked(String entityType) {
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                if (group.isEntityTypeMatch(entityType) && group.hidden) return true;
-            }
-        }
-        return false;
+        SpellGroup group = getGroupForEntityType(entityType);
+        return group != null && group.hidden;
+    }
+
+
+    public SpellGroup getGroupForModelId(int modelId) {
+        return modelIdToGroupCache.get(modelId);
     }
 
     public boolean isEntityBlocked(int customModelData) {
-        String textureName = modelIdToKnownTexture.get(customModelData);
-        if (textureName == null) return false;
-
-        SpellGroup group = SpellRegistry.getGroupForModel(textureName, modelIdToFingerprint.get(customModelData));
+        SpellGroup group = getGroupForModelId(customModelData);
         return group != null && group.hidden;
     }
+
+    // build cache functions //
+
+    public void initializeEntityTypeToGroup() {
+        entityTypeToGroupCache.clear();
+        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
+            for (SpellGroup group : spell.groups) {
+                for (MatchRule rule : group.rules) {
+                    if (rule.isEntityTypeRule()) {
+                        entityTypeToGroupCache.put(rule.entityType, group);
+                    }
+                }
+            }
+        }
+    }
+
+    public void initializeModelIdToGroup() {
+        modelIdToGroupCache.clear();
+        for (Map.Entry<Integer, String> entry : modelIdToKnownTexture.entrySet()) {
+            int modelId = entry.getKey();
+            String texture = entry.getValue();
+            String fingerprint = modelIdToFingerprint.get(modelId);
+
+            SpellGroup group = SpellRegistry.getGroupForModel(texture, fingerprint);
+            if (group != null) {
+                modelIdToGroupCache.put(modelId, group);
+            }
+        }
+    }
+
+
+    // sha functions //
 
     public static String sha256(String input) {
         try {
@@ -67,9 +106,7 @@ public class TexturepackModel {
         }
     }
 
-    public static String sha256Pixels(int[] pixels) {
-        return sha256(Arrays.toString(pixels));
-    }
+    // list resources //
 
     public void listResourcesAsync() {
         CompletableFuture.runAsync(this::listResources, Util.ioPool())
@@ -85,6 +122,8 @@ public class TexturepackModel {
         knownTextureToModelIds.clear();
         modelIdToJson.clear();
         modelIdToTextureIds.clear();
+        modelIdToGroupCache.clear();
+        entityTypeToGroupCache.clear();
 
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         Map<String, String> texturePathToKnownName = mapObfuscatedTextures(resourceManager);
@@ -123,6 +162,11 @@ public class TexturepackModel {
                 WynncraftSpellHider.info(entry.getKey() + " -> " + entry.getValue());
             }
         }
+
+        //initialize caches
+        initializeEntityTypeToGroup();
+        initializeModelIdToGroup();
+
         // Check for known textures that never matched
         Map<String, String> knownHashes = loadKnownHashes();
         for (String name : knownHashes.keySet()) {
@@ -219,7 +263,7 @@ public class TexturepackModel {
             try (InputStream stream = entry.getValue().open();
                  NativeImage img = NativeImage.read(stream)) {
 
-                String hash = sha256Pixels(getPixels(img));
+                String hash = sha256(Arrays.toString(getPixels(img)));
                 if (hashToKnownName.containsKey(hash)) {
                     String knownName = hashToKnownName.get(hash);
                     String logicalPath = entry.getKey().getPath()
@@ -253,7 +297,7 @@ public class TexturepackModel {
             String name = file.getName().replace(".png", "");
             try (InputStream is = new FileInputStream(file);
                  NativeImage img = NativeImage.read(is)) {
-                String hash = sha256Pixels(getPixels(img));
+                String hash = sha256(Arrays.toString(getPixels(img)));
                 output.addProperty(name, hash);
                 WynncraftSpellHider.info("Encoded: " + name + " -> " + hash);
             } catch (IOException e) {
@@ -300,11 +344,10 @@ public class TexturepackModel {
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 modelIdToJson.put(cmd, json.toString());
 
-                String fingerprint = "none";
                 if (!json.has("elements")) return;
 
                 JsonArray elements = json.getAsJsonArray("elements");
-                fingerprint = sha256(elements.toString());
+                String fingerprint = sha256(elements.toString());
                 modelIdToFingerprint.put(cmd, fingerprint);
 
                 Set<String> referencedSlots = new LinkedHashSet<>();

@@ -240,6 +240,10 @@ public class SpellRegistry {
                 new SpellGroup("Astral fragmentation", MatchRule.of("astralfragmentation"))
         )));
 
+        MAGE_SPELLS.add(new SpellConfig("Frozen Tornado", List.of(
+                new SpellGroup("Frozen Tornado", MatchRule.of("frozentornado"))
+        )));
+
         MAGE_SPELLS.add(new SpellConfig("Time Vortex", List.of(
                 new SpellGroup("Time vortex", MatchRule.of("timevortex"))
         )));
@@ -297,7 +301,7 @@ public class SpellRegistry {
 
         // ARCHER
         ARCHER_SPELLS.add(new SpellConfig("Arrows",
-                "Affects all arrows rendered in the world that are arrow entities.\n\nThis includes arrows fired by the player, other players, and mobs.",
+                "Affects all arrows rendered in the world that are arrow entities.\n\nThis includes arrows fired by the player, other players, and mobs.\n\nThe transparency on the arrows is currently not implemented.",
                 List.of(
                 new SpellGroup("Arrows", MatchRule.ofEntityType("arrow"))
         )));
