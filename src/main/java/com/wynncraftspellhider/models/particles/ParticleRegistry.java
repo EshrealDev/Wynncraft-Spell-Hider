@@ -6,9 +6,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
 
-import java.util.ArrayList;
-import java.util.Comparator;
-import java.util.List;
+import java.util.*;
 
 /**
  * Registry of curated particle configurations.
@@ -21,6 +19,8 @@ import java.util.List;
 public class ParticleRegistry {
 
     private static final List<ParticleConfig> PARTICLES = new ArrayList<>();
+    private static final Map<ParticleType<?>, ParticleConfig> particleTypeToParticleConfig = new IdentityHashMap<>();
+
 
     static {
 // Auto-generated particle dump — paste into ParticleRegistry static block
@@ -146,11 +146,15 @@ public class ParticleRegistry {
     // =========================================================
 
     private static void add(String name, ParticleType<?> type) {
-        PARTICLES.add(new ParticleConfig(name, type));
+        ParticleConfig config = new ParticleConfig(name, type);
+        PARTICLES.add(config);
+        particleTypeToParticleConfig.put(type, config);
     }
 
     private static void add(String name, ParticleType<?> type, String description) {
-        PARTICLES.add(new ParticleConfig(name, type, description));
+        ParticleConfig config = new ParticleConfig(name, type, description);
+        PARTICLES.add(config);
+        particleTypeToParticleConfig.put(type, config);
     }
 
     // =========================================================
@@ -161,14 +165,8 @@ public class ParticleRegistry {
         return PARTICLES;
     }
 
-    /**
-     * Returns the ParticleConfig for the given ParticleType, or null if not registered.
-     */
     public static ParticleConfig getConfig(ParticleType<?> type) {
-        for (ParticleConfig config : PARTICLES) {
-            if (config.particleType == type) return config;
-        }
-        return null;
+        return particleTypeToParticleConfig.get(type);
     }
 
     public static boolean isHidden(ParticleType<?> type) {
