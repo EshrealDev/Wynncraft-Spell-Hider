@@ -106,7 +106,8 @@ public class SpellRegistry {
 
         //Battle monk
         WARRIOR_SPELLS.add(new SpellConfig("Half-Moon Swipe", List.of(
-                new SpellGroup("Half-moon swipe", MatchRule.of(range("halfmoonswipe", 1, 6)))
+                new SpellGroup("Half-moon swipe", MatchRule.of(range("halfmoonswipe", 1, 6))),
+                new SpellGroup("Half-moon swipe & flaming uppercut", MatchRule.of(range("halfmoonswipeflaminguppercut", 1, 5)))
         )));
 
         WARRIOR_SPELLS.add(new SpellConfig("Air shout", List.of(
@@ -118,7 +119,8 @@ public class SpellRegistry {
         )));
 
         WARRIOR_SPELLS.add(new SpellConfig("Whirlwind Strike", List.of(
-                new SpellGroup("Whirlwind strike", MatchRule.of(range("whirlwindstrike", 1, 10)))
+                new SpellGroup("Whirlwind strike", MatchRule.of(range("whirlwindstrike", 1, 10))),
+                new SpellGroup("Whirlwind strike & flaming uppercut", MatchRule.of(range("whirlwindstrikeflaminguppercut", 1, 10)))
         )));
 
         WARRIOR_SPELLS.add(new SpellConfig("Tempest", List.of(
@@ -244,18 +246,20 @@ public class SpellRegistry {
                 new SpellGroup("Frozen Tornado", MatchRule.of("frozentornado"))
         )));
 
-        MAGE_SPELLS.add(new SpellConfig("Time Vortex", List.of(
-                new SpellGroup("Time vortex", MatchRule.of("timevortex"))
-        )));
-
         MAGE_SPELLS.add(new SpellConfig("Vacuokinesis", List.of(
                 new SpellGroup("Vacuokinesis", MatchRule.of(range("vacuokinesis", 1, 5)))
         )));
 
         //todo: check if purplefireball interferes with the fireballs in NOL.
-        MAGE_SPELLS.add(new SpellConfig("Dimensional Tear", List.of(
+        MAGE_SPELLS.add(new SpellConfig("Dimensional Tear",
+                "The fireball during gravitational collapse might interfere with the purple fireballs in NOL.\n\nPlease let eshreal know if this does happen",
+                List.of(
                 new SpellGroup("Dimensional tear", MatchRule.of(range("dimensionaltear", 1, 25))),
                 new SpellGroup("Fireball", MatchRule.of("purplefireball"))
+        )));
+
+        MAGE_SPELLS.add(new SpellConfig("Time Vortex", List.of(
+                new SpellGroup("Time vortex", MatchRule.of("timevortex"))
         )));
 
         
@@ -361,6 +365,11 @@ public class SpellRegistry {
         ARCHER_SPELLS.add(new SpellConfig("Chilling Snare", List.of(
                 new SpellGroup("Chilling Snare", MatchRule.of("chillingsnare"))
         )));
+
+        ARCHER_SPELLS.add(new SpellConfig("Snow Storm", List.of(
+                new SpellGroup("Snow storm", MatchRule.of("snowstorm"))
+        )));
+
 
         ARCHER_SPELLS.add(new SpellConfig("Extinction Event", List.of(
                 new SpellGroup("Extinction event bomb", MatchRule.of("extinctioneventbomb")),
