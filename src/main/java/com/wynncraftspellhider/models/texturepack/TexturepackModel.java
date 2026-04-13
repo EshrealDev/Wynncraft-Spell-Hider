@@ -1,6 +1,7 @@
 package com.wynncraftspellhider.models.texturepack;
 
-import com.wynncraftspellhider.models.spells.MatchRule;
+import com.wynncraftspellhider.models.spells.rules.MatchRule;
+import com.wynncraftspellhider.models.spells.rules.EntityTypeRule;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.packs.resources.Resource;
 import net.minecraft.server.packs.resources.ResourceManager;
@@ -34,8 +35,9 @@ public class TexturepackModel {
     public Map<Integer, String> modelIdToJson = new HashMap<>();
     public Map<Integer, List<Identifier>> modelIdToTextureIds = new HashMap<>();
 
-    private final Map<String, SpellGroup> entityTypeToGroupCache = new HashMap<>();
     private final Map<Integer, SpellGroup> modelIdToGroupCache = new HashMap<>();
+    private final Map<String, SpellGroup> entityTypeToGroupCache = new HashMap<>();
+
 
     private static final String HASH_JSON_FILENAME = "texture_hashes.json";
     private static final String JAR_HASH_ASSET = "/assets/wynncraftspellhider/" + HASH_JSON_FILENAME;
@@ -66,20 +68,6 @@ public class TexturepackModel {
     }
 
     // build cache functions //
-
-    public void initializeEntityTypeToGroup() {
-        entityTypeToGroupCache.clear();
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                for (MatchRule rule : group.rules) {
-                    if (rule.isEntityTypeRule()) {
-                        entityTypeToGroupCache.put(rule.entityType, group);
-                    }
-                }
-            }
-        }
-    }
-
     public void initializeModelIdToGroup() {
         modelIdToGroupCache.clear();
         for (Map.Entry<Integer, String> entry : modelIdToKnownTexture.entrySet()) {
@@ -94,6 +82,18 @@ public class TexturepackModel {
         }
     }
 
+    public void initializeEntityTypeToGroup() {
+        entityTypeToGroupCache.clear();
+        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
+            for (SpellGroup group : spell.groups) {
+                for (MatchRule rule : group.rules) {
+                    if (rule instanceof EntityTypeRule etr) {
+                        entityTypeToGroupCache.put(etr.entityType, group);
+                    }
+                }
+            }
+        }
+    }
 
     // sha functions //
 

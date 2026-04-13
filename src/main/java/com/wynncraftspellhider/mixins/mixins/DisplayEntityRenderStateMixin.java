@@ -1,23 +1,15 @@
 package com.wynncraftspellhider.mixins.mixins;
 
-import com.wynncraftspellhider.mixins.accessors.DisplayEntityRenderStateAccessor;
+import com.wynncraftspellhider.mixins.extensions.DisplayRenderStateExtension;
+import com.wynncraftspellhider.models.spells.SpellGroup;
 import net.minecraft.client.renderer.entity.state.DisplayEntityRenderState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(DisplayEntityRenderState.class)
-public class DisplayEntityRenderStateMixin implements DisplayEntityRenderStateAccessor {
+public class DisplayEntityRenderStateMixin implements DisplayRenderStateExtension {
+    @Unique private SpellGroup wynncraftspellhider_spellGroup = null;
 
-    @Unique
-    private int wynncraftspellhider_modelId = -1;
-
-    @Override
-    public int wynncraftspellhider_getModelId() {
-        return wynncraftspellhider_modelId;
-    }
-
-    @Override
-    public void wynncraftspellhider_setModelId(int id) {
-        wynncraftspellhider_modelId = id;
-    }
+    @Override public SpellGroup wynncraftspellhider_getSpellGroup() { return wynncraftspellhider_spellGroup; }
+    @Override public void wynncraftspellhider_setSpellGroup(SpellGroup g) { wynncraftspellhider_spellGroup = g; }
 }

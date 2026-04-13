@@ -3,13 +3,21 @@
 	"package": "com.wynncraftspellhider.mixins.mixins",
 	"compatibilityLevel": "JAVA_21",
 	"mixins": [
+		"ClientPacketListenerMixin",
 		"EntityRendererMixin",
 		"DisplayEntityRenderStateMixin",
+		"ItemDisplayMixin",
 		"DisplayRendererMixin",
 		"ItemDisplayRendererMixin",
+		"TextDisplayMixin",
+		"TextDisplayRendererMixin",
 		"ArrowRendererMixin",
+		"ArmorStandMixin",
+		"ArmorStandRenderStateMixin",
+		"ArmorStandRendererMixin",
 		"ParticleEngineMixin",
-		"FireworkStarterMixin"
+		"FireworkStarterMixin",
+		"ClientLevelMixin"
 	],
 	"injectors": {
 		"defaultRequire": 1

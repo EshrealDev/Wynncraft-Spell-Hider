@@ -36,6 +36,8 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
         this.alpha = alpha;
     }
 
+
+    //--- item display ---
     @Override
     public void submitItem(PoseStack poseStack, ItemDisplayContext itemDisplayContext, int i, int j, int k, int[] tints, List<BakedQuad> quads, RenderType renderType, ItemStackRenderState.FoilType foilType) {
         int[] modifiedTints = new int[tints.length];
@@ -51,15 +53,55 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
         delegate.submitItem(poseStack, itemDisplayContext, i, j, k, modifiedTints, quads, renderType, foilType);
     }
 
-    @Override public OrderedSubmitNodeCollector order(int i) {return delegate.order(i);}
+    //--- text display ---
+    @Override public void submitText(PoseStack p, float f, float g, FormattedCharSequence fcs, boolean bl, Font.DisplayMode dm, int light, int color, int backgroundColor, int outlineColor) {
+
+        int a = (int)(ARGB.alpha(color) * alpha);
+        int modifiedColor = ARGB.color(a, ARGB.red(color), ARGB.green(color), ARGB.blue(color));
+
+        delegate.submitText(p, f, g, fcs, bl, dm, light, modifiedColor, backgroundColor, outlineColor);
+    }
+
+    @Override
+    public OrderedSubmitNodeCollector order(int i) {
+        delegate.order(i); // call for side effects
+        return this;       // route submitText through our override
+    }
+
+    //--- armor stand ---
+    // these don't get called for whatever reason
+    /*
+    @Override
+    public <S> void submitModel(Model<? super S> model, S s, PoseStack p, RenderType rt, int i, int j, int color, @Nullable TextureAtlasSprite tas, int l, ModelFeatureRenderer.@Nullable CrumblingOverlay co) {
+
+        int a = (int)(ARGB.alpha(color) * alpha);
+        int modifiedColor = ARGB.color(a, 255, 255, 255);
+
+        WynncraftSpellHider.info("submitModel called");
+
+        delegate.submitModel(model, s, p, rt, i, j, modifiedColor, tas, l, co);
+    }
+
+    @Override
+    public void submitModelPart(ModelPart mp, PoseStack p, RenderType rt, int i, int j, @Nullable TextureAtlasSprite tas, boolean bl, boolean bl2, int color, ModelFeatureRenderer.@Nullable CrumblingOverlay co, int l) {
+
+        int a = (int)(ARGB.alpha(color) * alpha);
+        int modifiedColor = ARGB.color(a, 255, 255, 255);
+
+        WynncraftSpellHider.info("submitModelPart called");
+
+        delegate.submitModelPart(mp, p, rt, i, j, tas, bl, bl2, modifiedColor, co, l);
+    }
+    */
+
     @Override public <S> void submitModel(Model<? super S> model, S s, PoseStack p, RenderType rt, int i, int j, int k, @Nullable TextureAtlasSprite tas, int l, ModelFeatureRenderer.@Nullable CrumblingOverlay co) { delegate.submitModel(model, s, p, rt, i, j, k, tas, l, co); }
+    @Override public void submitModelPart(ModelPart mp, PoseStack p, RenderType rt, int i, int j, @Nullable TextureAtlasSprite tas, boolean bl, boolean bl2, int k, ModelFeatureRenderer.@Nullable CrumblingOverlay co, int l) { delegate.submitModelPart(mp, p, rt, i, j, tas, bl, bl2, k, co, l); }
+
     @Override public void submitCustomGeometry(PoseStack poseStack, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer) { delegate.submitCustomGeometry(poseStack, renderType, renderer); }
     @Override public void submitShadow(PoseStack p, float f, List<EntityRenderState.ShadowPiece> l) { delegate.submitShadow(p, f, l); }
     @Override public void submitNameTag(PoseStack p, @Nullable Vec3 v, int i, Component c, boolean bl, int j, double d, CameraRenderState cs) { delegate.submitNameTag(p, v, i, c, bl, j, d, cs); }
-    @Override public void submitText(PoseStack p, float f, float g, FormattedCharSequence fcs, boolean bl, Font.DisplayMode dm, int i, int j, int k, int l) { delegate.submitText(p, f, g, fcs, bl, dm, i, j, k, l); }
     @Override public void submitFlame(PoseStack p, EntityRenderState s, Quaternionf q) { delegate.submitFlame(p, s, q); }
     @Override public void submitLeash(PoseStack p, EntityRenderState.LeashState ls) { delegate.submitLeash(p, ls); }
-    @Override public void submitModelPart(ModelPart mp, PoseStack p, RenderType rt, int i, int j, @Nullable TextureAtlasSprite tas, boolean bl, boolean bl2, int k, ModelFeatureRenderer.@Nullable CrumblingOverlay co, int l) { delegate.submitModelPart(mp, p, rt, i, j, tas, bl, bl2, k, co, l); }
     @Override public void submitBlock(PoseStack p, BlockState bs, int i, int j, int k) { delegate.submitBlock(p, bs, i, j, k); }
     @Override public void submitMovingBlock(PoseStack p, MovingBlockRenderState mbrs) { delegate.submitMovingBlock(p, mbrs); }
     @Override public void submitBlockModel(PoseStack p, RenderType rt, BlockStateModel bsm, float f, float g, float h, int i, int j, int k) { delegate.submitBlockModel(p, rt, bsm, f, g, h, i, j, k); }

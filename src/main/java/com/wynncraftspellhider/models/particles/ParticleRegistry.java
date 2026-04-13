@@ -50,7 +50,7 @@ public class ParticleRegistry {
         add("Dripping Lava", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dripping_lava")));
         add("Dripping Obsidian Tear", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dripping_obsidian_tear")));
         add("Dripping Water", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dripping_water")));
-        add("Dust", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dust")));
+        add("Dust", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dust")), "Effects Pyrokinesis");
         add("Dust Color Transition", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dust_color_transition")));
         add("Dust Pillar", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dust_pillar")));
         add("Dust Plume", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "dust_plume")));
@@ -76,7 +76,7 @@ public class ParticleRegistry {
         add("Firefly", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "firefly")));
         add("Firework", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "firework")));
         add("Fishing", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "fishing")));
-        add("Flame", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "flame")));
+        add("Flame", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "flame")), "Effects flaming tongue");
         add("Flash", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "flash")));
         add("Glow", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "glow")));
         add("Glow Squid Ink", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "glow_squid_ink")));
@@ -86,7 +86,7 @@ public class ParticleRegistry {
         add("Happy Villager", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "happy_villager")));
         add("Heart", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "heart")));
         add("Infested", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "infested")));
-        add("Instant Effect", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "instant_effect")));
+        add("Instant Effect", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "instant_effect")), "Balastic Trap connections\nCould also be TCC wing particle");
         add("Item", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "item")));
         add("Item Cobweb", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "item_cobweb")));
         add("Item Slime", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "item_slime")));
@@ -101,7 +101,7 @@ public class ParticleRegistry {
         add("Note", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "note")));
         add("Ominous Spawning", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "ominous_spawning")));
         add("Pale Oak Leaves", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "pale_oak_leaves")));
-        add("Poof", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "poof")));
+        add("Poof", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "poof")), "Effects TNA watched beam");
         add("Portal", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "portal")));
         add("Raid Omen", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "raid_omen")));
         add("Rain", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "rain")));
@@ -125,7 +125,7 @@ public class ParticleRegistry {
         add("Squid Ink", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "squid_ink")));
         add("Sweep Attack", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "sweep_attack")));
         add("Tinted Leaves", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "tinted_leaves")));
-        add("Totem Of Undying", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "totem_of_undying")));
+        add("Totem Of Undying", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "totem_of_undying")), "Effects uproot projectile");
         add("Trail", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "trail")));
         add("Trial Omen", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "trial_omen")));
         add("Trial Spawner Detection", BuiltInRegistries.PARTICLE_TYPE.getValue(Identifier.fromNamespaceAndPath("minecraft", "trial_spawner_detection")));

@@ -19,6 +19,10 @@ public class UpdateChecker {
     }
 
     public static void checkAsync(Runnable onUpdateAvailable) {
+        checkAsync(onUpdateAvailable, () -> {});
+    }
+
+    public static void checkAsync(Runnable onUpdateAvailable, Runnable onUpToDate) {
         CompletableFuture.runAsync(() -> {
             try {
                 HttpURLConnection connection = (HttpURLConnection) URI.create(UPDATE_URL).toURL().openConnection();
@@ -40,6 +44,8 @@ public class UpdateChecker {
 
                 if (!current.equals(latest)) {
                     onUpdateAvailable.run();
+                } else {
+                    onUpToDate.run();
                 }
 
             } catch (Exception e) {

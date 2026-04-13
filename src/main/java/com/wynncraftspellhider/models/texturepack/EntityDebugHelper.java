@@ -2,7 +2,9 @@ package com.wynncraftspellhider.models.texturepack;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.Display.ItemDisplay;
 import net.minecraft.nbt.CompoundTag;
@@ -223,10 +225,12 @@ public class EntityDebugHelper {
         }
 
         TexturepackModel tpm = Models.texturepackModel;
-        StringBuilder displaySb = new StringBuilder("=== ITEM DISPLAYS ===\n\n");
+        StringBuilder itemDisplaySb = new StringBuilder("=== ITEM DISPLAYS ===\n\n");
+        StringBuilder textDisplaySb = new StringBuilder("=== TEXT DISPLAYS ===\n\n");
         StringBuilder otherSb = new StringBuilder("=== OTHER ENTITIES (PROJECTILES/MOB/ETC) ===\n\n");
 
-        int displayCount = 0;
+        int itemDisplayCount = 0;
+        int textDisplayCount = 0;
         int otherCount = 0;
 
         for (Entity entity : mc.level.entitiesForRendering()) {
@@ -239,11 +243,11 @@ public class EntityDebugHelper {
             CompoundTag nbt = ((TagValueOutput) view).buildResult();
 
             if (entity instanceof ItemDisplay) {
-                displayCount++;
-                displaySb.append("--- Display #").append(displayCount)
+                itemDisplayCount++;
+                itemDisplaySb.append("--- ItemDisplay #").append(itemDisplayCount)
                         .append(" (ID: ").append(entity.getId()).append(") ---\n");
-                displaySb.append("Type: ").append(entity.getType().getDescriptionId()).append("\n");
-                displaySb.append("Pos: ").append(entity.position()).append("\n");
+                itemDisplaySb.append("Type: ").append(entity.getType().getDescriptionId()).append("\n");
+                itemDisplaySb.append("Pos: ").append(entity.position()).append("\n");
 
                 // ItemDisplay specific model logic
                 if (nbt.contains("item")) {
@@ -255,13 +259,25 @@ public class EntityDebugHelper {
                             ListTag floats = cmd.getListOrEmpty("floats");
                             if (!floats.isEmpty()) {
                                 int modelId = (int) floats.getFloatOr(0, 0);
-                                displaySb.append("  [Model ID: ").append(modelId).append("]\n");
-                                displaySb.append("  [Known: ").append(tpm.modelIdToKnownTexture.getOrDefault(modelId, "Unknown")).append("]\n");
+                                itemDisplaySb.append("  [Model ID: ").append(modelId).append("]\n");
+                                itemDisplaySb.append("  [Known: ").append(tpm.modelIdToKnownTexture.getOrDefault(modelId, "Unknown")).append("]\n");
                             }
                         }
                     }
                 }
-                displaySb.append("Full NBT: ").append(nbt).append("\n\n");
+                itemDisplaySb.append("Full NBT: ").append(nbt).append("\n\n");
+
+            } else if (entity instanceof Display.TextDisplay textDisplay) {
+                textDisplayCount++;
+                textDisplaySb.append("--- TextDisplay #").append(textDisplayCount)
+                        .append(" (ID: ").append(entity.getId()).append(") ---\n");
+                textDisplaySb.append("Type: ").append(entity.getType().getDescriptionId()).append("\n");
+                textDisplaySb.append("Pos: ").append(entity.position()).append("\n");
+
+                Component text = textDisplay.getText();
+                String plainText = text.getString().replace("\n", "\\n").replace("\r", "\\r");
+                textDisplaySb.append("Text:").append(plainText).append("\n");
+                textDisplaySb.append("Full NBT: ").append(nbt).append("\n\n");
 
             } else {
                 // General entities (Arrows, Players, Spells, etc.)
@@ -276,14 +292,14 @@ public class EntityDebugHelper {
 
         // Combine them
         StringBuilder finalOutput = new StringBuilder();
-        finalOutput.append(displaySb).append("\n\n").append(otherSb);
+        finalOutput.append(itemDisplaySb).append("\n\n").append(textDisplaySb).append("\n\n").append(otherSb);
 
-        if ((displayCount + otherCount) == 0) {
+        if ((itemDisplayCount +  textDisplayCount + otherCount) == 0) {
             WynncraftSpellHider.info("No entities found in rendering range.");
             return;
         }
 
         mc.keyboardHandler.setClipboard(finalOutput.toString());
-        WynncraftSpellHider.info("Copied " + displayCount + " displays and " + otherCount + " others to clipboard.");
+        WynncraftSpellHider.info("Copied " + itemDisplayCount + " item displays,  " +  textDisplayCount + " text displays and " + otherCount + " others to clipboard.");
     }
 }

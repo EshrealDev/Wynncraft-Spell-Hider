@@ -10,7 +10,9 @@ base {
 	archivesName = project.archives_base_name
 }
 
-
+loom {
+	accessWidenerPath = file("src/main/resources/wynncraftspellhider.accessWidener")
+}
 
 repositories {
 	maven { url = "https://api.modrinth.com/maven" }

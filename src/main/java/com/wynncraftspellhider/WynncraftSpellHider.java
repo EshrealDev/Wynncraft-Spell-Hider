@@ -92,9 +92,7 @@ public class WynncraftSpellHider implements ClientModInitializer {
 		ScreenEvents.AFTER_INIT.register((client, screen, scaledWidth, scaledHeight) -> {
 			if (!updateChecked && screen instanceof TitleScreen) {
 				updateChecked = true;
-				UpdateChecker.checkAsync(() -> {
-					client.execute(() -> client.setScreen(new UpdateScreen(screen)));
-				});
+				UpdateChecker.checkAsync(() -> client.execute(() -> client.setScreen(new UpdateScreen(screen))));
 			}
 		});
 	}
