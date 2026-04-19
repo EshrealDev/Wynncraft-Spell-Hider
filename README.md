@@ -1,5 +1,15 @@
 # Wynncraft Spell Hider
 
+[![GitHub](https://img.shields.io/github/downloads/EshrealDev/Wynncraft-Spell-Hider/total?style=flat&logo=github&label=GitHub&color=4c1)](https://github.com/EshrealDev/Wynncraft-Spell-Hider/releases)
+[![Modrinth](https://img.shields.io/modrinth/dt/wynncraft-spell-hider?style=flat&logo=modrinth&label=Modrinth&color=1bd96a)](https://modrinth.com/mod/wynncraft-spell-hider)
+[![License: CC0-1.0](https://img.shields.io/badge/License-CC0%201.0-lightgrey?style=flat&logo=creativecommons)](https://github.com/EshrealDev/Wynncraft-Spell-Hider/blob/main/LICENSE)
+
+<div align="center">
+
+<img src="https://raw.githubusercontent.com/EshrealDev/Static-Storage/main/logo.png" width=25% alt="Wynncraft Spell Hider Logo">
+
+</div>
+
 A mod that gives you full control over how Wynncraft spell effects are rendered.
 ---
 

@@ -36,4 +36,15 @@ public class  ClientLevelMixin {
             ci.cancel();
         }
     }
+
+    @Inject(
+            method = "destroyBlockProgress",
+            at = @At("HEAD"),
+            cancellable = true
+    )
+    private void onDestroyBlockProgress(int breakerId, BlockPos pos, int progress, CallbackInfo ci) {
+        if (ParticleRegistry.BLOCK_BREAK_OVERLAY.hidden) {
+            ci.cancel();
+        }
+    }
 }

@@ -22,7 +22,6 @@ public class ItemDisplayRendererMixin {
             CallbackInfo ci
     ) {
         SpellGroup group = ((ItemDisplayExtension) itemDisplay).wynncraftspellhider_getSpellGroup();
-
         ((DisplayRenderStateExtension) itemDisplayEntityRenderState).wynncraftspellhider_setSpellGroup(group);
     }
 }

@@ -1,11 +1,10 @@
 package com.wynncraftspellhider.mixins.mixins;
 
+import com.wynncraftspellhider.mixins.extensions.AbstractArrowExtension;
 import com.wynncraftspellhider.mixins.extensions.ArmorStandExtension;
 import com.wynncraftspellhider.mixins.extensions.ItemDisplayExtension;
 import com.wynncraftspellhider.mixins.extensions.TextDisplayExtension;
-import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.models.spells.SpellGroup;
-import com.wynncraftspellhider.models.texturepack.TexturepackModel;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Display;
@@ -16,7 +15,6 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import net.minecraft.client.renderer.entity.ArmorStandRenderer;
 
 @Mixin(EntityRenderer.class)
 public class EntityRendererMixin {
@@ -32,9 +30,10 @@ public class EntityRendererMixin {
     ) {
 
         // --- Arrow handling ---
-        if (entity instanceof AbstractArrow) {
-            TexturepackModel texturepackModel = Models.texturepackModel;
-            if (texturepackModel != null && texturepackModel.isEntityTypeBlocked("arrow")) {
+        if (entity instanceof AbstractArrow abstractArrow) {
+            SpellGroup group = ((AbstractArrowExtension) abstractArrow).wynncraftspellhider_getSpellGroup();
+
+            if (group != null && (group.hidden || group.transparency >= 1.0f)) {
                 cir.setReturnValue(false);
             }
             return;

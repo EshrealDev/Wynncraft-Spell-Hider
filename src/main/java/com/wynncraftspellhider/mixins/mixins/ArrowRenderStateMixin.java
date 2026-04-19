@@ -1,0 +1,16 @@
+package com.wynncraftspellhider.mixins.mixins;
+
+import com.wynncraftspellhider.mixins.extensions.ArrowRenderStateExtension;
+import com.wynncraftspellhider.models.spells.SpellGroup;
+import net.minecraft.client.renderer.entity.state.ArrowRenderState;
+import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
+
+@Mixin(ArrowRenderState.class)
+public class ArrowRenderStateMixin implements ArrowRenderStateExtension {
+    @Unique private SpellGroup wynncraftspellhider_spellGroup = null;
+
+    @Override public SpellGroup wynncraftspellhider_getSpellGroup() { return wynncraftspellhider_spellGroup; }
+    @Override public void wynncraftspellhider_setSpellGroup(SpellGroup g) { wynncraftspellhider_spellGroup = g; }
+
+}

@@ -1,6 +1,7 @@
 package com.wynncraftspellhider.models.spells;
 
 import com.wynncraftspellhider.models.spells.rules.ArmorStandRule;
+import com.wynncraftspellhider.models.spells.rules.EntityTypeRule;
 import com.wynncraftspellhider.models.spells.rules.MatchRule;
 import com.wynncraftspellhider.models.spells.rules.TextDisplayRule;
 
@@ -23,8 +24,10 @@ public class SpellRegistry {
     private static final List<SpellConfig> ALL_SPELLS = new ArrayList<>();
 
     // Cache for optimization
-    private static final List<SpellGroup> TEXT_SPELL_GROUPS = new ArrayList<>();
+    private static final List<SpellGroup> TEXT_SPELL_GROUPS_CACHE = new ArrayList<>();
     private static final Map<ArmorStandRule.ArmorStandModel, SpellGroup> ARMOR_STAND_GROUP_CACHE = new HashMap<>();
+    public static SpellGroup ARROW_ENTITY_GROUP;
+
 
     // Generates Set.of("prefix (1)", "prefix (2)", ..., "prefix (n)")
     private static Set<String> range(String prefix, int from, int to) {
@@ -699,13 +702,13 @@ public class SpellRegistry {
         //collect all spells for ALL_SPELLS list.
         for (WynnClass wynnClass : WynnClass.values()) ALL_SPELLS.addAll(getSpells(wynnClass));
 
-        //TEXT_SPELL_GROUPS
+        //TEXT_SPELL_GROUPS_CACHE
         for (SpellConfig spell : getAllSpells()) {
             for (SpellGroup group : spell.groups) {
                 boolean hasTextRule = group.rules.stream().anyMatch(rule -> rule instanceof TextDisplayRule);
 
                 if (hasTextRule) {
-                    TEXT_SPELL_GROUPS.add(group);
+                    TEXT_SPELL_GROUPS_CACHE.add(group);
                 }
             }
         }
@@ -722,6 +725,17 @@ public class SpellRegistry {
                 }
             }
         }
+
+        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
+            for (SpellGroup group : spell.groups) {
+                for (MatchRule rule : group.rules) {
+                    if (rule instanceof EntityTypeRule etr) {
+                        if(etr.entityType.equals("arrow")) ARROW_ENTITY_GROUP = group;
+                    }
+                }
+            }
+        }
+
     }
 
     public static List<SpellConfig> getSpells(WynnClass wynnClass) {
@@ -748,7 +762,7 @@ public class SpellRegistry {
     }
 
     public static SpellGroup getGroupForTextDisplay(String plainText, boolean isLocalPlayer) {
-        for (SpellGroup group : TEXT_SPELL_GROUPS) {
+        for (SpellGroup group : TEXT_SPELL_GROUPS_CACHE) {
             if (group.isTextDisplayMatch(plainText, isLocalPlayer)) {
                 return group;
             }

@@ -12,7 +12,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class UpdateChecker {
     private static final String UPDATE_URL = "https://raw.githubusercontent.com/EshrealDev/Static-Storage/refs/heads/main/update.json";
-    public static final String DOWNLOAD_URL = "https://github.com/EshrealDev/Wynncraft-Spell-Hider/releases";
+    public static final String DOWNLOAD_URL = "https://modrinth.com/mod/wynncraft-spell-hider";
 
     public static String currentVersion() {
         return FabricLoader.getInstance().getModContainer("wynncraftspellhider").get().getMetadata().getVersion().getFriendlyString();

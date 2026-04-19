@@ -11,6 +11,8 @@
 		"ItemDisplayRendererMixin",
 		"TextDisplayMixin",
 		"TextDisplayRendererMixin",
+		"AbstractArrowMixin",
+		"ArrowRenderStateMixin",
 		"ArrowRendererMixin",
 		"ArmorStandMixin",
 		"ArmorStandRenderStateMixin",

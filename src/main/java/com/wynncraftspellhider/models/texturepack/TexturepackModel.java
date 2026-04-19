@@ -36,8 +36,6 @@ public class TexturepackModel {
     public Map<Integer, List<Identifier>> modelIdToTextureIds = new HashMap<>();
 
     private final Map<Integer, SpellGroup> modelIdToGroupCache = new HashMap<>();
-    private final Map<String, SpellGroup> entityTypeToGroupCache = new HashMap<>();
-
 
     private static final String HASH_JSON_FILENAME = "texture_hashes.json";
     private static final String JAR_HASH_ASSET = "/assets/wynncraftspellhider/" + HASH_JSON_FILENAME;
@@ -47,16 +45,6 @@ public class TexturepackModel {
     }
 
     // mixin functions //
-
-    public SpellGroup getGroupForEntityType(String entityType) {
-        return entityTypeToGroupCache.get(entityType);
-    }
-
-    public boolean isEntityTypeBlocked(String entityType) {
-        SpellGroup group = getGroupForEntityType(entityType);
-        return group != null && group.hidden;
-    }
-
 
     public SpellGroup getGroupForModelId(int modelId) {
         return modelIdToGroupCache.get(modelId);
@@ -68,6 +56,7 @@ public class TexturepackModel {
     }
 
     // build cache functions //
+
     public void initializeModelIdToGroup() {
         modelIdToGroupCache.clear();
         for (Map.Entry<Integer, String> entry : modelIdToKnownTexture.entrySet()) {
@@ -78,19 +67,6 @@ public class TexturepackModel {
             SpellGroup group = SpellRegistry.getGroupForModel(texture, fingerprint);
             if (group != null) {
                 modelIdToGroupCache.put(modelId, group);
-            }
-        }
-    }
-
-    public void initializeEntityTypeToGroup() {
-        entityTypeToGroupCache.clear();
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                for (MatchRule rule : group.rules) {
-                    if (rule instanceof EntityTypeRule etr) {
-                        entityTypeToGroupCache.put(etr.entityType, group);
-                    }
-                }
             }
         }
     }
@@ -123,7 +99,6 @@ public class TexturepackModel {
         modelIdToJson.clear();
         modelIdToTextureIds.clear();
         modelIdToGroupCache.clear();
-        entityTypeToGroupCache.clear();
 
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
         Map<String, String> texturePathToKnownName = mapObfuscatedTextures(resourceManager);
@@ -164,7 +139,6 @@ public class TexturepackModel {
         }
 
         //initialize caches
-        initializeEntityTypeToGroup();
         initializeModelIdToGroup();
 
         // Check for known textures that never matched

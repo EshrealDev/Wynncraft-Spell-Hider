@@ -1,5 +1,7 @@
 package com.wynncraftspellhider.mixins.mixins;
 
+import com.wynncraftspellhider.WynncraftSpellHider;
+import com.wynncraftspellhider.mixins.extensions.AbstractArrowExtension;
 import com.wynncraftspellhider.mixins.extensions.ArmorStandExtension;
 import com.wynncraftspellhider.mixins.extensions.ItemDisplayExtension;
 import com.wynncraftspellhider.mixins.extensions.TextDisplayExtension;
@@ -12,13 +14,16 @@ import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEntityDataPacket;
 import net.minecraft.network.protocol.game.ClientboundSetEquipmentPacket;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
@@ -44,7 +49,22 @@ public class ClientPacketListenerMixin {
         // --- ItemDisplay ---
         if (entity instanceof Display.ItemDisplay itemDisplay) {
             SpellGroup group = resolveItemDisplayGroup(itemDisplay);
+
+            //Some models use a vehicle for shadows. Now we hide that too.
+            if (group == null && itemDisplay.getItemStack().isEmpty() && !itemDisplay.getPassengers().isEmpty()) {
+                for (Entity passenger : itemDisplay.getPassengers()) {
+                    if (passenger instanceof Display.ItemDisplay passengerDisplay) {
+                        SpellGroup passengerGroup = ((ItemDisplayExtension) passengerDisplay).wynncraftspellhider_getSpellGroup();
+                        if (passengerGroup != null) {
+                            group = passengerGroup;
+                            break;
+                        }
+                    }
+                }
+            }
+
             ((ItemDisplayExtension) itemDisplay).wynncraftspellhider_setSpellGroup(group);
+
             return;
         }
 
@@ -62,6 +82,7 @@ public class ClientPacketListenerMixin {
         }
     }
 
+    
     @Inject(
             method = "handleSetEquipment",
             at = @At("TAIL")
@@ -80,30 +101,37 @@ public class ClientPacketListenerMixin {
         ext.wynncraftspellhider_setSpellGroup(group);
     }
 
+
+    @Inject(
+            method = "handleAddEntity",
+            at = @At("TAIL")
+    )
+    private void onAddEntity(ClientboundAddEntityPacket packet, CallbackInfo ci) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) return;
+
+        Entity entity = level.getEntity(packet.getId());
+        if (entity == null) return;
+
+        if (entity instanceof AbstractArrow arrow) {
+            ((AbstractArrowExtension) arrow).wynncraftspellhider_setSpellGroup(SpellRegistry.ARROW_ENTITY_GROUP);
+        }
+    }
+
     @Unique
     private SpellGroup resolveItemDisplayGroup(Display.ItemDisplay itemDisplay) {
         TexturepackModel texturepackModel = Models.texturepackModel;
         if (texturepackModel == null) return null;
 
         ItemStack stack = itemDisplay.getItemStack();
-        if (stack.isEmpty()) return null;
+        if (!stack.is(Items.OAK_BOAT)) return null;
 
         var customModelData = stack.get(DataComponents.CUSTOM_MODEL_DATA);
         if (customModelData == null || customModelData.floats().isEmpty()) return null;
 
         int modelId = customModelData.floats().get(0).intValue();
 
-        SpellGroup group = texturepackModel.getGroupForModelId(modelId);
-
-        // Mark the shadow anchor vehicle so it hides with this group
-        if (group != null && itemDisplay.getVehicle() instanceof Display.ItemDisplay vehicle) {
-            var vehicleExt = (ItemDisplayExtension) vehicle;
-            if (vehicleExt.wynncraftspellhider_getSpellGroup() == null) {
-                vehicleExt.wynncraftspellhider_setSpellGroup(group);
-            }
-        }
-
-        return group;
+        return texturepackModel.getGroupForModelId(modelId);
     }
 
     @Unique

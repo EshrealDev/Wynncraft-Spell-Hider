@@ -2,13 +2,21 @@
 	"schemaVersion": 1,
 	"id": "wynncraftspellhider",
 	"version": "${version}",
-	"name": "wynncraftspellhider",
+	"name": "Wynncraft Spell Hider",
 	"description": "A mod that allows you to hide and customize spells in wynncraft.",
 	"authors": [
 		"Eshreal"
 	],
 	"contact": {
 		"sources": "https://github.com/EshrealDev/Wynncraft-Spell-Hider/tree/main"
+	},
+	"custom": {
+		"modmenu": {
+			"links": {
+				"modmenu.modrinth": "https://modrinth.com/mod/wynncraft-spell-hider",
+				"modmenu.github_releases": "https://github.com/EshrealDev/Wynncraft-Spell-Hider/releases"
+			}
+		}
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/wynncraftspellhider/icon.png",
