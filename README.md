@@ -6,7 +6,7 @@
 
 <div align="center">
 
-<img src="https://raw.githubusercontent.com/EshrealDev/Static-Storage/main/logo.png" width=25% alt="Wynncraft Spell Hider Logo">
+<img src="https://raw.githubusercontent.com/EshrealDev/Static-Storage/main/logo.png" width=35% alt="Wynncraft Spell Hider Logo">
 
 </div>
 
