@@ -44,7 +44,7 @@ Open the mod menu with `/wynncraftspellhider menu` or press N on your keyboard.
 
 ## Credits
 
-| Role | Person |
-|---|---|
+| Role | Person                                       |
+|---|----------------------------------------------|
 | **Mod Developer** | [Eshreal](https://github.com/EshrealDev) |
-| **Icon** | Drawwy |
+| **Icon** | [Drawwy](https://www.behance.net/janbudzynski) |
