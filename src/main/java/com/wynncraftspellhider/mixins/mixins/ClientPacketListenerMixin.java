@@ -1,10 +1,7 @@
 package com.wynncraftspellhider.mixins.mixins;
 
 import com.wynncraftspellhider.WynncraftSpellHider;
-import com.wynncraftspellhider.mixins.extensions.AbstractArrowExtension;
-import com.wynncraftspellhider.mixins.extensions.ArmorStandExtension;
-import com.wynncraftspellhider.mixins.extensions.ItemDisplayExtension;
-import com.wynncraftspellhider.mixins.extensions.TextDisplayExtension;
+import com.wynncraftspellhider.mixins.extensions.*;
 import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.models.spells.SpellGroup;
 import com.wynncraftspellhider.models.spells.SpellRegistry;
@@ -21,6 +18,7 @@ import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -71,13 +69,30 @@ public class ClientPacketListenerMixin {
         // --- TextDisplay ---
         if (entity instanceof Display.TextDisplay textDisplay) {
             var ext = (TextDisplayExtension) textDisplay;
-            SpellGroup current = ext.wynncraftspellhider_getSpellGroup();
 
-            //quick fix so that arming... and % damage spell groups work properly
-            if (current == null || current.name.equals("Arming name tag (all)")) {
+
+            if (!ext.wynncraftspellhider_hasChecked()) {
+                if (textDisplay.getText().getString().isEmpty()) return;
                 SpellGroup group = resolveTextDisplayGroup(textDisplay);
                 ext.wynncraftspellhider_setSpellGroup(group);
+                ext.wynncraftspellhider_setHasChecked(true);
+            } else {
+                SpellGroup current = ext.wynncraftspellhider_getSpellGroup();
+
+                //quick fix so that arming... and % damage spell groups work properly
+                if (current != null && current.name.equals("Arming name tag (all)")) {
+                    ext.wynncraftspellhider_setSpellGroup(resolveTextDisplayGroup(textDisplay));
+                }
             }
+            return;
+        }
+
+        // --- ItemEntity ---
+        if (entity instanceof ItemEntity itemEntity) {
+            ItemStack stack = itemEntity.getItem();
+
+            ((ItemEntityExtension) itemEntity).wynncraftspellhider_setSpellGroup(SpellRegistry.getGroupForItemEntity(stack));
+
             return;
         }
     }
@@ -114,7 +129,7 @@ public class ClientPacketListenerMixin {
         if (entity == null) return;
 
         if (entity instanceof AbstractArrow arrow) {
-            ((AbstractArrowExtension) arrow).wynncraftspellhider_setSpellGroup(SpellRegistry.ARROW_ENTITY_GROUP);
+            ((AbstractArrowExtension) arrow).wynncraftspellhider_setSpellGroup(SpellRegistry.getGroupForEntityType("arrow"));
         }
     }
 
@@ -149,7 +164,7 @@ public class ClientPacketListenerMixin {
         String plainText = STRIP_CODES.matcher(rawText).replaceAll("");
 
         String localPlayerName = player.getName().getString();
-        boolean isLocalPlayer = plainText.startsWith(localPlayerName + "'s ");
+        boolean isLocalPlayer = plainText.startsWith(localPlayerName + "'s ") || plainText.startsWith(localPlayerName + "' ");
 
         return SpellRegistry.getGroupForTextDisplay(plainText, isLocalPlayer);
     }

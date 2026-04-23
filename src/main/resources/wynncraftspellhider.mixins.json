@@ -17,6 +17,9 @@
 		"ArmorStandMixin",
 		"ArmorStandRenderStateMixin",
 		"ArmorStandRendererMixin",
+		"ItemEntityMixin",
+		"ItemEntityRenderStateMixin",
+		"ItemEntityRendererMixin",
 		"ParticleEngineMixin",
 		"FireworkStarterMixin",
 		"ClientLevelMixin"

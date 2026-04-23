@@ -61,13 +61,6 @@ public class SpellGroup {
     //  Texture matching
     // =========================================================
 
-    public boolean matchesTexture(String textureName) {
-        return rules.stream()
-                .filter(r -> r instanceof TextureRule)
-                .map(r -> (TextureRule) r)
-                .anyMatch(r -> r.textureNames.contains(textureName));
-    }
-
     public boolean matches(String textureName, String fingerprint) {
         // Fingerprint-specific rules take priority
         for (MatchRule rule : rules) {
@@ -98,17 +91,6 @@ public class SpellGroup {
     }
 
     // =========================================================
-    //  Entity type matching
-    // =========================================================
-
-    public boolean isEntityTypeMatch(String entityType) {
-        return rules.stream()
-                .filter(r -> r instanceof EntityTypeRule)
-                .map(r -> (EntityTypeRule) r)
-                .anyMatch(r -> r.matches(entityType));
-    }
-
-    // =========================================================
     //  Text display matching
     // =========================================================
 
@@ -119,14 +101,4 @@ public class SpellGroup {
                 .anyMatch(r -> r.matches(plainText, isLocalPlayer));
     }
 
-    // =========================================================
-    //  Armor stand matching
-    // =========================================================
-
-    public boolean isArmorStandMatch(String itemId, int damage) {
-        return rules.stream()
-                .filter(r -> r instanceof ArmorStandRule)
-                .map(r -> (ArmorStandRule) r)
-                .anyMatch(r -> r.matches(itemId, damage));
-    }
 }

@@ -1,15 +1,13 @@
 package com.wynncraftspellhider.mixins.mixins;
 
-import com.wynncraftspellhider.mixins.extensions.AbstractArrowExtension;
-import com.wynncraftspellhider.mixins.extensions.ArmorStandExtension;
-import com.wynncraftspellhider.mixins.extensions.ItemDisplayExtension;
-import com.wynncraftspellhider.mixins.extensions.TextDisplayExtension;
+import com.wynncraftspellhider.mixins.extensions.*;
 import com.wynncraftspellhider.models.spells.SpellGroup;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Display;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.decoration.ArmorStand;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -62,6 +60,16 @@ public class EntityRendererMixin {
         // --- ArmorStand handling ---
         if (entity instanceof ArmorStand armorStand) {
             SpellGroup group = ((ArmorStandExtension) armorStand).wynncraftspellhider_getSpellGroup();
+
+            if (group != null && (group.hidden || group.transparency >= 1.0f)) {
+                cir.setReturnValue(false);
+            }
+            return;
+        }
+
+        // --- ItemEntity handling ---
+        if (entity instanceof ItemEntity itemEntity) {
+            SpellGroup group = ((ItemEntityExtension) itemEntity).wynncraftspellhider_getSpellGroup();
 
             if (group != null && (group.hidden || group.transparency >= 1.0f)) {
                 cir.setReturnValue(false);

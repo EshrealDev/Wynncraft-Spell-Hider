@@ -1,9 +1,9 @@
 package com.wynncraftspellhider.models.spells;
 
-import com.wynncraftspellhider.models.spells.rules.ArmorStandRule;
-import com.wynncraftspellhider.models.spells.rules.EntityTypeRule;
-import com.wynncraftspellhider.models.spells.rules.MatchRule;
-import com.wynncraftspellhider.models.spells.rules.TextDisplayRule;
+import com.wynncraftspellhider.models.spells.rules.*;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -26,8 +26,8 @@ public class SpellRegistry {
     // Cache for optimization
     private static final List<SpellGroup> TEXT_SPELL_GROUPS_CACHE = new ArrayList<>();
     private static final Map<ArmorStandRule.ArmorStandModel, SpellGroup> ARMOR_STAND_GROUP_CACHE = new HashMap<>();
-    public static SpellGroup ARROW_ENTITY_GROUP;
-
+    private static final Map<String, SpellGroup> ENTITY_TYPE_GROUP_CACHE = new HashMap<>();
+    private static final Map<Item, SpellGroup> ITEM_ENTITY_GROUP_CACHE = new HashMap<>();
 
     // Generates Set.of("prefix (1)", "prefix (2)", ..., "prefix (n)")
     private static Set<String> range(String prefix, int from, int to) {
@@ -370,23 +370,23 @@ public class SpellRegistry {
                 "The transparency on the Crow model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
                 List.of(
                 new SpellGroup("Crow", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.CROW_BODY, ArmorStandRule.ArmorStandModel.CROW_WING_LEFT, ArmorStandRule.ArmorStandModel.CROW_WING_RIGHT)),
-                new SpellGroup("Crow name tag (yours)", MatchRule.ofTextDisplay(".*'s Crow\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Crow name tag (others)", MatchRule.ofTextDisplay(".*'s Crow\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Crow name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Crow name tag (others)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         ARCHER_SPELLS.add(new SpellConfig("Ivyroot Mamba",
                 "The transparency on the Ivyroot Mamba model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
                 List.of(
                 new SpellGroup("Mamba", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.MAMBA_HEAD, ArmorStandRule.ArmorStandModel.MAMBA_BODY, ArmorStandRule.ArmorStandModel.MAMBA_BUSH)),
-                new SpellGroup("Snake name tag (yours)", MatchRule.ofTextDisplay(".*'s Snake\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Snake mamba name tag (others)", MatchRule.ofTextDisplay(".*'s Snake\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Snake name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Snake mamba name tag (others)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
 
         ARCHER_SPELLS.add(new SpellConfig("Call of the Hound", List.of(
                 new SpellGroup("Call of the hound", MatchRule.ofTexture("callofthehound")),
-                new SpellGroup("Hound name tag (yours)", MatchRule.ofTextDisplay(".*'s Hound\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Hound name tag (others)", MatchRule.ofTextDisplay(".*'s Hound\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Hound name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Hound\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Hound name tag (others)", MatchRule.ofTextDisplay(".*('s|') Hound\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         ARCHER_SPELLS.add(new SpellConfig("Chilling Snare", List.of(
@@ -409,6 +409,12 @@ public class SpellRegistry {
                 new SpellGroup("Guardian angels", MatchRule.ofTexture("guardianangels"))
         )));
 
+        ARCHER_SPELLS.add(new SpellConfig("Arsenal Synergy",
+                "This is a global toggle for all flint entities.\n\nIn my testing it does not effect ingredients that look like flint.\n\nTransparency does not work with this for now.",
+                List.of(
+                new SpellGroup("Arsenal synergy flint arrow", MatchRule.ofItemEntity(Items.FLINT))
+        )));
+
         ARCHER_SPELLS.add(new SpellConfig("Fierce Stomp", List.of(
                 new SpellGroup("Fierce stomp", MatchRule.ofTexture(range("fiercestomp", 1, 9)))
         )));
@@ -422,6 +428,7 @@ public class SpellRegistry {
         ARCHER_SPELLS.add(new SpellConfig("Angelic Ascension",
                 "To adjust the thunderstorm from the arrow bomb please adjust the mage ability.\n\nThey use they same textures.",
                 List.of(
+                        new SpellGroup("Angelic ascension melee", MatchRule.ofTexture("angelicascensionmelee")),
                         new SpellGroup("Angelic ascension guardian angel", MatchRule.ofTexture("angelicascensionguardianangel")),
                         new SpellGroup("Angelic ascension wings", MatchRule.ofTexture(range("angelicascensionwings", 1, 2)))
         )));
@@ -548,8 +555,8 @@ public class SpellRegistry {
                 new SpellGroup("Totem", MatchRule.ofTexture(range("shamantotem", 1, 2))),
                 new SpellGroup("Totem circle", MatchRule.ofTexture("shamantotemcircle")),
                 new SpellGroup("Totem effects", MatchRule.ofTexture(range("shamantotemeffects", 1, 4))),
-                new SpellGroup("Totem name tag (yours)", MatchRule.ofTextDisplay(".*'s Totem\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Totem name tag (others)", MatchRule.ofTextDisplay(".*'s Totem\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Totem name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Totem\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Totem name tag (others)", MatchRule.ofTextDisplay(".*('s|') Totem\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         SHAMAN_SPELLS.add(new SpellConfig("Totemic Smash", List.of(
@@ -624,14 +631,14 @@ public class SpellRegistry {
         SHAMAN_SPELLS.add(new SpellConfig("Puppet Master", List.of(
                 new SpellGroup("Puppet", MatchRule.ofTexture("puppetmasterpuppet")),
                 new SpellGroup("Puppet knife", MatchRule.ofTexture("puppetmasterknife")),
-                new SpellGroup("Puppet name tag (yours)", MatchRule.ofTextDisplay(".*'s Puppet.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Puppet name tag (others)", MatchRule.ofTextDisplay(".*'s Puppet.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Puppet name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Puppet.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Puppet name tag (others)", MatchRule.ofTextDisplay(".*('s|') Puppet.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         SHAMAN_SPELLS.add(new SpellConfig("Crimson Effigy", List.of(
                 new SpellGroup("Crimson effigy", MatchRule.ofTexture("crimsoneffigy")),
-                new SpellGroup("Crimson effigy name tag (yours)", MatchRule.ofTextDisplay(".*'s Effigy", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Crimson effigy name tag (others)", MatchRule.ofTextDisplay(".*'s Effigy", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Crimson effigy name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Effigy", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Crimson effigy name tag (others)", MatchRule.ofTextDisplay(".*('s|') Effigy", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         SHAMAN_SPELLS.add(new SpellConfig("Commander", List.of(
@@ -640,8 +647,8 @@ public class SpellRegistry {
 
         SHAMAN_SPELLS.add(new SpellConfig("Hummingbird's Song", List.of(
                 new SpellGroup("Hummingbird carving", MatchRule.ofTexture("hummingbirdcarving")),
-                new SpellGroup("Hummingbird name tag (yours)", MatchRule.ofTextDisplay(".*'s Bird", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Hummingbird name tag (others)", MatchRule.ofTextDisplay(".*'s Bird", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Hummingbird name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Bird", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Hummingbird name tag (others)", MatchRule.ofTextDisplay(".*('s|') Bird", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
         SHAMAN_SPELLS.add(new SpellConfig("Invigorating Wave", List.of(
@@ -650,8 +657,8 @@ public class SpellRegistry {
 
         SHAMAN_SPELLS.add(new SpellConfig("Patchwork Abomination", List.of(
                 new SpellGroup("Patchwork abomination", MatchRule.ofTexture("patchworkabomination")),
-                new SpellGroup("Patchwork abomination name tag (yours)", MatchRule.ofTextDisplay(".*'s Patchwork Abomination\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Patchwork abomination name tag (others)", MatchRule.ofTextDisplay(".*'s Patchwork Abomination\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                new SpellGroup("Patchwork abomination name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Patchwork Abomination\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                new SpellGroup("Patchwork abomination name tag (others)", MatchRule.ofTextDisplay(".*('s|') Patchwork Abomination\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
         )));
 
 
@@ -702,35 +709,17 @@ public class SpellRegistry {
         //collect all spells for ALL_SPELLS list.
         for (WynnClass wynnClass : WynnClass.values()) ALL_SPELLS.addAll(getSpells(wynnClass));
 
-        //TEXT_SPELL_GROUPS_CACHE
-        for (SpellConfig spell : getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                boolean hasTextRule = group.rules.stream().anyMatch(rule -> rule instanceof TextDisplayRule);
-
-                if (hasTextRule) {
-                    TEXT_SPELL_GROUPS_CACHE.add(group);
-                }
-            }
-        }
-
-        // ARMOR_STAND_GROUP_CACHE
+        //build static caches.
         for (SpellConfig spell : getAllSpells()) {
             for (SpellGroup group : spell.groups) {
                 for (MatchRule rule : group.rules) {
+                    if (rule instanceof TextDisplayRule) TEXT_SPELL_GROUPS_CACHE.add(group);
+                    if (rule instanceof EntityTypeRule etr) ENTITY_TYPE_GROUP_CACHE.put(etr.entityType, group);
+                    if (rule instanceof ItemEntityRule ier) ITEM_ENTITY_GROUP_CACHE.put(ier.item, group);
                     if (rule instanceof ArmorStandRule asr) {
                         for (ArmorStandRule.ArmorStandModel model : asr.models) {
                             ARMOR_STAND_GROUP_CACHE.put(model, group);
                         }
-                    }
-                }
-            }
-        }
-
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                for (MatchRule rule : group.rules) {
-                    if (rule instanceof EntityTypeRule etr) {
-                        if(etr.entityType.equals("arrow")) ARROW_ENTITY_GROUP = group;
                     }
                 }
             }
@@ -753,7 +742,7 @@ public class SpellRegistry {
         return ALL_SPELLS;
     }
 
-    //some of these group getters are also handled in texturepackModel.
+    //some of these group getters are also handled in TexturepackModel, because they rely on the texturepack and are not static.
     public static SpellGroup getGroupForModel(String textureName, String fingerprint) {
         for (SpellConfig spell : getAllSpells())
             for (SpellGroup group : spell.groups)
@@ -774,5 +763,13 @@ public class SpellRegistry {
         ArmorStandRule.ArmorStandModel model = ArmorStandRule.ArmorStandModel.get(itemId, damage);
         if (model == null) return null;
         return ARMOR_STAND_GROUP_CACHE.get(model);
+    }
+
+    public static SpellGroup getGroupForEntityType(String entityType) {
+        return ENTITY_TYPE_GROUP_CACHE.get(entityType);
+    }
+
+    public static SpellGroup getGroupForItemEntity(ItemStack stack) {
+        return ITEM_ENTITY_GROUP_CACHE.get(stack.getItem());
     }
 }

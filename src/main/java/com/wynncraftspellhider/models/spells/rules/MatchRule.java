@@ -1,8 +1,10 @@
 package com.wynncraftspellhider.models.spells.rules;
 
+import net.minecraft.world.item.Item;
+
 import java.util.Set;
 
-public sealed interface MatchRule permits TextureRule, EntityTypeRule, TextDisplayRule, ArmorStandRule {
+public sealed interface MatchRule permits TextureRule, EntityTypeRule, TextDisplayRule, ArmorStandRule, ItemEntityRule {
 
     // --- texture rules ---
     static TextureRule ofTexture(String textureName) {
@@ -41,5 +43,10 @@ public sealed interface MatchRule permits TextureRule, EntityTypeRule, TextDispl
     // --- armorStand rule ---
     static ArmorStandRule ofArmorStand(ArmorStandRule.ArmorStandModel... models) {
         return new ArmorStandRule(Set.of(models));
+    }
+
+    // --- itemEntity rule ---
+    static ItemEntityRule ofItemEntity(Item item) {
+        return new ItemEntityRule(item);
     }
 }
