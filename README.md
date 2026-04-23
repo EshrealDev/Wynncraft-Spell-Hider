@@ -42,9 +42,7 @@ Save and load multiple named profiles so you can switch between different config
 
 Open the mod menu with `/wynncraftspellhider menu` or press N on your keyboard.
 
-## Credits
+## Contributors
 
-| Role | Person                                       |
-|---|----------------------------------------------|
-| **Mod Developer** | [Eshreal](https://github.com/EshrealDev) |
-| **Icon** | [Drawwy](https://www.behance.net/janbudzynski) |
+- **[Eshreal](https://github.com/EshrealDev)** — Mod Developer
+- **[Drawwy](https://www.behance.net/janbudzynski)** — Icon
