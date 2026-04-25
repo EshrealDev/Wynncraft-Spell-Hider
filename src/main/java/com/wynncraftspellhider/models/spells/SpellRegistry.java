@@ -458,11 +458,16 @@ public class SpellRegistry {
 
         // Acrobat
         ASSASSIN_SPELLS.add(new SpellConfig("Ripple", List.of(
-                new SpellGroup("Ripple", MatchRule.ofTexture(range("assassinripple", 1, 14)))
+                new SpellGroup("Ripple",
+                        MatchRule.ofTexture(range("assassinripple", 1, 14)))
         )));
 
         ASSASSIN_SPELLS.add(new SpellConfig("Lacerate", List.of(
                 new SpellGroup("Lacerate", MatchRule.ofTexture(range("lacerate", 1, 8)))
+        )));
+
+        ASSASSIN_SPELLS.add(new SpellConfig("Swan Dive", List.of(
+                new SpellGroup("Swan dive", MatchRule.ofTexture(range("swandiveripple", 1, 4)))
         )));
 
         ASSASSIN_SPELLS.add(new SpellConfig("Shurikens", List.of(
@@ -470,12 +475,16 @@ public class SpellRegistry {
         )));
 
         ASSASSIN_SPELLS.add(new SpellConfig("Jasmine Bloom", List.of(
-                new SpellGroup("Jasmine bloom", MatchRule.ofTexture(range("jasminebloom", 1, 7)))
+                new SpellGroup("Small jasmine bloom", MatchRule.ofTexture("smalljasminebloom")),
+                new SpellGroup("Big jasmine bloom", MatchRule.ofTexture("bigjasminebloom"))
+        )));
+
+        ASSASSIN_SPELLS.add(new SpellConfig("Petal Storm", List.of(
+                new SpellGroup("Petal Storm", MatchRule.ofTexture(range("petalstorm", 1, 4)))
         )));
 
         ASSASSIN_SPELLS.add(new SpellConfig("Serpent's Garden", List.of(
-                new SpellGroup("Serpent's garden flowers", MatchRule.ofTexture(range("serpentsgardenflowers", 1, 4))),
-                new SpellGroup("Serpent's garden leap effect", MatchRule.ofTexture(range("serpentsgardenleapeffect", 1, 5)))
+                new SpellGroup("Serpent's garden flowers", MatchRule.ofTexture(range("serpentsgardenflowers", 1, 4)))
         )));
 
         // Trickster
@@ -700,7 +709,7 @@ public class SpellRegistry {
         )));
 
         GLOBAL_SPELLS.add(new SpellConfig("Wind Prison", List.of(
-                new SpellGroup("Wind prison", MatchRule.ofTexture(range("windprisonspecial", 1, 7)))
+                new SpellGroup("Wind prison", MatchRule.ofTexture(range("windprisonspecial", 1, 6)))
         )));
 
 
