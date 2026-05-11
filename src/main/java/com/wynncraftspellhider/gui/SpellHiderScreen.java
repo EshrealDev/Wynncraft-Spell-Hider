@@ -1,6 +1,5 @@
 package com.wynncraftspellhider.gui;
 
-import com.wynncraftspellhider.WynncraftSpellHider;
 import com.wynncraftspellhider.models.spells.SpellConfig;
 import com.wynncraftspellhider.models.spells.SpellGroup;
 import com.wynncraftspellhider.models.spells.SpellRegistry;
