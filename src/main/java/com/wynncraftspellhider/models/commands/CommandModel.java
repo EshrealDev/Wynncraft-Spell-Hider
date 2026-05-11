@@ -74,7 +74,7 @@ public class CommandModel {
                         ctx.getSource().sendFeedback(Component.literal(
                                 "Checking for updates... (current version: " + UpdateChecker.currentVersion() + ")"));
                         UpdateChecker.checkAsync(
-                                () -> Minecraft.getInstance().execute(() ->
+                                latestVersion -> Minecraft.getInstance().execute(() ->  // <-- was () ->
                                         ctx.getSource().sendFeedback(
                                                 Component.literal("A new update is available! Click ")
                                                         .append(Component.literal("here")

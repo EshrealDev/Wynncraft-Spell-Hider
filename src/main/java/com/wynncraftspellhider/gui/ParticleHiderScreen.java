@@ -41,12 +41,6 @@ public class ParticleHiderScreen extends BaseHiderScreen {
     @Override
     protected void renderPageContent(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
         particleList.render(guiGraphics, mouseX, mouseY, partialTick);
-
-        if (ParticleRegistry.getParticles().isEmpty()) {
-            guiGraphics.drawCenteredString(font,
-                    Component.literal("No particles registered. Run dumpAllParticlesToClipboard() to get started."),
-                    width / 2, height / 2, 0xFF666666);
-        }
     }
 
     @Override
@@ -96,6 +90,7 @@ public class ParticleHiderScreen extends BaseHiderScreen {
 
         @Override public int getRowWidth() { return width - 6; }
         @Override protected int scrollBarX() { return getX() + width - 6; }
+        @Override protected boolean entriesCanBeSelected() { return false; }
 
         public class ParticleEntry extends ObjectSelectionList.Entry<ParticleEntry> {
             private final ParticleConfig config;

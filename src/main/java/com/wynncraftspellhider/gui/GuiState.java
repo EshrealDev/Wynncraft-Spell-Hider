@@ -23,6 +23,10 @@ public class GuiState {
     public static SpellGroup lastSelectedGroup = null;
     public static java.util.Map<SpellRegistry.WynnClass, Double> spellListScrollAmounts = new java.util.HashMap<>();
 
+    // --- Detail panel state ---
+    public static java.util.Map<SpellGroup, Double> detailScrollAmounts = new java.util.HashMap<>();
+    public static boolean detailLockScale = true;
+
     // --- Particle screen state ---
     public static double particleListScrollAmount = 0;
 

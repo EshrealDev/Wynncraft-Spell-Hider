@@ -14,6 +14,10 @@ public class ProfileRegistry {
     private static ProfileConfig activeProfile = null;
     private static ProfileConfig defaultProfile = null;
 
+    // The latest version the user chose to dismiss the update screen for.
+    // Null means they haven't dismissed anything yet.
+    private static String dismissedVersion = null;
+
     // Resolved once in loadFromDisk(), used for all file operations
     private static File profilesFolder;
     private static File metaFile;
@@ -25,6 +29,29 @@ public class ProfileRegistry {
     public static List<ProfileConfig> getProfiles()          { return profiles; }
     public static ProfileConfig getActiveProfile()           { return activeProfile; }
     public static ProfileConfig getDefaultProfile()          { return defaultProfile; }
+
+    // -------------------------------------------------------------------------
+    //  Dismissed version access
+    // -------------------------------------------------------------------------
+
+    public static String getDismissedVersion()               { return dismissedVersion; }
+
+    /**
+     * Returns true if the user has already dismissed the update screen for
+     * this specific latest version, so we should not show it again.
+     */
+    public static boolean isUpdateDismissed(String latestVersion) {
+        return latestVersion != null && latestVersion.equals(dismissedVersion);
+    }
+
+    /**
+     * Records that the user dismissed the update screen for the given latest
+     * version and persists it to meta.json.
+     */
+    public static void dismissUpdate(String latestVersion) {
+        dismissedVersion = latestVersion;
+        saveMeta();
+    }
 
     // -------------------------------------------------------------------------
     //  Startup
@@ -58,16 +85,8 @@ public class ProfileRegistry {
             return;
         }
 
-        // Read meta.json
-        String defaultName = loadMeta();
-        if (defaultName != null) {
-            for (ProfileConfig p : profiles) {
-                if (p.name.equals(defaultName)) {
-                    defaultProfile = p;
-                    break;
-                }
-            }
-        }
+        // Read meta.json (populates defaultProfile and dismissedVersion)
+        loadMeta();
 
         // Apply default on startup
         if (defaultProfile != null) {
@@ -84,7 +103,6 @@ public class ProfileRegistry {
     public static ProfileConfig create(String name) {
         ProfileConfig profile = new ProfileConfig(name);
         profile.setToDefaults();
-        //profile.capture();
         profiles.add(profile);
         saveProfileToDisk(profile);
         return profile;
@@ -169,7 +187,8 @@ public class ProfileRegistry {
     private static void saveMeta() {
         if (metaFile == null) return;
         JsonObject root = new JsonObject();
-        if (defaultProfile != null) root.addProperty("default", defaultProfile.name);
+        if (defaultProfile   != null) root.addProperty("default",          defaultProfile.name);
+        if (dismissedVersion != null) root.addProperty("dismissedVersion",  dismissedVersion);
 
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(metaFile), StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(root, writer);
@@ -179,17 +198,34 @@ public class ProfileRegistry {
     }
 
     /**
-     * Returns the default profile name from meta.json, or null if absent/malformed.
+     * Reads meta.json and populates {@link #defaultProfile} and
+     * {@link #dismissedVersion}. Silently ignores missing or malformed files.
      */
-    private static String loadMeta() {
-        if (!metaFile.exists()) return null;
+    private static void loadMeta() {
+        if (!metaFile.exists()) return;
         try (Reader reader = new InputStreamReader(new FileInputStream(metaFile), StandardCharsets.UTF_8)) {
             JsonObject root = JsonParser.parseReader(reader).getAsJsonObject();
+
+            // Default profile
             JsonElement def = root.get("default");
-            return (def != null && !def.isJsonNull()) ? def.getAsString() : null;
+            if (def != null && !def.isJsonNull()) {
+                String defaultName = def.getAsString();
+                for (ProfileConfig p : profiles) {
+                    if (p.name.equals(defaultName)) {
+                        defaultProfile = p;
+                        break;
+                    }
+                }
+            }
+
+            // Dismissed update version
+            JsonElement dismissed = root.get("dismissedVersion");
+            if (dismissed != null && !dismissed.isJsonNull()) {
+                dismissedVersion = dismissed.getAsString();
+            }
+
         } catch (Exception e) {
             WynncraftSpellHider.error("Failed to read meta.json: " + e.getMessage());
-            return null;
         }
     }
 }

@@ -228,6 +228,7 @@ public class ConfigScreen extends BaseHiderScreen {
 
         @Override public int getRowWidth() { return width - 6; }
         @Override protected int scrollBarX() { return getX() + width - 6; }
+        @Override protected boolean entriesCanBeSelected() { return false; }
 
         public class ProfileEntry extends ObjectSelectionList.Entry<ProfileEntry> {
             private final ProfileConfig profile;
