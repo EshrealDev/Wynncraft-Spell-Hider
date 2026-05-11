@@ -47,7 +47,7 @@ public class ParticleHiderScreen extends BaseHiderScreen {
     protected void onClassTabClicked(SpellRegistry.WynnClass wynnClass) {
         if (particleList != null) GuiState.particleListScrollAmount = particleList.scrollAmount();
         GuiState.lastActiveTab = wynnClass;
-        navigateTo(SpellHiderScreen::new);  // was: minecraft.setScreen(new SpellHiderScreen())
+        navigateTo(SpellHiderScreen::new);
     }
 
     @Override protected boolean hasHideShowButtons() { return true; }

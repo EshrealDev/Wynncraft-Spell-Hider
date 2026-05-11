@@ -1,5 +1,6 @@
 package com.wynncraftspellhider.gui;
 
+import com.wynncraftspellhider.WynncraftSpellHider;
 import com.wynncraftspellhider.models.spells.SpellConfig;
 import com.wynncraftspellhider.models.spells.SpellGroup;
 import com.wynncraftspellhider.models.spells.SpellRegistry;
@@ -253,15 +254,13 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
     @Override
     public boolean mouseScrolled(double mx, double my, double h, double v) {
-        if (mx >= listRight() && detailScrollList != null)
-            return detailScrollList.mouseScrolled(mx, my, h, v);
+        if (mx >= listRight() && detailScrollList != null) return detailScrollList.mouseScrolled(mx, my, h, v);
         return super.mouseScrolled(mx, my, h, v);
     }
 
     @Override
     public boolean mouseDragged(MouseButtonEvent event, double mx, double my) {
         if (detailScrollList != null && detailScrollList.mouseDragged(event, mx, my)) return true;
-        if (spellList != null && spellList.mouseDragged(event, mx, my)) return true;
         return super.mouseDragged(event, mx, my);
     }
 
@@ -293,8 +292,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
-            if (event.x() >= scrollBarX() && event.x() <= scrollBarX() + 6)
-                return super.mouseClicked(event, bl);
+            if (event.x() >= scrollBarX() && event.x() <= scrollBarX() + 6) return super.mouseClicked(event, bl);
             Entry e = getEntryAtPosition(event.x(), event.y());
             if (e != null && e.mouseClicked(event, bl)) return true;
             return super.mouseClicked(event, bl);
@@ -469,7 +467,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
     }
 
     // =========================================================
-    //  SpellList
+    //  Spell List
     // =========================================================
 
     private class SpellList extends ObjectSelectionList<SpellList.SpellEntry> {
