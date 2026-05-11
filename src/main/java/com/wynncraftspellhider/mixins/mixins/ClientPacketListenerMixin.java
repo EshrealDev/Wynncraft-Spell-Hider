@@ -97,7 +97,7 @@ public class ClientPacketListenerMixin {
         }
     }
 
-    
+
     @Inject(
             method = "handleSetEquipment",
             at = @At("TAIL")
@@ -149,8 +149,8 @@ public class ClientPacketListenerMixin {
         return texturepackModel.getGroupForModelId(modelId);
     }
 
-    @Unique
-    private static final Pattern STRIP_CODES = Pattern.compile("§[0-9a-fk-orA-FK-OR]");
+    @Unique private static final Pattern STRIP_CODES = Pattern.compile("§[0-9a-fk-orA-FK-OR]");
+    @Unique private static final Pattern STRIP_UNICODE = Pattern.compile("^[^a-zA-Z0-9]+");
 
     @Unique
     private SpellGroup resolveTextDisplayGroup(Display.TextDisplay textDisplay) {
@@ -162,6 +162,9 @@ public class ClientPacketListenerMixin {
         if (player == null) return null;
 
         String plainText = STRIP_CODES.matcher(rawText).replaceAll("");
+        plainText = STRIP_UNICODE.matcher(plainText).replaceFirst("");
+
+        WynncraftSpellHider.info(plainText);
 
         String localPlayerName = player.getName().getString();
         boolean isLocalPlayer = plainText.startsWith(localPlayerName + "'s ") || plainText.startsWith(localPlayerName + "' ");
