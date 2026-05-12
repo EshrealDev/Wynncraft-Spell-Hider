@@ -164,8 +164,6 @@ public class ClientPacketListenerMixin {
         String plainText = STRIP_CODES.matcher(rawText).replaceAll("");
         plainText = STRIP_UNICODE.matcher(plainText).replaceFirst("");
 
-        WynncraftSpellHider.info(plainText);
-
         String localPlayerName = player.getName().getString();
         boolean isLocalPlayer = plainText.startsWith(localPlayerName + "'s ") || plainText.startsWith(localPlayerName + "' ");
 

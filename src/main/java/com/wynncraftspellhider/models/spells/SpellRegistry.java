@@ -106,8 +106,7 @@ public class SpellRegistry {
                 "To adjust the white border circle please go to the global tab.",
                 List.of(
                 new SpellGroup("Judgement sword", MatchRule.ofTexture("judgementsword")),
-                new SpellGroup("Judgement hit circle", MatchRule.ofTexture(range("judgementhitcircle", 1, 2))),
-                new SpellGroup("Judgement hit circle white", MatchRule.ofTexture("judgementwhitecircle", Set.of("0d547f7ab5d93aab99699369054910576bab7388ecfa6c69e56a57dd6be88ac1")))
+                new SpellGroup("Judgement hit circle", MatchRule.ofTexture(range("judgementhitcircle", 1, 2)))
         )));
 
 
@@ -679,6 +678,12 @@ public class SpellRegistry {
                 "This setting adjusts the mob totem & Judgement border circle.\n\nThey use the same textures.",
                 List.of(
                 new SpellGroup("Mob totem & Judgement border", MatchRule.ofTexture("totembordercircle"))
+        )));
+
+        GLOBAL_SPELLS.add(new SpellConfig("NOTG & Judgement Shockwave",
+                "This setting adjusts the Grootslang Wyrmling's shockwave and the Judgement Shockwave.\n\nThey use the same textures.",
+                List.of(
+                new SpellGroup("NOTG & Judgement Shockwave", MatchRule.ofTexture("judgementwhitecircle", Set.of("0d547f7ab5d93aab99699369054910576bab7388ecfa6c69e56a57dd6be88ac1")))
         )));
 
         GLOBAL_SPELLS.add(new SpellConfig("Fireballs",
