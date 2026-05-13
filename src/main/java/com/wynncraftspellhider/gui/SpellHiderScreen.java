@@ -253,6 +253,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
     @Override
     public boolean mouseScrolled(double mx, double my, double h, double v) {
+        if (isModalOpen()) return super.mouseScrolled(mx, my, h, v);
         if (mx >= listRight() && detailScrollList != null) return detailScrollList.mouseScrolled(mx, my, h, v);
         return super.mouseScrolled(mx, my, h, v);
     }
