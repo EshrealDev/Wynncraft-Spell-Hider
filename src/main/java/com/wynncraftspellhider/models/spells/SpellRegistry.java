@@ -216,7 +216,7 @@ public class SpellRegistry {
         )));
 
         MAGE_SPELLS.add(new SpellConfig("Arcane Transfer", List.of(
-                new SpellGroup("Arcane transfer", MatchRule.ofTexture(range("arcanetransfer", 1, 13)))
+                new SpellGroup("Arcane transfer", MatchRule.ofTexture(range("arcanetransfer", 1, 10)))
         )));
 
         MAGE_SPELLS.add(new SpellConfig("Pyrokinesis", List.of(
