@@ -211,7 +211,8 @@ public class SpellRegistry {
 
         //Arcanist
         MAGE_SPELLS.add(new SpellConfig("Burning Sigil", List.of(
-                new SpellGroup("Burning sigil", MatchRule.ofTexture(range("burningsigil", 1, 11))),
+                new SpellGroup("Burning sigil circle", MatchRule.ofTexture(range("burningsigilcircle", 1, 2))),
+                new SpellGroup("Burning sigil emblem", MatchRule.ofTexture(range("burningsigilemblem", 1, 10))),
                 new SpellGroup("Burning sigil text", MatchRule.ofTexture(range("burningsigiltext", 1, 11)))
         )));
 
