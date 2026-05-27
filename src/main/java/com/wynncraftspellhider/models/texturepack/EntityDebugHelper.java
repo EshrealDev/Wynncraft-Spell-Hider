@@ -1,26 +1,24 @@
 package com.wynncraftspellhider.models.texturepack;
 
-import net.minecraft.client.Minecraft;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.network.chat.Component;
-import net.minecraft.util.ProblemReporter;
-import net.minecraft.world.entity.Display;
-import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.Display.ItemDisplay;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.ResourceManager;
-
-import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.WynncraftSpellHider;
+import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.models.config.ConfigModel;
-import net.minecraft.world.level.storage.TagValueOutput;
-import net.minecraft.world.level.storage.ValueOutput;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.Objects;
+import net.minecraft.client.Minecraft;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.ResourceManager;
+import net.minecraft.util.ProblemReporter;
+import net.minecraft.world.entity.Display;
+import net.minecraft.world.entity.Display.ItemDisplay;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.level.storage.TagValueOutput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class EntityDebugHelper {
 
@@ -77,8 +75,7 @@ public class EntityDebugHelper {
 
             ValueOutput view = TagValueOutput.createWithContext(
                     ProblemReporter.DISCARDING,
-                    Objects.requireNonNull(mc.getConnection()).registryAccess()
-            );
+                    Objects.requireNonNull(mc.getConnection()).registryAccess());
             entity.saveWithoutId(view);
             CompoundTag nbt = ((TagValueOutput) view).buildResult();
 
@@ -128,8 +125,8 @@ public class EntityDebugHelper {
         TexturepackModel tpm = Models.texturepackModel;
 
         File outputFile = new File(ConfigModel.configFolder, "entity_debug.txt");
-        try (PrintWriter writer = new PrintWriter(new OutputStreamWriter(
-                new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
+        try (PrintWriter writer =
+                new PrintWriter(new OutputStreamWriter(new FileOutputStream(outputFile), StandardCharsets.UTF_8))) {
 
             writer.println("=== Entity Debug Results ===");
             writer.println();
@@ -186,7 +183,7 @@ public class EntityDebugHelper {
                     File outFile = new File(texturesDir, filename);
 
                     try (InputStream in = resource.open();
-                         FileOutputStream out = new FileOutputStream(outFile)) {
+                            FileOutputStream out = new FileOutputStream(outFile)) {
                         in.transferTo(out);
                     } catch (IOException e) {
                         WynncraftSpellHider.error("Failed to export texture " + filename + ": " + e.getMessage());
@@ -200,7 +197,10 @@ public class EntityDebugHelper {
         }
     }
 
-    /** Returns the display label for a model — known texture name if mapped, otherwise first obfuscated filename. */
+    /**
+     * Returns the display label for a model — known texture name if mapped, otherwise first
+     * obfuscated filename.
+     */
     private static String getLabel(TexturepackModel tpm, int modelId, List<Identifier> textureIds) {
         String known = tpm.modelIdToKnownTexture.get(modelId);
         if (known != null) return known;
@@ -215,7 +215,6 @@ public class EntityDebugHelper {
         if (name.endsWith(".png")) name = name.substring(0, name.length() - 4);
         return name;
     }
-
 
     public static void copyEntitiesToClipboard() {
         Minecraft mc = Minecraft.getInstance();
@@ -237,16 +236,22 @@ public class EntityDebugHelper {
             // Extract NBT for any entity type
             ValueOutput view = TagValueOutput.createWithContext(
                     ProblemReporter.DISCARDING,
-                    Objects.requireNonNull(mc.getConnection()).registryAccess()
-            );
+                    Objects.requireNonNull(mc.getConnection()).registryAccess());
             entity.saveWithoutId(view);
             CompoundTag nbt = ((TagValueOutput) view).buildResult();
 
             if (entity instanceof ItemDisplay) {
                 itemDisplayCount++;
-                itemDisplaySb.append("--- ItemDisplay #").append(itemDisplayCount)
-                        .append(" (ID: ").append(entity.getId()).append(") ---\n");
-                itemDisplaySb.append("Type: ").append(entity.getType().getDescriptionId()).append("\n");
+                itemDisplaySb
+                        .append("--- ItemDisplay #")
+                        .append(itemDisplayCount)
+                        .append(" (ID: ")
+                        .append(entity.getId())
+                        .append(") ---\n");
+                itemDisplaySb
+                        .append("Type: ")
+                        .append(entity.getType().getDescriptionId())
+                        .append("\n");
                 itemDisplaySb.append("Pos: ").append(entity.position()).append("\n");
 
                 // ItemDisplay specific model logic
@@ -259,8 +264,14 @@ public class EntityDebugHelper {
                             ListTag floats = cmd.getListOrEmpty("floats");
                             if (!floats.isEmpty()) {
                                 int modelId = (int) floats.getFloatOr(0, 0);
-                                itemDisplaySb.append("  [Model ID: ").append(modelId).append("]\n");
-                                itemDisplaySb.append("  [Known: ").append(tpm.modelIdToKnownTexture.getOrDefault(modelId, "Unknown")).append("]\n");
+                                itemDisplaySb
+                                        .append("  [Model ID: ")
+                                        .append(modelId)
+                                        .append("]\n");
+                                itemDisplaySb
+                                        .append("  [Known: ")
+                                        .append(tpm.modelIdToKnownTexture.getOrDefault(modelId, "Unknown"))
+                                        .append("]\n");
                             }
                         }
                     }
@@ -269,9 +280,16 @@ public class EntityDebugHelper {
 
             } else if (entity instanceof Display.TextDisplay textDisplay) {
                 textDisplayCount++;
-                textDisplaySb.append("--- TextDisplay #").append(textDisplayCount)
-                        .append(" (ID: ").append(entity.getId()).append(") ---\n");
-                textDisplaySb.append("Type: ").append(entity.getType().getDescriptionId()).append("\n");
+                textDisplaySb
+                        .append("--- TextDisplay #")
+                        .append(textDisplayCount)
+                        .append(" (ID: ")
+                        .append(entity.getId())
+                        .append(") ---\n");
+                textDisplaySb
+                        .append("Type: ")
+                        .append(entity.getType().getDescriptionId())
+                        .append("\n");
                 textDisplaySb.append("Pos: ").append(entity.position()).append("\n");
 
                 Component text = textDisplay.getText();
@@ -282,24 +300,44 @@ public class EntityDebugHelper {
             } else {
                 // General entities (Arrows, Players, Spells, etc.)
                 otherCount++;
-                otherSb.append("--- Entity #").append(otherCount)
-                        .append(" (ID: ").append(entity.getId()).append(") ---\n");
+                otherSb.append("--- Entity #")
+                        .append(otherCount)
+                        .append(" (ID: ")
+                        .append(entity.getId())
+                        .append(") ---\n");
                 otherSb.append("Type: ").append(entity.getType().toString()).append("\n");
-                otherSb.append("Pos: ").append(entity.getX()).append(", ").append(entity.getY()).append(", ").append(entity.getZ()).append("\n");
+                otherSb.append("Pos: ")
+                        .append(entity.getX())
+                        .append(", ")
+                        .append(entity.getY())
+                        .append(", ")
+                        .append(entity.getZ())
+                        .append("\n");
                 otherSb.append("Full NBT: ").append(nbt).append("\n\n");
             }
         }
 
         // Combine them
         StringBuilder finalOutput = new StringBuilder();
-        finalOutput.append(itemDisplaySb).append("\n\n").append(textDisplaySb).append("\n\n").append(otherSb);
+        finalOutput
+                .append(itemDisplaySb)
+                .append("\n\n")
+                .append(textDisplaySb)
+                .append("\n\n")
+                .append(otherSb);
 
-        if ((itemDisplayCount +  textDisplayCount + otherCount) == 0) {
+        if ((itemDisplayCount + textDisplayCount + otherCount) == 0) {
             WynncraftSpellHider.info("No entities found in rendering range.");
             return;
         }
 
         mc.keyboardHandler.setClipboard(finalOutput.toString());
-        WynncraftSpellHider.info("Copied " + itemDisplayCount + " item displays,  " +  textDisplayCount + " text displays and " + otherCount + " others to clipboard.");
+        WynncraftSpellHider.info("Copied "
+                + itemDisplayCount
+                + " item displays,  "
+                + textDisplayCount
+                + " text displays and "
+                + otherCount
+                + " others to clipboard.");
     }
 }

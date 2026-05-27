@@ -1,7 +1,7 @@
 package com.wynncraftspellhider.models.config;
 
-import net.fabricmc.loader.api.FabricLoader;
 import java.io.File;
+import net.fabricmc.loader.api.FabricLoader;
 
 public class ConfigModel {
     public static File configFolder;

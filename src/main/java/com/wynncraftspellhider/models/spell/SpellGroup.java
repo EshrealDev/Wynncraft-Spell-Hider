@@ -1,7 +1,6 @@
-package com.wynncraftspellhider.models.spells;
+package com.wynncraftspellhider.models.spell;
 
-import com.wynncraftspellhider.models.spells.rules.*;
-
+import com.wynncraftspellhider.models.spell.rules.*;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -12,14 +11,14 @@ public class SpellGroup {
     //  Defaults
     // =========================================================
     public static class Defaults {
-        public static final boolean HIDDEN       = false;
-        public static final float   SCALE_X      = 1.0f;
-        public static final float   SCALE_Y      = 1.0f;
-        public static final float   SCALE_Z      = 1.0f;
-        public static final float   OFFSET_X     = 0.0f;
-        public static final float   OFFSET_Y     = 0.0f;
-        public static final float   OFFSET_Z     = 0.0f;
-        public static final float   TRANSPARENCY = 0.0f;
+        public static final boolean HIDDEN = false;
+        public static final float SCALE_X = 1.0f;
+        public static final float SCALE_Y = 1.0f;
+        public static final float SCALE_Z = 1.0f;
+        public static final float OFFSET_X = 0.0f;
+        public static final float OFFSET_Y = 0.0f;
+        public static final float OFFSET_Z = 0.0f;
+        public static final float TRANSPARENCY = 0.0f;
     }
 
     public final String name;
@@ -27,19 +26,19 @@ public class SpellGroup {
     public final String description; // null = no info button
 
     public boolean hidden;
-    public float scaleX       = Defaults.SCALE_X;
-    public float scaleY       = Defaults.SCALE_Y;
-    public float scaleZ       = Defaults.SCALE_Z;
-    public float offsetX      = Defaults.OFFSET_X;
-    public float offsetY      = Defaults.OFFSET_Y;
-    public float offsetZ      = Defaults.OFFSET_Z;
+    public float scaleX = Defaults.SCALE_X;
+    public float scaleY = Defaults.SCALE_Y;
+    public float scaleZ = Defaults.SCALE_Z;
+    public float offsetX = Defaults.OFFSET_X;
+    public float offsetY = Defaults.OFFSET_Y;
+    public float offsetZ = Defaults.OFFSET_Z;
     public float transparency = Defaults.TRANSPARENCY;
 
     public SpellGroup(String name, List<MatchRule> rules) {
-        this.name        = name;
-        this.rules       = rules;
+        this.name = name;
+        this.rules = rules;
         this.description = null;
-        this.hidden      = Defaults.HIDDEN;
+        this.hidden = Defaults.HIDDEN;
     }
 
     public SpellGroup(String name, MatchRule rule) {
@@ -47,10 +46,10 @@ public class SpellGroup {
     }
 
     public SpellGroup(String name, String description, List<MatchRule> rules) {
-        this.name        = name;
-        this.rules       = rules;
+        this.name = name;
+        this.rules = rules;
         this.description = description;
-        this.hidden      = Defaults.HIDDEN;
+        this.hidden = Defaults.HIDDEN;
     }
 
     public SpellGroup(String name, String description, MatchRule rule) {
@@ -100,5 +99,4 @@ public class SpellGroup {
                 .map(r -> (TextDisplayRule) r)
                 .anyMatch(r -> r.matches(plainText, isLocalPlayer));
     }
-
 }

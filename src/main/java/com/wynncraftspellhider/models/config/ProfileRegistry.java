@@ -2,7 +2,6 @@ package com.wynncraftspellhider.models.config;
 
 import com.google.gson.*;
 import com.wynncraftspellhider.WynncraftSpellHider;
-
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -26,27 +25,37 @@ public class ProfileRegistry {
     //  Profile list access
     // -------------------------------------------------------------------------
 
-    public static List<ProfileConfig> getProfiles()          { return profiles; }
-    public static ProfileConfig getActiveProfile()           { return activeProfile; }
-    public static ProfileConfig getDefaultProfile()          { return defaultProfile; }
+    public static List<ProfileConfig> getProfiles() {
+        return profiles;
+    }
+
+    public static ProfileConfig getActiveProfile() {
+        return activeProfile;
+    }
+
+    public static ProfileConfig getDefaultProfile() {
+        return defaultProfile;
+    }
 
     // -------------------------------------------------------------------------
     //  Dismissed version access
     // -------------------------------------------------------------------------
 
-    public static String getDismissedVersion()               { return dismissedVersion; }
+    public static String getDismissedVersion() {
+        return dismissedVersion;
+    }
 
     /**
-     * Returns true if the user has already dismissed the update screen for
-     * this specific latest version, so we should not show it again.
+     * Returns true if the user has already dismissed the update screen for this specific latest
+     * version, so we should not show it again.
      */
     public static boolean isUpdateDismissed(String latestVersion) {
         return latestVersion != null && latestVersion.equals(dismissedVersion);
     }
 
     /**
-     * Records that the user dismissed the update screen for the given latest
-     * version and persists it to meta.json.
+     * Records that the user dismissed the update screen for the given latest version and persists it
+     * to meta.json.
      */
     public static void dismissUpdate(String latestVersion) {
         dismissedVersion = latestVersion;
@@ -58,13 +67,12 @@ public class ProfileRegistry {
     // -------------------------------------------------------------------------
 
     /**
-     * Call once from onInitializeClient, after Models.loadModels().
-     * Loads all profiles from disk, applies the default if one is set,
-     * and creates a first-launch "Default" profile if none exist.
+     * Call once from onInitializeClient, after Models.loadModels(). Loads all profiles from disk,
+     * applies the default if one is set, and creates a first-launch "Default" profile if none exist.
      */
     public static void loadFromDisk(File configFolder) {
         profilesFolder = new File(configFolder, "profiles");
-        metaFile       = new File(configFolder, "meta.json");
+        metaFile = new File(configFolder, "meta.json");
 
         profilesFolder.mkdirs();
 
@@ -151,7 +159,7 @@ public class ProfileRegistry {
         File file = profileFile(profile.name);
         if (file.exists()) file.delete();
 
-        if (activeProfile  == profile) activeProfile  = null;
+        if (activeProfile == profile) activeProfile = null;
         if (defaultProfile == profile) {
             defaultProfile = null;
             saveMeta();
@@ -177,8 +185,8 @@ public class ProfileRegistry {
     }
 
     /**
-     * Strips characters that are illegal in filenames on Windows/Linux/macOS.
-     * The display name is always kept as-is; only the filename is sanitized.
+     * Strips characters that are illegal in filenames on Windows/Linux/macOS. The display name is
+     * always kept as-is; only the filename is sanitized.
      */
     public static String toFileName(String name) {
         return name.replaceAll("[<>:\"/\\\\|?*]", "_");
@@ -187,8 +195,8 @@ public class ProfileRegistry {
     private static void saveMeta() {
         if (metaFile == null) return;
         JsonObject root = new JsonObject();
-        if (defaultProfile   != null) root.addProperty("default",          defaultProfile.name);
-        if (dismissedVersion != null) root.addProperty("dismissedVersion",  dismissedVersion);
+        if (defaultProfile != null) root.addProperty("default", defaultProfile.name);
+        if (dismissedVersion != null) root.addProperty("dismissedVersion", dismissedVersion);
 
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(metaFile), StandardCharsets.UTF_8)) {
             new GsonBuilder().setPrettyPrinting().create().toJson(root, writer);
@@ -198,8 +206,8 @@ public class ProfileRegistry {
     }
 
     /**
-     * Reads meta.json and populates {@link #defaultProfile} and
-     * {@link #dismissedVersion}. Silently ignores missing or malformed files.
+     * Reads meta.json and populates {@link #defaultProfile} and {@link #dismissedVersion}. Silently
+     * ignores missing or malformed files.
      */
     private static void loadMeta() {
         if (!metaFile.exists()) return;

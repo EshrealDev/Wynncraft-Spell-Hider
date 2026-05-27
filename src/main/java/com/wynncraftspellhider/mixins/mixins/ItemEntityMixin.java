@@ -1,7 +1,7 @@
 package com.wynncraftspellhider.mixins.mixins;
 
 import com.wynncraftspellhider.mixins.extensions.ItemEntityExtension;
-import com.wynncraftspellhider.models.spells.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellGroup;
 import net.minecraft.world.entity.item.ItemEntity;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;

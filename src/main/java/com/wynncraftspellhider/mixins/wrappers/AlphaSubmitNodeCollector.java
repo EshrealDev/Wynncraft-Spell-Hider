@@ -1,7 +1,7 @@
 package com.wynncraftspellhider.mixins.wrappers;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.wynncraftspellhider.WynncraftSpellHider;
+import java.util.List;
 import net.minecraft.client.gui.Font;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelPart;
@@ -25,8 +25,6 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.jspecify.annotations.Nullable;
 
-import java.util.List;
-
 public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
     private final SubmitNodeCollector delegate;
     private final float alpha;
@@ -36,27 +34,47 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
         this.alpha = alpha;
     }
 
-
-    //--- item display ---
+    // --- item display ---
     @Override
-    public void submitItem(PoseStack poseStack, ItemDisplayContext itemDisplayContext, int i, int j, int k, int[] tints, List<BakedQuad> quads, RenderType renderType, ItemStackRenderState.FoilType foilType) {
+    public void submitItem(
+            PoseStack poseStack,
+            ItemDisplayContext itemDisplayContext,
+            int i,
+            int j,
+            int k,
+            int[] tints,
+            List<BakedQuad> quads,
+            RenderType renderType,
+            ItemStackRenderState.FoilType foilType) {
         int[] modifiedTints = new int[tints.length];
         for (int t = 0; t < tints.length; t++) {
             int argb = tints[t];
-            int a = (int)(ARGB.alpha(argb) * alpha);
+            int a = (int) (ARGB.alpha(argb) * alpha);
 
-            //ARGB.color(a, ARGB.red(argb), ARGB.green(argb), ARGB.blue(argb));
-            //Setting it to that does not work. It will make textures work and then not. I spent 10 hours debugging but did not figure out why.
-            //The approach below seems to work fine.
+            // ARGB.color(a, ARGB.red(argb), ARGB.green(argb), ARGB.blue(argb));
+            // Setting it to that does not work. It will make textures work and then not. I spent 10 hours
+            // debugging but did not figure out why.
+            // The approach below seems to work fine.
             modifiedTints[t] = ARGB.color(a, 255, 255, 255);
         }
         delegate.submitItem(poseStack, itemDisplayContext, i, j, k, modifiedTints, quads, renderType, foilType);
     }
 
-    //--- text display ---
-    @Override public void submitText(PoseStack p, float f, float g, FormattedCharSequence fcs, boolean bl, Font.DisplayMode dm, int light, int color, int backgroundColor, int outlineColor) {
+    // --- text display ---
+    @Override
+    public void submitText(
+            PoseStack p,
+            float f,
+            float g,
+            FormattedCharSequence fcs,
+            boolean bl,
+            Font.DisplayMode dm,
+            int light,
+            int color,
+            int backgroundColor,
+            int outlineColor) {
 
-        int a = (int)(ARGB.alpha(color) * alpha);
+        int a = (int) (ARGB.alpha(color) * alpha);
         int modifiedColor = ARGB.color(a, ARGB.red(color), ARGB.green(color), ARGB.blue(color));
 
         delegate.submitText(p, f, g, fcs, bl, dm, light, modifiedColor, backgroundColor, outlineColor);
@@ -65,10 +83,10 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
     @Override
     public OrderedSubmitNodeCollector order(int i) {
         delegate.order(i); // call for side effects
-        return this;       // route submitText through our override
+        return this; // route submitText through our override
     }
 
-    //--- armor stand ---
+    // --- armor stand ---
     // these don't get called for whatever reason
     /*
     @Override
@@ -94,16 +112,82 @@ public class AlphaSubmitNodeCollector implements SubmitNodeCollector {
     }
     */
 
-    @Override public <S> void submitModel(Model<? super S> model, S s, PoseStack p, RenderType rt, int i, int j, int k, @Nullable TextureAtlasSprite tas, int l, ModelFeatureRenderer.@Nullable CrumblingOverlay co) { delegate.submitModel(model, s, p, rt, i, j, k, tas, l, co); }
-    @Override public void submitModelPart(ModelPart mp, PoseStack p, RenderType rt, int i, int j, @Nullable TextureAtlasSprite tas, boolean bl, boolean bl2, int k, ModelFeatureRenderer.@Nullable CrumblingOverlay co, int l) { delegate.submitModelPart(mp, p, rt, i, j, tas, bl, bl2, k, co, l); }
+    @Override
+    public <S> void submitModel(
+            Model<? super S> model,
+            S s,
+            PoseStack p,
+            RenderType rt,
+            int i,
+            int j,
+            int k,
+            @Nullable TextureAtlasSprite tas,
+            int l,
+            ModelFeatureRenderer.@Nullable CrumblingOverlay co) {
+        delegate.submitModel(model, s, p, rt, i, j, k, tas, l, co);
+    }
 
-    @Override public void submitCustomGeometry(PoseStack poseStack, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer) { delegate.submitCustomGeometry(poseStack, renderType, renderer); }
-    @Override public void submitShadow(PoseStack p, float f, List<EntityRenderState.ShadowPiece> l) { delegate.submitShadow(p, f, l); }
-    @Override public void submitNameTag(PoseStack p, @Nullable Vec3 v, int i, Component c, boolean bl, int j, double d, CameraRenderState cs) { delegate.submitNameTag(p, v, i, c, bl, j, d, cs); }
-    @Override public void submitFlame(PoseStack p, EntityRenderState s, Quaternionf q) { delegate.submitFlame(p, s, q); }
-    @Override public void submitLeash(PoseStack p, EntityRenderState.LeashState ls) { delegate.submitLeash(p, ls); }
-    @Override public void submitBlock(PoseStack p, BlockState bs, int i, int j, int k) { delegate.submitBlock(p, bs, i, j, k); }
-    @Override public void submitMovingBlock(PoseStack p, MovingBlockRenderState mbrs) { delegate.submitMovingBlock(p, mbrs); }
-    @Override public void submitBlockModel(PoseStack p, RenderType rt, BlockStateModel bsm, float f, float g, float h, int i, int j, int k) { delegate.submitBlockModel(p, rt, bsm, f, g, h, i, j, k); }
-    @Override public void submitParticleGroup(SubmitNodeCollector.ParticleGroupRenderer pgr) { delegate.submitParticleGroup(pgr); }
+    @Override
+    public void submitModelPart(
+            ModelPart mp,
+            PoseStack p,
+            RenderType rt,
+            int i,
+            int j,
+            @Nullable TextureAtlasSprite tas,
+            boolean bl,
+            boolean bl2,
+            int k,
+            ModelFeatureRenderer.@Nullable CrumblingOverlay co,
+            int l) {
+        delegate.submitModelPart(mp, p, rt, i, j, tas, bl, bl2, k, co, l);
+    }
+
+    @Override
+    public void submitCustomGeometry(
+            PoseStack poseStack, RenderType renderType, SubmitNodeCollector.CustomGeometryRenderer renderer) {
+        delegate.submitCustomGeometry(poseStack, renderType, renderer);
+    }
+
+    @Override
+    public void submitShadow(PoseStack p, float f, List<EntityRenderState.ShadowPiece> l) {
+        delegate.submitShadow(p, f, l);
+    }
+
+    @Override
+    public void submitNameTag(
+            PoseStack p, @Nullable Vec3 v, int i, Component c, boolean bl, int j, double d, CameraRenderState cs) {
+        delegate.submitNameTag(p, v, i, c, bl, j, d, cs);
+    }
+
+    @Override
+    public void submitFlame(PoseStack p, EntityRenderState s, Quaternionf q) {
+        delegate.submitFlame(p, s, q);
+    }
+
+    @Override
+    public void submitLeash(PoseStack p, EntityRenderState.LeashState ls) {
+        delegate.submitLeash(p, ls);
+    }
+
+    @Override
+    public void submitBlock(PoseStack p, BlockState bs, int i, int j, int k) {
+        delegate.submitBlock(p, bs, i, j, k);
+    }
+
+    @Override
+    public void submitMovingBlock(PoseStack p, MovingBlockRenderState mbrs) {
+        delegate.submitMovingBlock(p, mbrs);
+    }
+
+    @Override
+    public void submitBlockModel(
+            PoseStack p, RenderType rt, BlockStateModel bsm, float f, float g, float h, int i, int j, int k) {
+        delegate.submitBlockModel(p, rt, bsm, f, g, h, i, j, k);
+    }
+
+    @Override
+    public void submitParticleGroup(SubmitNodeCollector.ParticleGroupRenderer pgr) {
+        delegate.submitParticleGroup(pgr);
+    }
 }

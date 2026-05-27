@@ -1,0 +1,6 @@
+{
+  "download": "https://modrinth.com/mod/wynncraft-spell-hider",
+  "update": "https://raw.githubusercontent.com/EshrealDev/Static-Storage/refs/heads/main/update.json",
+  "spell_registry": "https://raw.githubusercontent.com/EshrealDev/Static-Storage/refs/heads/dev/spell_registry.json",
+  "texture_hashes": "https://raw.githubusercontent.com/EshrealDev/Static-Storage/refs/heads/dev/texture_hashes.json"
+}

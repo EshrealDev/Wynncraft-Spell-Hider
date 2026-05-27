@@ -1,4 +1,4 @@
-package com.wynncraftspellhider.models.spells.rules;
+package com.wynncraftspellhider.models.spell.rules;
 
 import java.util.Set;
 

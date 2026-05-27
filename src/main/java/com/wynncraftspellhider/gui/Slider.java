@@ -1,8 +1,8 @@
 package com.wynncraftspellhider.gui;
 
+import java.util.function.Consumer;
 import net.minecraft.client.gui.components.AbstractSliderButton;
 import net.minecraft.network.chat.Component;
-import java.util.function.Consumer;
 
 public class Slider extends AbstractSliderButton {
 
@@ -17,8 +17,22 @@ public class Slider extends AbstractSliderButton {
     }
 
     // Full constructor with custom range
-    public Slider(int x, int y, int width, String label, float initialValue, float min, float max, Consumer<Float> onChanged) {
-        super(x, y, width, 20, Component.literal(label + ": " + String.format("%.2f", initialValue)), toSlider(initialValue, min, max));
+    public Slider(
+            int x,
+            int y,
+            int width,
+            String label,
+            float initialValue,
+            float min,
+            float max,
+            Consumer<Float> onChanged) {
+        super(
+                x,
+                y,
+                width,
+                20,
+                Component.literal(label + ": " + String.format("%.2f", initialValue)),
+                toSlider(initialValue, min, max));
         this.label = label;
         this.min = min;
         this.max = max;

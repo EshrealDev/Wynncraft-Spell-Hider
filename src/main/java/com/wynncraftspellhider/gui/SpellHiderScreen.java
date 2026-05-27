@@ -1,8 +1,12 @@
 package com.wynncraftspellhider.gui;
 
-import com.wynncraftspellhider.models.spells.SpellConfig;
-import com.wynncraftspellhider.models.spells.SpellGroup;
-import com.wynncraftspellhider.models.spells.SpellRegistry;
+import com.wynncraftspellhider.models.spell.SpellConfig;
+import com.wynncraftspellhider.models.spell.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellModel;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.AbstractWidget;
@@ -12,15 +16,10 @@ import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.network.chat.Component;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 public class SpellHiderScreen extends BaseHiderScreen {
 
     // --- Session state ---
-    private SpellRegistry.WynnClass activeTab;
+    private SpellModel.WynnClass activeTab;
     private SpellList spellList;
     private @Nullable SpellConfig selectedSpell;
     private @Nullable SpellGroup selectedGroup;
@@ -38,14 +37,14 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
     public SpellHiderScreen() {
         super(Component.literal("Spell Hider"));
-        activeTab     = GuiState.lastActiveTab;
+        activeTab = GuiState.lastActiveTab;
         selectedSpell = GuiState.lastSelectedSpell;
         selectedGroup = GuiState.lastSelectedGroup;
     }
 
     @Override
     public void onClose() {
-        GuiState.lastActiveTab     = activeTab;
+        GuiState.lastActiveTab = activeTab;
         GuiState.lastSelectedSpell = selectedSpell;
         GuiState.lastSelectedGroup = selectedGroup;
         saveListScroll();
@@ -55,8 +54,13 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
     // --- Layout helpers ---
 
-    private int listRight()   { return 8 + width / LIST_WIDTH_FRAC + PANEL_PAD; }
-    private int panelWidth()  { return width - listRight() - PANEL_PAD; }
+    private int listRight() {
+        return 8 + width / LIST_WIDTH_FRAC + PANEL_PAD;
+    }
+
+    private int panelWidth() {
+        return width - listRight() - PANEL_PAD;
+    }
 
     // --- Selection helpers ---
 
@@ -109,7 +113,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
         addWidget(spellList);
         spellList.setScrollAmount(GuiState.spellListScrollAmounts.getOrDefault(activeTab, 0.0));
 
-        if (selectedSpell != null && !SpellRegistry.getSpells(activeTab).contains(selectedSpell)) {
+        if (selectedSpell != null && !SpellModel.getSpells(activeTab).contains(selectedSpell)) {
             clearSelection();
         }
         rebuildDetailWidgets();
@@ -127,8 +131,12 @@ public class SpellHiderScreen extends BaseHiderScreen {
             renderGroupRows(g, mouseX, mouseY, pt, lr + 8, lr + pw - 8, top + 32);
             if (detailScrollList != null) detailScrollList.render(g, mouseX, mouseY, pt);
         } else {
-            g.drawCenteredString(font, Component.literal("Select a spell to customize"),
-                    lr + pw / 2, top + (bot - top) / 2, 0xFF666666);
+            g.drawCenteredString(
+                    font,
+                    Component.literal("Select a spell to customize"),
+                    lr + pw / 2,
+                    top + (bot - top) / 2,
+                    0xFF666666);
         }
 
         spellList.render(g, mouseX, mouseY, pt);
@@ -138,16 +146,12 @@ public class SpellHiderScreen extends BaseHiderScreen {
         hoveredGroup = null;
         for (SpellGroup group : selectedSpell.groups) {
             boolean selected = group == selectedGroup;
-            boolean hovered  = mx >= left && mx <= right && my >= y - 1 && my <= y + 9;
+            boolean hovered = mx >= left && mx <= right && my >= y - 1 && my <= y + 9;
             if (hovered) hoveredGroup = group;
 
-            int color = selected ? 0xFFFFFF00
-                    : hovered  ? 0xFFCCCCCC
-                    : group.hidden ? 0xFF555555
-                    : 0xFFAAAAAA;
+            int color = selected ? 0xFFFFFF00 : hovered ? 0xFFCCCCCC : group.hidden ? 0xFF555555 : 0xFFAAAAAA;
 
-            String text = (selected ? "> " : "  ") + "- " + group.name
-                    + (group.hidden ? " [hidden]" : "");
+            String text = (selected ? "> " : "  ") + "- " + group.name + (group.hidden ? " [hidden]" : "");
             g.drawString(font, text, left, y, color, false);
 
             Button infoBtn = groupInfoButtons.get(group);
@@ -161,7 +165,7 @@ public class SpellHiderScreen extends BaseHiderScreen {
     }
 
     @Override
-    protected void onClassTabClicked(SpellRegistry.WynnClass wynnClass) {
+    protected void onClassTabClicked(SpellModel.WynnClass wynnClass) {
         saveListScroll();
         saveDetailScroll();
         activeTab = wynnClass;
@@ -170,23 +174,38 @@ public class SpellHiderScreen extends BaseHiderScreen {
         rebuildWidgets();
     }
 
-    @Override protected boolean hasHideShowButtons() { return true; }
+    @Override
+    protected boolean hasHideShowButtons() {
+        return true;
+    }
 
     @Override
     protected void hideAll() {
-        SpellRegistry.getSpells(activeTab).forEach(s -> s.groups.forEach(g -> g.hidden = true));
+        SpellModel.getSpells(activeTab).forEach(s -> s.groups.forEach(g -> g.hidden = true));
         rebuildWidgets();
     }
 
     @Override
     protected void showAll() {
-        SpellRegistry.getSpells(activeTab).forEach(s -> s.groups.forEach(g -> g.hidden = false));
+        SpellModel.getSpells(activeTab).forEach(s -> s.groups.forEach(g -> g.hidden = false));
         rebuildWidgets();
     }
 
-    @Override protected SpellRegistry.WynnClass getActiveTab() { return activeTab; }
-    @Override protected int getActivePageIndex() { return 0; }
-    @Override protected void saveScrollState() { saveListScroll(); saveDetailScroll(); }
+    @Override
+    protected SpellModel.WynnClass getActiveTab() {
+        return activeTab;
+    }
+
+    @Override
+    protected int getActivePageIndex() {
+        return 0;
+    }
+
+    @Override
+    protected void saveScrollState() {
+        saveListScroll();
+        saveDetailScroll();
+    }
 
     // =========================================================
     //  Detail panel
@@ -204,17 +223,16 @@ public class SpellHiderScreen extends BaseHiderScreen {
             if (group.description != null) {
                 groupInfoButtons.put(
                         group,
-                        Button.builder(Component.literal("[?]"),
-                                        b -> openInfoModal(group.name, group.description))
-                                .size(22, 12).build()
-                );
+                        Button.builder(Component.literal("[?]"), b -> openInfoModal(group.name, group.description))
+                                .size(22, 12)
+                                .build());
             }
         }
 
         int lr = listRight(), pw = panelWidth();
         int groupH = selectedSpell.groups.size() * 12;
         int sTop = LIST_TOP + 32 + groupH + 4;
-        int sH   = height - LIST_BOTTOM_OFFSET - sTop;
+        int sH = height - LIST_BOTTOM_OFFSET - sTop;
         if (sH < 20) return;
 
         detailScrollList = new DetailScrollList(minecraft, pw, sH, sTop, lr, selectedGroup, pw - 16);
@@ -285,10 +303,25 @@ public class SpellHiderScreen extends BaseHiderScreen {
             addEntry(entry);
         }
 
-        @Override public int getRowWidth()                          { return width - 6; }
-        @Override protected int scrollBarX()                        { return getX() + width - 6; }
-        @Override protected double scrollRate()                     { return 10.0; }
-        @Override protected boolean entriesCanBeSelected()          { return false; }
+        @Override
+        public int getRowWidth() {
+            return width - 6;
+        }
+
+        @Override
+        protected int scrollBarX() {
+            return getX() + width - 6;
+        }
+
+        @Override
+        protected double scrollRate() {
+            return 10.0;
+        }
+
+        @Override
+        protected boolean entriesCanBeSelected() {
+            return false;
+        }
 
         @Override
         public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
@@ -330,15 +363,16 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
                 // --- Buttons ---
                 hideBtn = Button.builder(hideLabel(), btn -> {
-                    group.hidden = !group.hidden;
-                    btn.setMessage(hideLabel());
-                }).size(innerW - 6, 20).build();
+                            group.hidden = !group.hidden;
+                            btn.setMessage(hideLabel());
+                        })
+                        .size(innerW - 6, 20)
+                        .build();
                 widgets.add(hideBtn);
 
-                resetBtn = Button.builder(
-                        Component.literal("Reset"),
-                        btn -> resetGroup()
-                ).size(innerW - 6, 20).build();
+                resetBtn = Button.builder(Component.literal("Reset"), btn -> resetGroup())
+                        .size(innerW - 6, 20)
+                        .build();
                 widgets.add(resetBtn);
 
                 // --- Scale sliders ---
@@ -346,38 +380,64 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
                 sx[0] = new Slider(0, 0, sliderW, "Scale X", group.scaleX, val -> {
                     group.scaleX = val;
-                    if (lockScale) { group.scaleY = val; group.scaleZ = val; sy[0].forceValue(val); sz[0].forceValue(val); }
+                    if (lockScale) {
+                        group.scaleY = val;
+                        group.scaleZ = val;
+                        sy[0].forceValue(val);
+                        sz[0].forceValue(val);
+                    }
                 });
                 sy[0] = new Slider(0, 0, sliderW, "Scale Y", group.scaleY, val -> {
                     group.scaleY = val;
-                    if (lockScale) { group.scaleX = val; group.scaleZ = val; sx[0].forceValue(val); sz[0].forceValue(val); }
+                    if (lockScale) {
+                        group.scaleX = val;
+                        group.scaleZ = val;
+                        sx[0].forceValue(val);
+                        sz[0].forceValue(val);
+                    }
                 });
                 sz[0] = new Slider(0, 0, sliderW, "Scale Z", group.scaleZ, val -> {
                     group.scaleZ = val;
-                    if (lockScale) { group.scaleX = val; group.scaleY = val; sx[0].forceValue(val); sy[0].forceValue(val); }
+                    if (lockScale) {
+                        group.scaleX = val;
+                        group.scaleY = val;
+                        sx[0].forceValue(val);
+                        sy[0].forceValue(val);
+                    }
                 });
-                scaleX = sx[0]; scaleY = sy[0]; scaleZ = sz[0];
-                widgets.add(scaleX); widgets.add(scaleY); widgets.add(scaleZ);
+                scaleX = sx[0];
+                scaleY = sy[0];
+                scaleZ = sz[0];
+                widgets.add(scaleX);
+                widgets.add(scaleY);
+                widgets.add(scaleZ);
 
                 lockBtn = Button.builder(Component.literal(lockScale ? "🔒" : "🔓"), btn -> {
-                    lockScale = !lockScale;
-                    GuiState.detailLockScale = lockScale;
-                    btn.setMessage(Component.literal(lockScale ? "🔒" : "🔓"));
-                    if (lockScale) {
-                        group.scaleY = group.scaleX; group.scaleZ = group.scaleX;
-                        scaleY.forceValue(group.scaleX); scaleZ.forceValue(group.scaleX);
-                    }
-                }).size(LOCK_W, 50).build();
+                            lockScale = !lockScale;
+                            GuiState.detailLockScale = lockScale;
+                            btn.setMessage(Component.literal(lockScale ? "🔒" : "🔓"));
+                            if (lockScale) {
+                                group.scaleY = group.scaleX;
+                                group.scaleZ = group.scaleX;
+                                scaleY.forceValue(group.scaleX);
+                                scaleZ.forceValue(group.scaleX);
+                            }
+                        })
+                        .size(LOCK_W, 50)
+                        .build();
                 widgets.add(lockBtn);
 
                 // -- Offset sliders ---
                 offX = new Slider(0, 0, sliderW, "Offset X", group.offsetX, -3f, 3f, val -> group.offsetX = val);
                 offY = new Slider(0, 0, sliderW, "Offset Y", group.offsetY, -3f, 3f, val -> group.offsetY = val);
                 offZ = new Slider(0, 0, sliderW, "Offset Z", group.offsetZ, -3f, 3f, val -> group.offsetZ = val);
-                widgets.add(offX); widgets.add(offY); widgets.add(offZ);
+                widgets.add(offX);
+                widgets.add(offY);
+                widgets.add(offZ);
 
                 // --- Transparency ---
-                transparency = new Slider(0, 0, sliderW, "Transparency", group.transparency, 0f, 1f, val -> group.transparency = val);
+                transparency = new Slider(
+                        0, 0, sliderW, "Transparency", group.transparency, 0f, 1f, val -> group.transparency = val);
                 widgets.add(transparency);
 
                 // Compute total height (must match renderContent layout)
@@ -393,46 +453,59 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
             private void resetGroup() {
                 saveDetailScroll();
-                group.hidden      = SpellGroup.Defaults.HIDDEN;
-                group.scaleX      = SpellGroup.Defaults.SCALE_X;
-                group.scaleY      = SpellGroup.Defaults.SCALE_Y;
-                group.scaleZ      = SpellGroup.Defaults.SCALE_Z;
-                group.offsetX     = SpellGroup.Defaults.OFFSET_X;
-                group.offsetY     = SpellGroup.Defaults.OFFSET_Y;
-                group.offsetZ     = SpellGroup.Defaults.OFFSET_Z;
+                group.hidden = SpellGroup.Defaults.HIDDEN;
+                group.scaleX = SpellGroup.Defaults.SCALE_X;
+                group.scaleY = SpellGroup.Defaults.SCALE_Y;
+                group.scaleZ = SpellGroup.Defaults.SCALE_Z;
+                group.offsetX = SpellGroup.Defaults.OFFSET_X;
+                group.offsetY = SpellGroup.Defaults.OFFSET_Y;
+                group.offsetZ = SpellGroup.Defaults.OFFSET_Z;
                 group.transparency = SpellGroup.Defaults.TRANSPARENCY;
                 rebuildDetailWidgets();
             }
 
-            @Override public int getHeight() { return totalHeight; }
+            @Override
+            public int getHeight() {
+                return totalHeight;
+            }
 
             @Override
             public void renderContent(GuiGraphics g, int mx, int my, boolean hov, float pt) {
                 int x = getX() + PAD, y = getY();
 
                 // Buttons
-                hideBtn.setX(x);  hideBtn.setY(y);
-                resetBtn.setX(x); resetBtn.setY(y + 24);
+                hideBtn.setX(x);
+                hideBtn.setY(y);
+                resetBtn.setX(x);
+                resetBtn.setY(y + 24);
 
                 // Scale section
                 int sY = y + 44 + LBL_GAP + 4;
                 g.drawString(font, "Scale:", x, sY - LBL_GAP, 0xFFAAAAAA, false);
-                scaleX.setX(x); scaleX.setY(sY);
-                scaleY.setX(x); scaleY.setY(sY + STEP);
-                scaleZ.setX(x); scaleZ.setY(sY + STEP * 2);
-                lockBtn.setX(x + scaleX.getWidth() + 4); lockBtn.setY(sY + 12);
+                scaleX.setX(x);
+                scaleX.setY(sY);
+                scaleY.setX(x);
+                scaleY.setY(sY + STEP);
+                scaleZ.setX(x);
+                scaleZ.setY(sY + STEP * 2);
+                lockBtn.setX(x + scaleX.getWidth() + 4);
+                lockBtn.setY(sY + 12);
 
                 // Offset section
                 int oY = sY + STEP * 3 + LBL_GAP + SEC_GAP;
                 g.drawString(font, "Offset:", x, oY - LBL_GAP, 0xFFAAAAAA, false);
-                offX.setX(x); offX.setY(oY);
-                offY.setX(x); offY.setY(oY + STEP);
-                offZ.setX(x); offZ.setY(oY + STEP * 2);
+                offX.setX(x);
+                offX.setY(oY);
+                offY.setX(x);
+                offY.setY(oY + STEP);
+                offZ.setX(x);
+                offZ.setY(oY + STEP * 2);
 
                 // Transparency section
                 int tY = oY + STEP * 3 + LBL_GAP + SEC_GAP;
                 g.drawString(font, "Transparency:", x, tY - LBL_GAP, 0xFFAAAAAA, false);
-                transparency.setX(x); transparency.setY(tY);
+                transparency.setX(x);
+                transparency.setY(tY);
 
                 for (AbstractWidget w : widgets) w.render(g, mx, my, pt);
             }
@@ -452,17 +525,27 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
             @Override
             public boolean mouseDragged(MouseButtonEvent event, double mx, double my) {
-                if (dragged != null) { dragged.mouseDragged(event, mx, my); return true; }
+                if (dragged != null) {
+                    dragged.mouseDragged(event, mx, my);
+                    return true;
+                }
                 return false;
             }
 
             @Override
             public boolean mouseReleased(MouseButtonEvent event) {
-                if (dragged != null) { dragged.onRelease(event); dragged = null; return true; }
+                if (dragged != null) {
+                    dragged.onRelease(event);
+                    dragged = null;
+                    return true;
+                }
                 return false;
             }
 
-            @Override public Component getNarration() { return Component.literal("Controls for " + group.name); }
+            @Override
+            public Component getNarration() {
+                return Component.literal("Controls for " + group.name);
+            }
         }
     }
 
@@ -479,12 +562,23 @@ public class SpellHiderScreen extends BaseHiderScreen {
 
         void rebuildEntries() {
             clearEntries();
-            for (SpellConfig s : SpellRegistry.getSpells(activeTab)) addEntry(new SpellEntry(s));
+            for (SpellConfig s : SpellModel.getSpells(activeTab)) addEntry(new SpellEntry(s));
         }
 
-        @Override public int getRowWidth()                         { return width - 6; }
-        @Override protected int scrollBarX()                       { return getX() + width - 6; }
-        @Override protected boolean entriesCanBeSelected()         { return false; }
+        @Override
+        public int getRowWidth() {
+            return width - 6;
+        }
+
+        @Override
+        protected int scrollBarX() {
+            return getX() + width - 6;
+        }
+
+        @Override
+        protected boolean entriesCanBeSelected() {
+            return false;
+        }
 
         class SpellEntry extends ObjectSelectionList.Entry<SpellEntry> {
 
@@ -496,47 +590,71 @@ public class SpellHiderScreen extends BaseHiderScreen {
                 this.spell = spell;
 
                 toggleBtn = Button.builder(Component.literal(allHidden() ? "Show" : "Hide"), btn -> {
-                    boolean hide = !allHidden();
-                    for (SpellGroup g : spell.groups) g.hidden = hide;
-                    btn.setMessage(Component.literal(allHidden() ? "Show" : "Hide"));
-                }).size(40, 16).build();
+                            boolean hide = !allHidden();
+                            for (SpellGroup g : spell.groups) g.hidden = hide;
+                            btn.setMessage(Component.literal(allHidden() ? "Show" : "Hide"));
+                        })
+                        .size(40, 16)
+                        .build();
 
-                editBtn = Button.builder(Component.literal("Edit"),
-                        btn -> selectSpell(spell)).size(30, 16).build();
+                editBtn = Button.builder(Component.literal("Edit"), btn -> selectSpell(spell))
+                        .size(30, 16)
+                        .build();
 
                 infoBtn = spell.description != null
-                        ? Button.builder(Component.literal("?"),
-                                btn -> openInfoModal(spell.name, spell.description))
-                        .size(16, 16).build()
+                        ? Button.builder(Component.literal("?"), btn -> openInfoModal(spell.name, spell.description))
+                                .size(16, 16)
+                                .build()
                         : null;
             }
 
-            private boolean allHidden() { return spell.groups.stream().allMatch(g -> g.hidden); }
+            private boolean allHidden() {
+                return spell.groups.stream().allMatch(g -> g.hidden);
+            }
 
             @Override
             public void renderContent(GuiGraphics g, int mx, int my, boolean hov, float pt) {
                 int l = getX(), t = getY(), w = getWidth(), h = getHeight();
-                g.drawString(font, spell.name, l + 4, t + (h - 8) / 2,
-                        allHidden() ? 0xFF555555 : 0xFFFFFFFF, false);
+                g.drawString(font, spell.name, l + 4, t + (h - 8) / 2, allHidden() ? 0xFF555555 : 0xFFFFFFFF, false);
 
                 int c = l + w - 14;
-                editBtn.setX(c - 30);   editBtn.setY(t + (h - 16) / 2); editBtn.render(g, mx, my, pt);   c -= 34;
-                toggleBtn.setX(c - 40); toggleBtn.setY(t + (h - 16) / 2); toggleBtn.render(g, mx, my, pt); c -= 44;
+                editBtn.setX(c - 30);
+                editBtn.setY(t + (h - 16) / 2);
+                editBtn.render(g, mx, my, pt);
+                c -= 34;
+                toggleBtn.setX(c - 40);
+                toggleBtn.setY(t + (h - 16) / 2);
+                toggleBtn.render(g, mx, my, pt);
+                c -= 44;
                 if (infoBtn != null) {
-                    infoBtn.setX(c - 16); infoBtn.setY(t + (h - 16) / 2); infoBtn.render(g, mx, my, pt);
+                    infoBtn.setX(c - 16);
+                    infoBtn.setY(t + (h - 16) / 2);
+                    infoBtn.render(g, mx, my, pt);
                 }
             }
 
             @Override
             public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
                 double mx = event.x(), my = event.y();
-                if (infoBtn != null && infoBtn.isMouseOver(mx, my))   { infoBtn.mouseClicked(event, bl);   return true; }
-                if (toggleBtn.isMouseOver(mx, my))                     { toggleBtn.mouseClicked(event, bl); return true; }
-                if (editBtn.isMouseOver(mx, my))                       { editBtn.mouseClicked(event, bl);   return true; }
+                if (infoBtn != null && infoBtn.isMouseOver(mx, my)) {
+                    infoBtn.mouseClicked(event, bl);
+                    return true;
+                }
+                if (toggleBtn.isMouseOver(mx, my)) {
+                    toggleBtn.mouseClicked(event, bl);
+                    return true;
+                }
+                if (editBtn.isMouseOver(mx, my)) {
+                    editBtn.mouseClicked(event, bl);
+                    return true;
+                }
                 return false;
             }
 
-            @Override public Component getNarration() { return Component.literal(spell.name); }
+            @Override
+            public Component getNarration() {
+                return Component.literal(spell.name);
+            }
         }
     }
 }

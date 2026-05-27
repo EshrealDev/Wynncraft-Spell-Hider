@@ -1,16 +1,13 @@
 package com.wynncraftspellhider.mixins.mixins;
 
-import com.llamalad7.mixinextras.injector.wrapoperation.Operation;
-import com.llamalad7.mixinextras.injector.wrapoperation.WrapOperation;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.wynncraftspellhider.mixins.extensions.AbstractArrowExtension;
 import com.wynncraftspellhider.mixins.extensions.ArrowRenderStateExtension;
-import com.wynncraftspellhider.models.spells.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellGroup;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.ArrowRenderer;
 import net.minecraft.client.renderer.entity.state.ArrowRenderState;
 import net.minecraft.client.renderer.state.CameraRenderState;
-import net.minecraft.util.ARGB;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -19,28 +16,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ArrowRenderer.class)
 public abstract class ArrowRendererMixin {
-    @Inject(
-            method = "extractRenderState*",
-            at = @At("TAIL")
-    )
+    @Inject(method = "extractRenderState*", at = @At("TAIL"))
     private void onExtractRenderState(
-            AbstractArrow abstractArrow,
-            ArrowRenderState arrowRenderState,
-            float f,
-            CallbackInfo ci
-    ) {
+            AbstractArrow abstractArrow, ArrowRenderState arrowRenderState, float f, CallbackInfo ci) {
         SpellGroup group = ((AbstractArrowExtension) abstractArrow).wynncraftspellhider_getSpellGroup();
         ((ArrowRenderStateExtension) arrowRenderState).wynncraftspellhider_setSpellGroup(group);
     }
 
-
-
     @Inject(
-            method = "submit(Lnet/minecraft/client/renderer/entity/state/ArrowRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
-            at = @At(value = "INVOKE", target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V", shift = At.Shift.AFTER)
-    )
-    private void applyTransforms(ArrowRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera, CallbackInfo ci) {
-        SpellGroup group = state instanceof ArrowRenderStateExtension acc ? acc.wynncraftspellhider_getSpellGroup() : null;
+            method =
+                    "submit(Lnet/minecraft/client/renderer/entity/state/ArrowRenderState;Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;Lnet/minecraft/client/renderer/state/CameraRenderState;)V",
+            at =
+                    @At(
+                            value = "INVOKE",
+                            target = "Lcom/mojang/blaze3d/vertex/PoseStack;pushPose()V",
+                            shift = At.Shift.AFTER))
+    private void applyTransforms(
+            ArrowRenderState state,
+            PoseStack poseStack,
+            SubmitNodeCollector collector,
+            CameraRenderState camera,
+            CallbackInfo ci) {
+        SpellGroup group =
+                state instanceof ArrowRenderStateExtension acc ? acc.wynncraftspellhider_getSpellGroup() : null;
 
         if (group != null) {
             poseStack.translate(group.offsetX, group.offsetY, group.offsetZ);

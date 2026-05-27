@@ -1,8 +1,7 @@
-package com.wynncraftspellhider.models.spells.rules;
-
-import net.minecraft.world.item.Item;
+package com.wynncraftspellhider.models.spell.rules;
 
 import java.util.Set;
+import net.minecraft.world.item.Item;
 
 public sealed interface MatchRule permits TextureRule, EntityTypeRule, TextDisplayRule, ArmorStandRule, ItemEntityRule {
 
@@ -40,6 +39,7 @@ public sealed interface MatchRule permits TextureRule, EntityTypeRule, TextDispl
     static TextDisplayRule ofTextDisplay(String regex, TextDisplayRule.OwnerFilter ownerFilter) {
         return new TextDisplayRule(regex, ownerFilter);
     }
+
     // --- armorStand rule ---
     static ArmorStandRule ofArmorStand(ArmorStandRule.ArmorStandModel... models) {
         return new ArmorStandRule(Set.of(models));

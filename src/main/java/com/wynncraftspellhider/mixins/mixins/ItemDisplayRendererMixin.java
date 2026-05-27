@@ -2,7 +2,7 @@ package com.wynncraftspellhider.mixins.mixins;
 
 import com.wynncraftspellhider.mixins.extensions.DisplayRenderStateExtension;
 import com.wynncraftspellhider.mixins.extensions.ItemDisplayExtension;
-import com.wynncraftspellhider.models.spells.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellGroup;
 import net.minecraft.client.renderer.entity.DisplayRenderer;
 import net.minecraft.client.renderer.entity.state.ItemDisplayEntityRenderState;
 import net.minecraft.world.entity.Display;
@@ -19,8 +19,7 @@ public class ItemDisplayRendererMixin {
             Display.ItemDisplay itemDisplay,
             ItemDisplayEntityRenderState itemDisplayEntityRenderState,
             float f,
-            CallbackInfo ci
-    ) {
+            CallbackInfo ci) {
         SpellGroup group = ((ItemDisplayExtension) itemDisplay).wynncraftspellhider_getSpellGroup();
         ((DisplayRenderStateExtension) itemDisplayEntityRenderState).wynncraftspellhider_setSpellGroup(group);
     }

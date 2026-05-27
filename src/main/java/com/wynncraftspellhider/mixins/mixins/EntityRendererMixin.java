@@ -1,7 +1,7 @@
 package com.wynncraftspellhider.mixins.mixins;
 
 import com.wynncraftspellhider.mixins.extensions.*;
-import com.wynncraftspellhider.models.spells.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellGroup;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.world.entity.Display;
@@ -19,13 +19,7 @@ public class EntityRendererMixin {
 
     @Inject(method = "shouldRender", at = @At("HEAD"), cancellable = true)
     private <T extends Entity> void onShouldRender(
-            T entity,
-            Frustum frustum,
-            double x,
-            double y,
-            double z,
-            CallbackInfoReturnable<Boolean> cir
-    ) {
+            T entity, Frustum frustum, double x, double y, double z, CallbackInfoReturnable<Boolean> cir) {
 
         // --- Arrow handling ---
         if (entity instanceof AbstractArrow abstractArrow) {

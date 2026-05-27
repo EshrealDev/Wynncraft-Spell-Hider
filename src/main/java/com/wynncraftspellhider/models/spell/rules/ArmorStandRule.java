@@ -1,12 +1,14 @@
-package com.wynncraftspellhider.models.spells.rules;
+package com.wynncraftspellhider.models.spell.rules;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-//This entire rule only exists because these models still use the old armor stand method of making models.
-//I assume they will update these when the class reskins get released.
-//The numbers here should not change across texture pack updates. I checked old texture packs to make sure they are the same.
+// This entire rule only exists because these models still use the old armor stand method of making
+// models.
+// I assume they will update these when the class reskins get released.
+// The numbers here should not change across texture pack updates. I checked old texture packs to
+// make sure they are the same.
 public final class ArmorStandRule implements MatchRule {
 
     public enum ArmorStandModel {

@@ -1,11 +1,11 @@
 package com.wynncraftspellhider.mixins.mixins;
 
-import com.wynncraftspellhider.WynncraftSpellHider;
 import com.wynncraftspellhider.mixins.extensions.*;
 import com.wynncraftspellhider.models.Models;
-import com.wynncraftspellhider.models.spells.SpellGroup;
-import com.wynncraftspellhider.models.spells.SpellRegistry;
+import com.wynncraftspellhider.models.spell.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellModel;
 import com.wynncraftspellhider.models.texturepack.TexturepackModel;
+import java.util.regex.Pattern;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientPacketListener;
 import net.minecraft.core.component.DataComponents;
@@ -28,15 +28,10 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-import java.util.regex.Pattern;
-
 @Mixin(ClientPacketListener.class)
 public class ClientPacketListenerMixin {
 
-    @Inject(
-            method = "handleSetEntityData",
-            at = @At("TAIL")
-    )
+    @Inject(method = "handleSetEntityData", at = @At("TAIL"))
     private void onSetEntityData(ClientboundSetEntityDataPacket packet, CallbackInfo ci) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -48,11 +43,14 @@ public class ClientPacketListenerMixin {
         if (entity instanceof Display.ItemDisplay itemDisplay) {
             SpellGroup group = resolveItemDisplayGroup(itemDisplay);
 
-            //Some models use a vehicle for shadows. Now we hide that too.
-            if (group == null && itemDisplay.getItemStack().isEmpty() && !itemDisplay.getPassengers().isEmpty()) {
+            // Some models use a vehicle for shadows. Now we hide that too.
+            if (group == null
+                    && itemDisplay.getItemStack().isEmpty()
+                    && !itemDisplay.getPassengers().isEmpty()) {
                 for (Entity passenger : itemDisplay.getPassengers()) {
                     if (passenger instanceof Display.ItemDisplay passengerDisplay) {
-                        SpellGroup passengerGroup = ((ItemDisplayExtension) passengerDisplay).wynncraftspellhider_getSpellGroup();
+                        SpellGroup passengerGroup =
+                                ((ItemDisplayExtension) passengerDisplay).wynncraftspellhider_getSpellGroup();
                         if (passengerGroup != null) {
                             group = passengerGroup;
                             break;
@@ -70,7 +68,6 @@ public class ClientPacketListenerMixin {
         if (entity instanceof Display.TextDisplay textDisplay) {
             var ext = (TextDisplayExtension) textDisplay;
 
-
             if (!ext.wynncraftspellhider_hasChecked()) {
                 if (textDisplay.getText().getString().isEmpty()) return;
                 SpellGroup group = resolveTextDisplayGroup(textDisplay);
@@ -79,7 +76,7 @@ public class ClientPacketListenerMixin {
             } else {
                 SpellGroup current = ext.wynncraftspellhider_getSpellGroup();
 
-                //quick fix so that arming... and % damage spell groups work properly
+                // quick fix so that arming... and % damage spell groups work properly
                 if (current != null && current.name.equals("Arming name tag (all)")) {
                     ext.wynncraftspellhider_setSpellGroup(resolveTextDisplayGroup(textDisplay));
                 }
@@ -91,17 +88,14 @@ public class ClientPacketListenerMixin {
         if (entity instanceof ItemEntity itemEntity) {
             ItemStack stack = itemEntity.getItem();
 
-            ((ItemEntityExtension) itemEntity).wynncraftspellhider_setSpellGroup(SpellRegistry.getGroupForItemEntity(stack));
+            ((ItemEntityExtension) itemEntity)
+                    .wynncraftspellhider_setSpellGroup(SpellModel.getGroupForItemEntity(stack));
 
             return;
         }
     }
 
-
-    @Inject(
-            method = "handleSetEquipment",
-            at = @At("TAIL")
-    )
+    @Inject(method = "handleSetEquipment", at = @At("TAIL"))
     private void onSetEquipment(ClientboundSetEquipmentPacket packet, CallbackInfo ci) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -116,11 +110,7 @@ public class ClientPacketListenerMixin {
         ext.wynncraftspellhider_setSpellGroup(group);
     }
 
-
-    @Inject(
-            method = "handleAddEntity",
-            at = @At("TAIL")
-    )
+    @Inject(method = "handleAddEntity", at = @At("TAIL"))
     private void onAddEntity(ClientboundAddEntityPacket packet, CallbackInfo ci) {
         var level = Minecraft.getInstance().level;
         if (level == null) return;
@@ -129,7 +119,8 @@ public class ClientPacketListenerMixin {
         if (entity == null) return;
 
         if (entity instanceof AbstractArrow arrow) {
-            ((AbstractArrowExtension) arrow).wynncraftspellhider_setSpellGroup(SpellRegistry.getGroupForEntityType("arrow"));
+            ((AbstractArrowExtension) arrow)
+                    .wynncraftspellhider_setSpellGroup(SpellModel.getGroupForEntityType("arrow"));
         }
     }
 
@@ -149,8 +140,11 @@ public class ClientPacketListenerMixin {
         return texturepackModel.getGroupForModelId(modelId);
     }
 
-    @Unique private static final Pattern STRIP_CODES = Pattern.compile("§[0-9a-fk-orA-FK-OR]");
-    @Unique private static final Pattern STRIP_UNICODE = Pattern.compile("^[^a-zA-Z0-9]+");
+    @Unique
+    private static final Pattern STRIP_CODES = Pattern.compile("§[0-9a-fk-orA-FK-OR]");
+
+    @Unique
+    private static final Pattern STRIP_UNICODE = Pattern.compile("^[^a-zA-Z0-9]+");
 
     @Unique
     private SpellGroup resolveTextDisplayGroup(Display.TextDisplay textDisplay) {
@@ -165,9 +159,10 @@ public class ClientPacketListenerMixin {
         plainText = STRIP_UNICODE.matcher(plainText).replaceFirst("");
 
         String localPlayerName = player.getName().getString();
-        boolean isLocalPlayer = plainText.startsWith(localPlayerName + "'s ") || plainText.startsWith(localPlayerName + "' ");
+        boolean isLocalPlayer =
+                plainText.startsWith(localPlayerName + "'s ") || plainText.startsWith(localPlayerName + "' ");
 
-        return SpellRegistry.getGroupForTextDisplay(plainText, isLocalPlayer);
+        return SpellModel.getGroupForTextDisplay(plainText, isLocalPlayer);
     }
 
     @Unique
@@ -178,6 +173,6 @@ public class ClientPacketListenerMixin {
         String itemId = BuiltInRegistries.ITEM.getKey(head.getItem()).getPath(); // e.g. "diamond_sword"
         int damage = head.getDamageValue();
 
-        return SpellRegistry.getGroupForArmorStand(itemId, damage);
+        return SpellModel.getGroupForArmorStand(itemId, damage);
     }
 }

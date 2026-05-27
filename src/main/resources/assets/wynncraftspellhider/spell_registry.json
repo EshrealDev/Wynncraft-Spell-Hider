@@ -1,0 +1,3096 @@
+{
+  "version": 1,
+  "schemaVersion": 1,
+  "classes": {
+    "WARRIOR": [
+      {
+        "name": "Melee",
+        "groups": [
+          {
+            "name": "Melee",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "warrior_meleeswipe",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bash",
+        "groups": [
+          {
+            "name": "Bash",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bash",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Uppercut",
+        "groups": [
+          {
+            "name": "Uppercut",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "uppercut",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "War Scream",
+        "groups": [
+          {
+            "name": "War scream",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "warscream",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Flaming Uppercut",
+        "groups": [
+          {
+            "name": "Flaming uppercut",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "flaminguppercut",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Mantle of the Bovemists",
+        "groups": [
+          {
+            "name": "Mantle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "mantle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Mantle break",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "mantlebreak",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shield Strike",
+        "groups": [
+          {
+            "name": "Shield strike mantle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "shieldstrikemantle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Mantle attack",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "shieldstrike",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sparkling Hope",
+        "groups": [
+          {
+            "name": "Sparkling hope",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "sparklinghope",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sacred Surge",
+        "groups": [
+          {
+            "name": "Sacred surge",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "sacredsurge"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Emboldening Cry",
+        "groups": [
+          {
+            "name": "Emboldening cry",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "emboldeningcry",
+                    "from": 1,
+                    "to": 12
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Radiance",
+        "groups": [
+          {
+            "name": "radiance",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "radiance",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Heavenly Trumpet",
+        "groups": [
+          {
+            "name": "Heavenly trumpet",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "heavenlytrumpet"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Heavenly trumpet circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "heavenlytrumpetcircle",
+                    "from": 1,
+                    "to": 15
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Second Chance",
+        "groups": [
+          {
+            "name": "Second chance",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "secondchance",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Buried Light",
+        "description": "This setting might interfere with the beams in NOL.\n\nPlease let Eshreal know if it does.",
+        "groups": [
+          {
+            "name": "Buried light",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "buriedlight"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Judgement",
+        "description": "To adjust the white border circle please go to the global tab.",
+        "groups": [
+          {
+            "name": "Judgement sword",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "judgementsword"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Judgement hit circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "judgementhitcircle",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Half-Moon Swipe",
+        "groups": [
+          {
+            "name": "Half-moon swipe",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "halfmoonswipe",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Half-moon swipe & flaming uppercut",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "halfmoonswipeflaminguppercut",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Air shout",
+        "groups": [
+          {
+            "name": "Air shout",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "airshout",
+                    "from": 1,
+                    "to": 18
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Flying Kick",
+        "groups": [
+          {
+            "name": "Flying Kick",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "flyingkick",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Whirlwind Strike",
+        "groups": [
+          {
+            "name": "Whirlwind strike",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "whirlwindstrike",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Whirlwind strike & flaming uppercut",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "whirlwindstrikeflaminguppercut",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tempest",
+        "groups": [
+          {
+            "name": "Tempest",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "tempest",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Cyclone",
+        "groups": [
+          {
+            "name": "Cyclone",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "warriorcyclone"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Thunderclap",
+        "groups": [
+          {
+            "name": "Thunderclap",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "warriorthunderclap",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Zenith Stance",
+        "groups": [
+          {
+            "name": "Zenith stance",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "zenithstance"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fireworks",
+        "groups": [
+          {
+            "name": "Fireworks",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "warriorfireworks",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bak'al's Grasp",
+        "groups": [
+          {
+            "name": "Bak'al's grasp",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bakalsgrasp",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Boiling Blood",
+        "groups": [
+          {
+            "name": "Boiling blood",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "warriorboilingblood"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bloodlust",
+        "groups": [
+          {
+            "name": "Bloodlust",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "warriorbloodlust",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bloodied Armory",
+        "groups": [
+          {
+            "name": "Bloodied armory",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bloodiedarmory",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Beyond Salvation",
+        "groups": [
+          {
+            "name": "Beyond salvation",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "beyondsalvation",
+                    "from": 1,
+                    "to": 12
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "MAGE": [
+      {
+        "name": "Melee",
+        "groups": [
+          {
+            "name": "Melee",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "meleebeam"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Meteor",
+        "description": "Meteor explosion and archer traps explosion use identical models. Editing this will modify traps too.",
+        "groups": [
+          {
+            "name": "Meteor trail",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "meteor"
+                ],
+                "fingerprints": [
+                  "4aa761cc79b8e1a17d786253ef423aca6bb92cd65f5afba467a6c38d36662702",
+                  "5559c862acd173f8f333eb409634cd6f5b7582e53a15013b98cb19348ea3c123",
+                  "fecc509fe5d212d14d9cf3bf93b339c80076f33cd7cc8254b0a93b8beeef0927"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Meteor ball",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "meteor"
+                ],
+                "fingerprints": [
+                  "4918908e2c891617ee71ca135251d6e17c610e40e7aa47670fd449b9a8dd3518"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Meteor circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "meteorcircle",
+                    "from": 1,
+                    "to": 11
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Meteor explosion",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "meteorexplosion",
+                    "from": 1,
+                    "to": 16
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Meteor skycircle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "meteorskycircle",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Meteor beam",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "meteorbeam"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Heal",
+        "groups": [
+          {
+            "name": "Heal circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "heal",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ice snake",
+        "groups": [
+          {
+            "name": "Ice snake",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "icesnake"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Teleport",
+        "groups": [
+          {
+            "name": "Teleport beam",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "teleport"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Burning Sigil",
+        "groups": [
+          {
+            "name": "Burning sigil circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "burningsigilcircle",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Burning sigil emblem",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "burningsigilemblem",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Burning sigil text",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "burningsigiltext",
+                    "from": 1,
+                    "to": 11
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Arcane Transfer",
+        "groups": [
+          {
+            "name": "Arcane transfer",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "arcanetransfer",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pyrokinesis",
+        "groups": [
+          {
+            "name": "Pyrokinesis",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "pyrokinesis",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Judrajim",
+        "groups": [
+          {
+            "name": "Judrajim",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "judrajim"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Thunderstorm",
+        "description": "Adjusting this will also effect the thunderbolts from Angelic Ascension (boltslinger ultimate) and from Sundered Skies (ritualist ultimate).\n\nThey use the same textures.",
+        "groups": [
+          {
+            "name": "Thunderstorm",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "thunderstorm",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Twisted Origin",
+        "groups": [
+          {
+            "name": "Red dragon",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "reddragon"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Yellow dragon",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "yellowdragon"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Yellow dragon beam",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "yellowdragonbeam",
+                    "from": 1,
+                    "to": 41
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Displacement",
+        "groups": [
+          {
+            "name": "Displacement",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "magedisplacement"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Astral Fragmentation",
+        "groups": [
+          {
+            "name": "Astral fragmentation",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "astralfragmentation"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Frozen Tornado",
+        "groups": [
+          {
+            "name": "Frozen Tornado",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "frozentornado"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Vacuokinesis",
+        "groups": [
+          {
+            "name": "Vacuokinesis",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "vacuokinesis",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dimensional Tear",
+        "description": "To adjust the purple fireballs that come from this go to the global spells. It's in Fireballs",
+        "groups": [
+          {
+            "name": "Dimensional tear",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "dimensionaltear",
+                    "from": 1,
+                    "to": 25
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Time Vortex",
+        "groups": [
+          {
+            "name": "Time vortex",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "timevortex"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sunshower",
+        "groups": [
+          {
+            "name": "Sunshower",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "sunshower",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ophanim & Lightweaver",
+        "groups": [
+          {
+            "name": "Ophanim & Lightweaver balls",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "ophanimballs",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Ophanim back",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "ophanimback"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Freezing Sigil",
+        "groups": [
+          {
+            "name": "Freezing sigil",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "freezingsigil",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sunflare",
+        "groups": [
+          {
+            "name": "Sunflare",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "sunflare",
+                    "from": 1,
+                    "to": 12
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Dawn",
+        "description": "To adjust the fireballs that come from this go to the global spells. It's in Fireballs",
+        "groups": [
+          {
+            "name": "Sun",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "sun"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ARCHER": [
+      {
+        "name": "Arrows",
+        "description": "Affects all arrows rendered in the world that are arrow entities.\n\nThis includes arrows fired by the player, other players, and mobs.\n\nThe transparency on the arrows is currently not implemented.",
+        "groups": [
+          {
+            "name": "Arrows",
+            "rules": [
+              {
+                "type": "entity_type",
+                "entityType": "arrow"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Arrow Bomb",
+        "description": "Arrow bomb explosion will also effect exploding puppets.\n\nThey use the same textures.",
+        "groups": [
+          {
+            "name": "Arrow bomb explosion",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "arrowbombexplosion",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Escape",
+        "groups": [
+          {
+            "name": "Escape",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "archerescape",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Arrow Shield",
+        "groups": [
+          {
+            "name": "Arrow shield",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "arrowshield"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Arrow Storm",
+        "groups": [
+          {
+            "name": "Arrow storm circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "arrowstormcircle",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Phantom Ray",
+        "groups": [
+          {
+            "name": "Phantom ray",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "phantomray"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Twain's Arc",
+        "groups": [
+          {
+            "name": "Twain's arc bow",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "twainsarcbow"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Twain's arc shot",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "twainsarcshot",
+                    "from": 1,
+                    "to": 11
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Crepuscular Ray",
+        "groups": [
+          {
+            "name": "Crepuscular ray",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "crepuscularray",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Repel",
+        "groups": [
+          {
+            "name": "Repel",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "archerrepel",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "The Twilight Zone",
+        "groups": [
+          {
+            "name": "The twilight zone bow",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "thetwilightzonebow"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "The twilight zone shot",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "thetwilightzoneshot",
+                    "from": 1,
+                    "to": 15
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bryophyte Roots",
+        "groups": [
+          {
+            "name": "Bryophyte Roots",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "bryophyteroots"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Basaltic Trap",
+        "description": "The transparency on the basaltic trap model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
+        "groups": [
+          {
+            "name": "Basaltic trap",
+            "rules": [
+              {
+                "type": "armor_stand",
+                "models": [
+                  "TRAP_0",
+                  "TRAP_1"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "% Damage name tag (all)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": "^\\+\\d{1,3}% Damage$"
+              }
+            ]
+          },
+          {
+            "name": "Arming name tag (all)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": "^Arming\\.\\.\\.$"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Murder Flock",
+        "description": "The transparency on the Crow model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
+        "groups": [
+          {
+            "name": "Crow",
+            "rules": [
+              {
+                "type": "armor_stand",
+                "models": [
+                  "CROW_BODY",
+                  "CROW_WING_LEFT",
+                  "CROW_WING_RIGHT"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Crow name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Crow\n.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Crow name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Crow\n.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ivyroot Mamba",
+        "description": "The transparency on the Ivyroot Mamba model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
+        "groups": [
+          {
+            "name": "Mamba",
+            "rules": [
+              {
+                "type": "armor_stand",
+                "models": [
+                  "MAMBA_BODY",
+                  "MAMBA_BUSH",
+                  "MAMBA_HEAD"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Snake name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Snake\n.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Snake mamba name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Snake\n.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Call of the Hound",
+        "groups": [
+          {
+            "name": "Call of the hound",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "callofthehound"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Hound name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Hound\n.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Hound name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Hound\n.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chilling Snare",
+        "groups": [
+          {
+            "name": "Chilling Snare",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "chillingsnare"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Snow Storm",
+        "groups": [
+          {
+            "name": "Snow storm",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "snowstorm"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Extinction Event",
+        "groups": [
+          {
+            "name": "Extinction event bomb",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "extinctioneventbomb"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Extinction event bomb fire",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "extinctioneventbombfire",
+                    "from": 1,
+                    "to": 3
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Extinction event crow",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "extinctioneventcrow"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Guardian Angels",
+        "groups": [
+          {
+            "name": "Guardian angels",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "guardianangels"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Arsenal Synergy",
+        "description": "This is a global toggle for all flint entities.\n\nIn my testing it does not effect ingredients that look like flint.\n\nTransparency does not work with this for now.",
+        "groups": [
+          {
+            "name": "Arsenal synergy flint arrow",
+            "rules": [
+              {
+                "type": "item_entity",
+                "item": "minecraft:flint"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fierce Stomp",
+        "groups": [
+          {
+            "name": "Fierce stomp",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "fiercestomp",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Courier's Edict",
+        "groups": [
+          {
+            "name": "Courier's edict",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "judgementwhitecircle"
+                ],
+                "fingerprints": [
+                  "2bafb54591222834561f8d43b5a60b1959e76e2a0e3c4866333c1b7b1677041c"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Angelic Ascension",
+        "description": "To adjust the thunderstorm from the arrow bomb please adjust the mage ability.\n\nThey use they same textures.",
+        "groups": [
+          {
+            "name": "Angelic ascension melee",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "angelicascensionmelee"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Angelic ascension guardian angel",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "angelicascensionguardianangel"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Angelic ascension wings",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "angelicascensionwings",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "ASSASSIN": [
+      {
+        "name": "Melee",
+        "groups": [
+          {
+            "name": "Melee",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "assassinmelee",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Spin Attack",
+        "groups": [
+          {
+            "name": "Spin attack",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "spinattack",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Multi Hit",
+        "groups": [
+          {
+            "name": "Multi hit swipe",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "multihitswipe",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Multi hit enemy",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "multihitenemy",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Smoke Bomb",
+        "groups": [
+          {
+            "name": "Smoke bomb",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "smokebomb"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ripple",
+        "groups": [
+          {
+            "name": "Ripple",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "assassinripple",
+                    "from": 1,
+                    "to": 14
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Lacerate",
+        "groups": [
+          {
+            "name": "Lacerate",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "lacerate",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Swan Dive",
+        "groups": [
+          {
+            "name": "Swan dive",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "swandiveripple",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Shurikens",
+        "groups": [
+          {
+            "name": "Shurikens",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "shurikens"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Jasmine Bloom",
+        "groups": [
+          {
+            "name": "Small jasmine bloom",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "smalljasminebloom"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Big jasmine bloom",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "bigjasminebloom"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Petal Storm",
+        "groups": [
+          {
+            "name": "Petal Storm",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "petalstorm",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Serpent's Garden",
+        "groups": [
+          {
+            "name": "Serpent's garden flowers",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "serpentsgardenflowers",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Bamboozle",
+        "groups": [
+          {
+            "name": "Bamboozle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bamboozle",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Vanish",
+        "groups": [
+          {
+            "name": "Vanish",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "vanish",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Malicious Mockery",
+        "groups": [
+          {
+            "name": "Malicious mockery",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "maliciousmockery",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Misdirection",
+        "groups": [
+          {
+            "name": "Misdirection",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "confusedstar"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Toxic Sludge",
+        "groups": [
+          {
+            "name": "Toxic sludge",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "toxicsludge",
+                    "from": 1,
+                    "to": 16
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Deflagrate",
+        "groups": [
+          {
+            "name": "Deflagrate",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "deflagrate"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Noxious Haze",
+        "groups": [
+          {
+            "name": "Noxious haze smoke bomb",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "noxioushazesmokebomb"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Backstab",
+        "groups": [
+          {
+            "name": "Backstab",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "backstab",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Surprise Strike",
+        "groups": [
+          {
+            "name": "Surprise strike",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "surprisestrike",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Black Hole",
+        "groups": [
+          {
+            "name": "Black hole smoke bomb",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "blackholesmokebomb",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Violent Vortex",
+        "groups": [
+          {
+            "name": "Violent vortex",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "violentvortex",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Marked",
+        "groups": [
+          {
+            "name": "Marked",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "assassinmarked"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Nightcloak Knives",
+        "groups": [
+          {
+            "name": "Nightcloak knives",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "nightcloakknivesattack",
+                    "from": 1,
+                    "to": 7
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Satsujin",
+        "groups": [
+          {
+            "name": "Satsujin",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "satsujin",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pierce the Veil",
+        "groups": [
+          {
+            "name": "Pierce the veil",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "piercetheveil"
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "SHAMAN": [
+      {
+        "name": "Melee",
+        "groups": [
+          {
+            "name": "Melee",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "shamanmelee",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Totem",
+        "groups": [
+          {
+            "name": "Totem",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "shamantotem",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Totem circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "shamantotemcircle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Totem effects",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "shamantotemeffects",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Totem name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Totem\n.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Totem name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Totem\n.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Totemic Smash",
+        "groups": [
+          {
+            "name": "Totemic smash",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "totemicsmash",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Aura",
+        "groups": [
+          {
+            "name": "Aura",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "shamanaura"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Uproot",
+        "groups": [
+          {
+            "name": "Uproot",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "shamanuproot",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sacrificial Shrine",
+        "groups": [
+          {
+            "name": "Sacrificial shrine aura",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "sacrificialshrineaura"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Eldritch Call",
+        "groups": [
+          {
+            "name": "Eldritch call tentacle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "eldritchcalltentacle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Eldritch call tentacle hit",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "eldritchcalltentaclehit",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Blood Sorrow",
+        "groups": [
+          {
+            "name": "Blood sorrow square",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bloodsorrowsquare",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Blood sorrow effects",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "bloodsorroweffects",
+                    "from": 1,
+                    "to": 21
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Moment to Gloom",
+        "groups": [
+          {
+            "name": "Moment to gloom totem",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "monumenttogloomtotem",
+                    "from": 1,
+                    "to": 2
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Rain Dance",
+        "groups": [
+          {
+            "name": "Rain dance cloud",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "raindancecloud"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Rain dance rain",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "raindancerain",
+                    "from": 1,
+                    "to": 4
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Frog Dance",
+        "groups": [
+          {
+            "name": "Frog dance bounce",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "frogdancebounce",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Totemic Shatter",
+        "groups": [
+          {
+            "name": "Totemic shatter",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "totemicshatter",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Tribal Chants",
+        "groups": [
+          {
+            "name": "Tribal chant lunatic",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "tribalchantlunatic",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Tribal chant fanatic",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "tribalchantfanatic",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Tribal chant heretic",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "tribalchantheretic",
+                    "from": 1,
+                    "to": 10
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Awakened",
+        "groups": [
+          {
+            "name": "Awakened circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "awakenedcircle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Awakened effects",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "awakenedeffects",
+                    "from": 1,
+                    "to": 13
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Pool of Rejuvination",
+        "groups": [
+          {
+            "name": "Pool of rejuvination circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "poolofrejuvinationcircle"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Pool of rejuvination sparkles",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "poolofrejuvinationsparkles"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Sundered Skies",
+        "description": "If you want to configure the thunderstorm effects. Please configure the mage ability.",
+        "groups": [
+          {
+            "name": "Sundered skies cloud",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "sunderedskiescloud"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Sundered skies circles",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "sunderedskiescircles"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Puppet Master",
+        "groups": [
+          {
+            "name": "Puppet",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "puppetmasterpuppet"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Puppet knife",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "puppetmasterknife"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Puppet name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Puppet.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Puppet name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Puppet.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Crimson Effigy",
+        "groups": [
+          {
+            "name": "Crimson effigy",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "crimsoneffigy"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Crimson effigy name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Effigy",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Crimson effigy name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Effigy",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Commander",
+        "groups": [
+          {
+            "name": "Commander puppet rally knife",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "commanderpuppetrallyknife"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Hummingbird's Song",
+        "groups": [
+          {
+            "name": "Hummingbird carving",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "hummingbirdcarving"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Hummingbird name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Bird",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Hummingbird name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Bird",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Invigorating Wave",
+        "groups": [
+          {
+            "name": "Invigorating wave aura",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "invigoratingwaveaura"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Patchwork Abomination",
+        "groups": [
+          {
+            "name": "Patchwork abomination",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "patchworkabomination"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Patchwork abomination name tag (yours)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Patchwork Abomination\n.*",
+                "ownerFilter": "LOCAL_PLAYER"
+              }
+            ]
+          },
+          {
+            "name": "Patchwork abomination name tag (others)",
+            "rules": [
+              {
+                "type": "text_display",
+                "regex": ".*('s|') Patchwork Abomination\n.*",
+                "ownerFilter": "OTHER_PLAYERS"
+              }
+            ]
+          }
+        ]
+      }
+    ],
+    "GLOBAL": [
+      {
+        "name": "Mob totem & Judgement border",
+        "description": "This setting adjusts the mob totem & Judgement border circle.\n\nThey use the same textures.",
+        "groups": [
+          {
+            "name": "Mob totem & Judgement border",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "totembordercircle"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "NOTG & Judgement Shockwave",
+        "description": "This setting adjusts the Grootslang Wyrmling's shockwave and the Judgement Shockwave.\n\nThey use the same textures.",
+        "groups": [
+          {
+            "name": "NOTG & Judgement Shockwave",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "judgementwhitecircle"
+                ],
+                "fingerprints": [
+                  "0d547f7ab5d93aab99699369054910576bab7388ecfa6c69e56a57dd6be88ac1"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Fireballs",
+        "description": "This setting adjusts Dawn's fireball and Dimensional Tear's purple fireball.\n\nThis setting also effects the fireballs in NOL during the sun and black hole attacks.",
+        "groups": [
+          {
+            "name": "Fireball (NOL & Dawn)",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "fireball"
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Purple fireball (NOL & Dimensional tear)",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "purplefireball"
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ultimate Charged",
+        "groups": [
+          {
+            "name": "Ultimate charged",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "ultimatecharged",
+                    "from": 1,
+                    "to": 16
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Quake",
+        "groups": [
+          {
+            "name": "Quake",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "quakespecial",
+                    "from": 1,
+                    "to": 8
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Chain lightning",
+        "groups": [
+          {
+            "name": "Chain lightning",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "chainlightningspecial",
+                    "from": 1,
+                    "to": 5
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Curse",
+        "groups": [
+          {
+            "name": "Curse",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "cursespecial",
+                    "from": 1,
+                    "to": 21
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Courage",
+        "groups": [
+          {
+            "name": "Courage",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "couragespecial",
+                    "from": 1,
+                    "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Wind Prison",
+        "groups": [
+          {
+            "name": "Wind prison",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "windprisonspecial",
+                    "from": 1,
+                    "to": 6
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

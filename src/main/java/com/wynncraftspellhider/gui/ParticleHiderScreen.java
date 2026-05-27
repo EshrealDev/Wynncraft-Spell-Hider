@@ -1,8 +1,8 @@
 package com.wynncraftspellhider.gui;
 
-import com.wynncraftspellhider.models.particles.ParticleConfig;
-import com.wynncraftspellhider.models.particles.ParticleRegistry;
-import com.wynncraftspellhider.models.spells.SpellRegistry;
+import com.wynncraftspellhider.models.particle.ParticleConfig;
+import com.wynncraftspellhider.models.particle.ParticleRegistry;
+import com.wynncraftspellhider.models.spell.SpellModel;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.Button;
@@ -44,13 +44,16 @@ public class ParticleHiderScreen extends BaseHiderScreen {
     }
 
     @Override
-    protected void onClassTabClicked(SpellRegistry.WynnClass wynnClass) {
+    protected void onClassTabClicked(SpellModel.WynnClass wynnClass) {
         if (particleList != null) GuiState.particleListScrollAmount = particleList.scrollAmount();
         GuiState.lastActiveTab = wynnClass;
         navigateTo(SpellHiderScreen::new);
     }
 
-    @Override protected boolean hasHideShowButtons() { return true; }
+    @Override
+    protected boolean hasHideShowButtons() {
+        return true;
+    }
 
     @Override
     protected void hideAll() {
@@ -64,8 +67,15 @@ public class ParticleHiderScreen extends BaseHiderScreen {
         if (particleList != null) particleList.rebuildEntries();
     }
 
-    @Override protected SpellRegistry.WynnClass getActiveTab() { return null; }
-    @Override protected int getActivePageIndex() { return 1; }
+    @Override
+    protected SpellModel.WynnClass getActiveTab() {
+        return null;
+    }
+
+    @Override
+    protected int getActivePageIndex() {
+        return 1;
+    }
 
     @Override
     protected void saveScrollState() {
@@ -88,44 +98,61 @@ public class ParticleHiderScreen extends BaseHiderScreen {
             for (ParticleConfig config : ParticleRegistry.getParticles()) addEntry(new ParticleEntry(config));
         }
 
-        @Override public int getRowWidth() { return width - 6; }
-        @Override protected int scrollBarX() { return getX() + width - 6; }
-        @Override protected boolean entriesCanBeSelected() { return false; }
+        @Override
+        public int getRowWidth() {
+            return width - 6;
+        }
+
+        @Override
+        protected int scrollBarX() {
+            return getX() + width - 6;
+        }
+
+        @Override
+        protected boolean entriesCanBeSelected() {
+            return false;
+        }
 
         public class ParticleEntry extends ObjectSelectionList.Entry<ParticleEntry> {
             private final ParticleConfig config;
             private final Button toggleButton;
-            @Nullable private final Button infoButton;
+
+            @Nullable
+            private final Button infoButton;
 
             public ParticleEntry(ParticleConfig config) {
                 this.config = config;
 
-                this.toggleButton = Button.builder(
-                                Component.literal(config.hidden ? "Show" : "Hide"),
-                                btn -> {
-                                    config.hidden = !config.hidden;
-                                    btn.setMessage(Component.literal(config.hidden ? "Show" : "Hide"));
-                                })
-                        .size(40, 16).build();
+                this.toggleButton = Button.builder(Component.literal(config.hidden ? "Show" : "Hide"), btn -> {
+                            config.hidden = !config.hidden;
+                            btn.setMessage(Component.literal(config.hidden ? "Show" : "Hide"));
+                        })
+                        .size(40, 16)
+                        .build();
 
                 this.infoButton = config.description != null
-                        ? Button.builder(Component.literal("?"),
-                                btn -> openInfoModal(config.name, config.description))
-                        .size(16, 16).build()
+                        ? Button.builder(Component.literal("?"), btn -> openInfoModal(config.name, config.description))
+                                .size(16, 16)
+                                .build()
                         : null;
             }
 
             @Override
-            public void renderContent(GuiGraphics guiGraphics, int mouseX, int mouseY,
-                                      boolean hovered, float partialTick) {
-                int left        = getX();
-                int top         = getY();
-                int entryWidth  = getWidth();
+            public void renderContent(
+                    GuiGraphics guiGraphics, int mouseX, int mouseY, boolean hovered, float partialTick) {
+                int left = getX();
+                int top = getY();
+                int entryWidth = getWidth();
                 int entryHeight = getHeight();
-                int nameColor   = config.hidden ? 0xFF555555 : 0xFFFFFFFF;
+                int nameColor = config.hidden ? 0xFF555555 : 0xFFFFFFFF;
 
-                guiGraphics.drawString(ParticleHiderScreen.this.font, config.name,
-                        left + 4, top + (entryHeight - 8) / 2, nameColor, false);
+                guiGraphics.drawString(
+                        ParticleHiderScreen.this.font,
+                        config.name,
+                        left + 4,
+                        top + (entryHeight - 8) / 2,
+                        nameColor,
+                        false);
 
                 int rightCursor = left + entryWidth - 14;
 
@@ -144,13 +171,21 @@ public class ParticleHiderScreen extends BaseHiderScreen {
             @Override
             public boolean mouseClicked(MouseButtonEvent event, boolean bl) {
                 double mx = event.x(), my = event.y();
-                if (infoButton != null && infoButton.isMouseOver(mx, my)) { infoButton.mouseClicked(event, bl); return true; }
-                if (toggleButton.isMouseOver(mx, my))                     { toggleButton.mouseClicked(event, bl); return true; }
+                if (infoButton != null && infoButton.isMouseOver(mx, my)) {
+                    infoButton.mouseClicked(event, bl);
+                    return true;
+                }
+                if (toggleButton.isMouseOver(mx, my)) {
+                    toggleButton.mouseClicked(event, bl);
+                    return true;
+                }
                 return super.mouseClicked(event, bl);
             }
 
             @Override
-            public Component getNarration() { return Component.literal(config.name); }
+            public Component getNarration() {
+                return Component.literal(config.name);
+            }
         }
     }
 }

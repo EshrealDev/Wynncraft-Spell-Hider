@@ -1,34 +1,34 @@
 package com.wynncraftspellhider.models.texturepack;
 
-import com.wynncraftspellhider.models.spells.rules.MatchRule;
-import com.wynncraftspellhider.models.spells.rules.EntityTypeRule;
-import net.minecraft.resources.Identifier;
-import net.minecraft.server.packs.resources.Resource;
-import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.client.Minecraft;
-import com.mojang.blaze3d.platform.NativeImage;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.google.gson.GsonBuilder;
-import com.google.gson.Gson;
-
+import com.mojang.blaze3d.platform.NativeImage;
+import com.wynncraftspellhider.WynncraftSpellHider;
+import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.models.config.ConfigModel;
+import com.wynncraftspellhider.models.spell.SpellConfig;
+import com.wynncraftspellhider.models.spell.SpellGroup;
+import com.wynncraftspellhider.models.spell.SpellModel;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.*;
 import java.util.HexFormat;
 import java.util.concurrent.CompletableFuture;
-
-import com.wynncraftspellhider.WynncraftSpellHider;
-import com.wynncraftspellhider.models.config.ConfigModel;
-import com.wynncraftspellhider.models.spells.SpellGroup;
-import com.wynncraftspellhider.models.spells.SpellRegistry;
-import com.wynncraftspellhider.models.spells.SpellConfig;
+import net.minecraft.client.Minecraft;
+import net.minecraft.resources.Identifier;
+import net.minecraft.server.packs.resources.Resource;
+import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.Util;
 
 public class TexturepackModel {
+
+    private static final int SUPPORTED_SCHEMA_VERSION = 1;
+
     public Map<Integer, String> modelIdToKnownTexture = new HashMap<>();
     public Map<Integer, String> modelIdToFingerprint = new HashMap<>();
     public Map<String, List<Integer>> knownTextureToModelIds = new HashMap<>();
@@ -38,7 +38,6 @@ public class TexturepackModel {
     private final Map<Integer, SpellGroup> modelIdToGroupCache = new HashMap<>();
 
     private static final String HASH_JSON_FILENAME = "texture_hashes.json";
-    private static final String JAR_HASH_ASSET = "/assets/wynncraftspellhider/" + HASH_JSON_FILENAME;
 
     public boolean isLoaded() {
         return !modelIdToKnownTexture.isEmpty();
@@ -64,7 +63,7 @@ public class TexturepackModel {
             String texture = entry.getValue();
             String fingerprint = modelIdToFingerprint.get(modelId);
 
-            SpellGroup group = SpellRegistry.getGroupForModel(texture, fingerprint);
+            SpellGroup group = SpellModel.getGroupForModel(texture, fingerprint);
             if (group != null) {
                 modelIdToGroupCache.put(modelId, group);
             }
@@ -82,17 +81,16 @@ public class TexturepackModel {
         }
     }
 
-    // list resources //
-
-    public void listResourcesAsync() {
-        CompletableFuture.runAsync(this::listResources, Util.ioPool())
-                .exceptionally(e -> {
-                    WynncraftSpellHider.error("Async texture load failed: " + e.getMessage());
-                    return null;
-                });
+    public void listResourcesAsync(Boolean verbose) {
+        CompletableFuture.runAsync(() -> listResources(verbose), Util.ioPool()).exceptionally(e -> {
+            WynncraftSpellHider.error("Async texture load failed: " + e.getMessage());
+            return null;
+        });
     }
 
-    public void listResources() {
+    private void listResources(boolean verbose) {
+        UpdateManager.checkTextureHashesAsync(ConfigModel.configFolder.toPath()).join();
+
         modelIdToKnownTexture.clear();
         modelIdToFingerprint.clear();
         knownTextureToModelIds.clear();
@@ -101,7 +99,7 @@ public class TexturepackModel {
         modelIdToGroupCache.clear();
 
         ResourceManager resourceManager = Minecraft.getInstance().getResourceManager();
-        Map<String, String> texturePathToKnownName = mapObfuscatedTextures(resourceManager);
+        Map<String, String> texturePathToKnownName = mapObfuscatedTextures(resourceManager, verbose);
         Identifier baseItemOverride = Identifier.fromNamespaceAndPath("minecraft", "models/item/oak_boat.json");
         Optional<Resource> overrideRes = resourceManager.getResource(baseItemOverride);
 
@@ -111,7 +109,7 @@ public class TexturepackModel {
         }
 
         try (InputStream stream = overrideRes.get().open();
-             InputStreamReader reader = new InputStreamReader(stream)) {
+                InputStreamReader reader = new InputStreamReader(stream)) {
 
             JsonObject baseJson = JsonParser.parseReader(reader).getAsJsonObject();
             if (!baseJson.has("overrides")) return;
@@ -121,24 +119,26 @@ public class TexturepackModel {
 
             for (int i = 0; i < overrides.size(); i++) {
                 JsonObject override = overrides.get(i).getAsJsonObject();
-                int cmd = override.getAsJsonObject("predicate").get("custom_model_data").getAsInt();
+                int cmd = override.getAsJsonObject("predicate")
+                        .get("custom_model_data")
+                        .getAsInt();
                 String modelPath = override.get("model").getAsString();
 
-                processModelFile(resourceManager, cmd, modelPath, texturePathToKnownName);
+                processModelFile(resourceManager, cmd, modelPath, texturePathToKnownName, verbose);
             }
         } catch (Exception e) {
             WynncraftSpellHider.error("Failed to parse base item overrides");
             e.printStackTrace();
         }
 
-        if (WynncraftSpellHider.devMode) {
+        if (verbose) {
             WynncraftSpellHider.info("=== Final knownTexture -> modelIDs map ===");
             for (Map.Entry<String, List<Integer>> entry : knownTextureToModelIds.entrySet()) {
                 WynncraftSpellHider.info(entry.getKey() + " -> " + entry.getValue());
             }
         }
 
-        //initialize caches
+        // initialize caches
         initializeModelIdToGroup();
 
         // Check for known textures that never matched
@@ -151,60 +151,74 @@ public class TexturepackModel {
 
         // Check for texture names registered in spells that were never matched
         Set<String> matchedTextures = knownTextureToModelIds.keySet();
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
+        for (SpellConfig spell : SpellModel.getAllSpells()) {
             for (SpellGroup group : spell.groups) {
                 for (String registeredTexture : group.getAllTextureNames()) {
                     if (!matchedTextures.contains(registeredTexture)) {
-                        WynncraftSpellHider.error("Registered texture name in Registry never matched any resource pack texture: " + registeredTexture + " (Spell: " + spell.name + " -> Group: " + group.name + ")");
+                        WynncraftSpellHider.error(
+                                "Registered texture name in Registry never matched any resource pack texture: "
+                                        + registeredTexture
+                                        + " (Spell: "
+                                        + spell.name
+                                        + " -> Group: "
+                                        + group.name
+                                        + ")");
                     }
                 }
             }
         }
 
         // Check for registered fingerprints that never matched
-        for (SpellConfig spell : SpellRegistry.getAllSpells()) {
+        for (SpellConfig spell : SpellModel.getAllSpells()) {
             for (SpellGroup group : spell.groups) {
                 if (group.getAllFingerprints() == null) continue;
                 for (String fp : group.getAllFingerprints()) {
                     boolean found = modelIdToFingerprint.values().stream().anyMatch(v -> v.equals(fp));
                     if (!found) {
-                        WynncraftSpellHider.error("Registered fingerprint never matched any model: " + fp + " (group: " + group.name + " textures: " + group.getAllTextureNames() + ")");
+                        WynncraftSpellHider.error("Registered fingerprint never matched any model: "
+                                + fp
+                                + " (group: "
+                                + group.name
+                                + " textures: "
+                                + group.getAllTextureNames()
+                                + ")");
                     }
                 }
             }
         }
     }
 
-    // --- Hash loading ---
-
     private Map<String, String> loadKnownHashes() {
-        // Try config folder first
         File configJson = new File(ConfigModel.configFolder, HASH_JSON_FILENAME);
         if (configJson.exists()) {
-            try (InputStreamReader reader = new InputStreamReader(new FileInputStream(configJson), StandardCharsets.UTF_8)) {
+            try (InputStreamReader reader =
+                    new InputStreamReader(new FileInputStream(configJson), StandardCharsets.UTF_8)) {
                 JsonObject obj = JsonParser.parseReader(reader).getAsJsonObject();
-                Map<String, String> result = new HashMap<>();
-                for (String key : obj.keySet()) {
-                    result.put(key, obj.get(key).getAsString());
+                if (!isSchemaVersionSupported(obj, "config folder")) {
+                    // fall through to JAR fallback below
+                } else {
+                    Map<String, String> result = parseTextureHashes(obj);
+                    WynncraftSpellHider.info(
+                            "Loaded texture hashes from config folder (" + result.size() + " entries)");
+                    return result;
                 }
-                WynncraftSpellHider.info("Loaded texture hashes from config folder (" + result.size() + " entries)");
-                return result;
             } catch (Exception e) {
-                WynncraftSpellHider.error("Failed to load texture hashes from config folder, falling back to JAR: " + e.getMessage());
+                WynncraftSpellHider.error(
+                        "Failed to load texture hashes from config folder, falling back to JAR: " + e.getMessage());
             }
         }
 
-        // Fallback: bundled JAR asset
-        try (InputStream is = TexturepackModel.class.getResourceAsStream(JAR_HASH_ASSET)) {
+        try (InputStream is = WynncraftSpellHider.getModResourceAsStream(HASH_JSON_FILENAME)) {
             if (is == null) {
                 WynncraftSpellHider.error("No texture_hashes.json found in JAR either!");
                 return new HashMap<>();
             }
-            JsonObject obj = JsonParser.parseReader(new InputStreamReader(is, StandardCharsets.UTF_8)).getAsJsonObject();
-            Map<String, String> result = new HashMap<>();
-            for (String key : obj.keySet()) {
-                result.put(key, obj.get(key).getAsString());
+            JsonObject obj = JsonParser.parseReader(new InputStreamReader(is, StandardCharsets.UTF_8))
+                    .getAsJsonObject();
+            if (!isSchemaVersionSupported(obj, "JAR")) {
+                return new HashMap<>();
             }
+            Map<String, String> result = parseTextureHashes(obj);
             WynncraftSpellHider.info("Loaded texture hashes from JAR (" + result.size() + " entries)");
             return result;
         } catch (Exception e) {
@@ -213,9 +227,18 @@ public class TexturepackModel {
         }
     }
 
+    private Map<String, String> parseTextureHashes(JsonObject root) {
+        Map<String, String> result = new HashMap<>();
+        JsonObject hashes = root.getAsJsonObject("textureHashes");
+        for (String key : hashes.keySet()) {
+            result.put(key, hashes.get(key).getAsString());
+        }
+        return result;
+    }
+
     // --- Texture mapping ---
 
-    private Map<String, String> mapObfuscatedTextures(ResourceManager rm) {
+    private Map<String, String> mapObfuscatedTextures(ResourceManager rm, boolean verbose) {
         Map<String, String> pathToKnown = new HashMap<>();
         Map<String, String> knownHashes = loadKnownHashes();
 
@@ -230,33 +253,31 @@ public class TexturepackModel {
             hashToKnownName.put(entry.getValue(), entry.getKey());
         }
 
-        Map<Identifier, Resource> resources = rm.listResources("textures/item", id -> id.getPath().endsWith(".png"));
+        Map<Identifier, Resource> resources =
+                rm.listResources("textures/item", id -> id.getPath().endsWith(".png"));
         WynncraftSpellHider.info("textures count: " + resources.size());
 
         for (Map.Entry<Identifier, Resource> entry : resources.entrySet()) {
             try (InputStream stream = entry.getValue().open();
-                 NativeImage img = NativeImage.read(stream)) {
+                    NativeImage img = NativeImage.read(stream)) {
 
                 String hash = sha256(Arrays.toString(getPixels(img)));
                 if (hashToKnownName.containsKey(hash)) {
                     String knownName = hashToKnownName.get(hash);
-                    String logicalPath = entry.getKey().getPath()
+                    String logicalPath = entry.getKey()
+                            .getPath()
                             .replaceFirst("^textures/", "")
                             .replaceFirst("\\.png$", "");
                     pathToKnown.put(logicalPath, knownName);
-                    if (WynncraftSpellHider.devMode) WynncraftSpellHider.info("HASH MATCH: " + entry.getKey() + " -> " + knownName);
+                    if (verbose) WynncraftSpellHider.info("HASH MATCH: " + entry.getKey() + " -> " + knownName);
                 }
-            } catch (IOException ignored) {}
+            } catch (IOException ignored) {
+            }
         }
 
         return pathToKnown;
     }
 
-    /**
-     * DEV ONLY — reads textureCacheFolder PNGs, computes pixel hashes, and writes
-     * texture_hashes.json to the config folder. Run this locally to regenerate the
-     * hash file whenever Wynncraft updates their textures. Never call this in production.
-     */
     public void encodeTextureCacheToJson() {
         File textureCacheFolder = new File(ConfigModel.configFolder, "textureCache");
         if (!textureCacheFolder.exists()) {
@@ -265,19 +286,24 @@ public class TexturepackModel {
         }
 
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
-        JsonObject output = new JsonObject();
+        JsonObject hashes = new JsonObject();
 
         for (File file : collectPngFiles(textureCacheFolder)) {
             String name = file.getName().replace(".png", "");
             try (InputStream is = new FileInputStream(file);
-                 NativeImage img = NativeImage.read(is)) {
+                    NativeImage img = NativeImage.read(is)) {
                 String hash = sha256(Arrays.toString(getPixels(img)));
-                output.addProperty(name, hash);
+                hashes.addProperty(name, hash);
                 WynncraftSpellHider.info("Encoded: " + name + " -> " + hash);
             } catch (IOException e) {
                 WynncraftSpellHider.error("Failed to encode texture: " + file.getName());
             }
         }
+
+        JsonObject output = new JsonObject();
+        output.addProperty("version", 1);
+        output.addProperty("schemaVersion", 1);
+        output.add("textureHashes", hashes);
 
         File outFile = new File(ConfigModel.configFolder, HASH_JSON_FILENAME);
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(outFile), StandardCharsets.UTF_8)) {
@@ -305,15 +331,14 @@ public class TexturepackModel {
         return result;
     }
 
-    // --- Shared helpers ---
-
-    private void processModelFile(ResourceManager rm, int cmd, String modelPath, Map<String, String> textureMapping) {
+    private void processModelFile(
+            ResourceManager rm, int cmd, String modelPath, Map<String, String> textureMapping, boolean verbose) {
         String path = modelPath.contains(":") ? modelPath.split(":")[1] : modelPath;
         Identifier modelId = Identifier.fromNamespaceAndPath("minecraft", "models/" + path + ".json");
 
         rm.getResource(modelId).ifPresent(res -> {
             try (InputStream stream = res.open();
-                 InputStreamReader reader = new InputStreamReader(stream)) {
+                    InputStreamReader reader = new InputStreamReader(stream)) {
 
                 JsonObject json = JsonParser.parseReader(reader).getAsJsonObject();
                 modelIdToJson.put(cmd, json.toString());
@@ -350,7 +375,9 @@ public class TexturepackModel {
 
                     String ns = texPath.contains(":") ? texPath.split(":")[0] : "minecraft";
                     Identifier texIdentifier = Identifier.fromNamespaceAndPath(ns, "textures/" + cleanTexPath + ".png");
-                    modelIdToTextureIds.computeIfAbsent(cmd, k -> new ArrayList<>()).add(texIdentifier);
+                    modelIdToTextureIds
+                            .computeIfAbsent(cmd, k -> new ArrayList<>())
+                            .add(texIdentifier);
 
                     if (textureMapping.containsKey(cleanTexPath)) {
                         matchedKnownNames.add(textureMapping.get(cleanTexPath));
@@ -360,13 +387,27 @@ public class TexturepackModel {
                 if (matchedKnownNames.isEmpty()) return;
 
                 if (matchedKnownNames.size() > 1) {
-                    WynncraftSpellHider.error("WARNING: model ID " + cmd + " has elements referencing multiple known textures: " + matchedKnownNames + " - using first");
+                    WynncraftSpellHider.error("WARNING: model ID "
+                            + cmd
+                            + " has elements referencing multiple known textures: "
+                            + matchedKnownNames
+                            + " - using first");
                 }
 
                 String knownName = matchedKnownNames.iterator().next();
                 modelIdToKnownTexture.put(cmd, knownName);
-                knownTextureToModelIds.computeIfAbsent(knownName, k -> new ArrayList<>()).add(cmd);
-                if (WynncraftSpellHider.devMode) WynncraftSpellHider.info("MAPPED: " + knownName + " -> model ID " + cmd + " fingerprint: " + fingerprint + " json: " + json);
+                knownTextureToModelIds
+                        .computeIfAbsent(knownName, k -> new ArrayList<>())
+                        .add(cmd);
+                if (verbose)
+                    WynncraftSpellHider.info("MAPPED: "
+                            + knownName
+                            + " -> model ID "
+                            + cmd
+                            + " fingerprint: "
+                            + fingerprint
+                            + " json: "
+                            + json);
 
             } catch (Exception e) {
                 WynncraftSpellHider.error("Failed to parse model JSON: " + modelId);
@@ -384,5 +425,20 @@ public class TexturepackModel {
             }
         }
         return pixels;
+    }
+
+    private boolean isSchemaVersionSupported(JsonObject root, String source) {
+        if (!root.has("schemaVersion")) {
+            WynncraftSpellHider.error("texture_hashes.json from " + source + " is missing 'schemaVersion' field!");
+            return false;
+        }
+        int version = root.get("schemaVersion").getAsInt();
+        if (version != SUPPORTED_SCHEMA_VERSION) {
+            WynncraftSpellHider.error("texture_hashes.json from " + source
+                    + " has unsupported schemaVersion " + version
+                    + " (expected " + SUPPORTED_SCHEMA_VERSION + ")");
+            return false;
+        }
+        return true;
     }
 }

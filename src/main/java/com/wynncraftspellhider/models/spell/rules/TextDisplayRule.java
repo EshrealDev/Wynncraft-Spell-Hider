@@ -1,13 +1,13 @@
-package com.wynncraftspellhider.models.spells.rules;
+package com.wynncraftspellhider.models.spell.rules;
 
 import java.util.regex.Pattern;
 
 public final class TextDisplayRule implements MatchRule {
 
     public enum OwnerFilter {
-        ALL,            // match regardless of owner
-        LOCAL_PLAYER,   // only match if text belongs to local player
-        OTHER_PLAYERS   // only match if text does NOT belong to local player
+        ALL, // match regardless of owner
+        LOCAL_PLAYER, // only match if text belongs to local player
+        OTHER_PLAYERS // only match if text does NOT belong to local player
     }
 
     public final Pattern pattern;
@@ -25,8 +25,8 @@ public final class TextDisplayRule implements MatchRule {
     public boolean matches(String plainText, boolean isLocalPlayer) {
         if (!pattern.matcher(plainText).find()) return false;
         return switch (ownerFilter) {
-            case ALL           -> true;
-            case LOCAL_PLAYER  -> isLocalPlayer;
+            case ALL -> true;
+            case LOCAL_PLAYER -> isLocalPlayer;
             case OTHER_PLAYERS -> !isLocalPlayer;
         };
     }

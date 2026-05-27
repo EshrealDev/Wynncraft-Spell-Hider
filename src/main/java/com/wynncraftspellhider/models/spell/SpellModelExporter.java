@@ -1,18 +1,33 @@
-package com.wynncraftspellhider.models.spells;
+package com.wynncraftspellhider.models.spell;
 
-import com.wynncraftspellhider.models.spells.rules.*;
-import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Items;
-
+import com.google.gson.*;
+import com.wynncraftspellhider.models.Models;
+import com.wynncraftspellhider.models.spell.rules.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.item.Items;
 
-public class SpellRegistry {
+public class SpellModelExporter {
+    public static final int VERSION = 1;
+    public static final int SCHEMA_VERSION = 1;
 
-    public enum WynnClass {
-        WARRIOR, MAGE, ARCHER, ASSASSIN, SHAMAN, GLOBAL
+    // Pattern matching names like "bash (3)" or "meteorcircle (11)".
+    private static final Pattern NUMBERED = Pattern.compile("^(.+) \\((\\d+)\\)$");
+
+    private enum WynnClass {
+        WARRIOR,
+        MAGE,
+        ARCHER,
+        ASSASSIN,
+        SHAMAN,
+        GLOBAL
     }
 
     private static final List<SpellConfig> WARRIOR_SPELLS = new ArrayList<>();
@@ -21,13 +36,9 @@ public class SpellRegistry {
     private static final List<SpellConfig> ASSASSIN_SPELLS = new ArrayList<>();
     private static final List<SpellConfig> SHAMAN_SPELLS = new ArrayList<>();
     private static final List<SpellConfig> GLOBAL_SPELLS = new ArrayList<>();
-    private static final List<SpellConfig> ALL_SPELLS = new ArrayList<>();
 
-    // Cache for optimization
-    private static final List<SpellGroup> TEXT_SPELL_GROUPS_CACHE = new ArrayList<>();
-    private static final Map<ArmorStandRule.ArmorStandModel, SpellGroup> ARMOR_STAND_GROUP_CACHE = new HashMap<>();
-    private static final Map<String, SpellGroup> ENTITY_TYPE_GROUP_CACHE = new HashMap<>();
-    private static final Map<Item, SpellGroup> ITEM_ENTITY_GROUP_CACHE = new HashMap<>();
+    // Quick lookup map used by export().
+    private static final Map<WynnClass, List<SpellConfig>> CLASS_SPELLS = new EnumMap<>(WynnClass.class);
 
     // Generates Set.of("prefix (1)", "prefix (2)", ..., "prefix (n)")
     private static Set<String> range(String prefix, int from, int to) {
@@ -36,6 +47,7 @@ public class SpellRegistry {
                 .collect(Collectors.toUnmodifiableSet());
     }
 
+    // spotless:off
     static {
         // WARRIOR
         WARRIOR_SPELLS.add(new SpellConfig("Melee", List.of(
@@ -99,15 +111,15 @@ public class SpellRegistry {
         WARRIOR_SPELLS.add(new SpellConfig("Buried Light",
                 "This setting might interfere with the beams in NOL.\n\nPlease let Eshreal know if it does.",
                 List.of(
-                new SpellGroup("Buried light", MatchRule.ofTexture("buriedlight"))
-        )));
+                        new SpellGroup("Buried light", MatchRule.ofTexture("buriedlight"))
+                )));
 
         WARRIOR_SPELLS.add(new SpellConfig("Judgement",
                 "To adjust the white border circle please go to the global tab.",
                 List.of(
-                new SpellGroup("Judgement sword", MatchRule.ofTexture("judgementsword")),
-                new SpellGroup("Judgement hit circle", MatchRule.ofTexture(range("judgementhitcircle", 1, 2)))
-        )));
+                        new SpellGroup("Judgement sword", MatchRule.ofTexture("judgementsword")),
+                        new SpellGroup("Judgement hit circle", MatchRule.ofTexture(range("judgementhitcircle", 1, 2)))
+                )));
 
 
         //Battle monk
@@ -188,13 +200,13 @@ public class SpellRegistry {
         MAGE_SPELLS.add(new SpellConfig("Meteor",
                 "Meteor explosion and archer traps explosion use identical models. Editing this will modify traps too.",
                 List.of(
-                new SpellGroup("Meteor trail", MatchRule.ofTexture("meteor", Set.of("4aa761cc79b8e1a17d786253ef423aca6bb92cd65f5afba467a6c38d36662702", "5559c862acd173f8f333eb409634cd6f5b7582e53a15013b98cb19348ea3c123", "fecc509fe5d212d14d9cf3bf93b339c80076f33cd7cc8254b0a93b8beeef0927"))),
-                new SpellGroup("Meteor ball",MatchRule.ofTexture("meteor", Set.of("4918908e2c891617ee71ca135251d6e17c610e40e7aa47670fd449b9a8dd3518"))),
-                new SpellGroup("Meteor circle", MatchRule.ofTexture(range("meteorcircle", 1, 11))),
-                new SpellGroup("Meteor explosion", MatchRule.ofTexture(range("meteorexplosion", 1, 16))),
-                new SpellGroup("Meteor skycircle", MatchRule.ofTexture(range("meteorskycircle", 1, 6))),
-                new SpellGroup("Meteor beam", MatchRule.ofTexture("meteorbeam"))
-        )));
+                        new SpellGroup("Meteor trail", MatchRule.ofTexture("meteor", Set.of("4aa761cc79b8e1a17d786253ef423aca6bb92cd65f5afba467a6c38d36662702", "5559c862acd173f8f333eb409634cd6f5b7582e53a15013b98cb19348ea3c123", "fecc509fe5d212d14d9cf3bf93b339c80076f33cd7cc8254b0a93b8beeef0927"))),
+                        new SpellGroup("Meteor ball",MatchRule.ofTexture("meteor", Set.of("4918908e2c891617ee71ca135251d6e17c610e40e7aa47670fd449b9a8dd3518"))),
+                        new SpellGroup("Meteor circle", MatchRule.ofTexture(range("meteorcircle", 1, 11))),
+                        new SpellGroup("Meteor explosion", MatchRule.ofTexture(range("meteorexplosion", 1, 16))),
+                        new SpellGroup("Meteor skycircle", MatchRule.ofTexture(range("meteorskycircle", 1, 6))),
+                        new SpellGroup("Meteor beam", MatchRule.ofTexture("meteorbeam"))
+                )));
 
         MAGE_SPELLS.add(new SpellConfig("Heal", List.of(
                 new SpellGroup("Heal circle", MatchRule.ofTexture(range("heal", 1, 7)))
@@ -231,8 +243,8 @@ public class SpellRegistry {
         MAGE_SPELLS.add(new SpellConfig("Thunderstorm",
                 "Adjusting this will also effect the thunderbolts from Angelic Ascension (boltslinger ultimate) and from Sundered Skies (ritualist ultimate).\n\nThey use the same textures.",
                 List.of(
-                new SpellGroup("Thunderstorm", MatchRule.ofTexture(range("thunderstorm", 1, 10)))
-        )));
+                        new SpellGroup("Thunderstorm", MatchRule.ofTexture(range("thunderstorm", 1, 10)))
+                )));
 
         MAGE_SPELLS.add(new SpellConfig("Twisted Origin", List.of(
                 new SpellGroup("Red dragon", MatchRule.ofTexture("reddragon")),
@@ -263,14 +275,14 @@ public class SpellRegistry {
         MAGE_SPELLS.add(new SpellConfig("Dimensional Tear",
                 "To adjust the purple fireballs that come from this go to the global spells. It's in Fireballs",
                 List.of(
-                new SpellGroup("Dimensional tear", MatchRule.ofTexture(range("dimensionaltear", 1, 25)))
-        )));
+                        new SpellGroup("Dimensional tear", MatchRule.ofTexture(range("dimensionaltear", 1, 25)))
+                )));
 
         MAGE_SPELLS.add(new SpellConfig("Time Vortex", List.of(
                 new SpellGroup("Time vortex", MatchRule.ofTexture("timevortex"))
         )));
 
-        
+
 
         //Lightbender
         MAGE_SPELLS.add(new SpellConfig("Sunshower", List.of(
@@ -293,8 +305,8 @@ public class SpellRegistry {
         MAGE_SPELLS.add(new SpellConfig("Dawn",
                 "To adjust the fireballs that come from this go to the global spells. It's in Fireballs",
                 List.of(
-                new SpellGroup("Sun", MatchRule.ofTexture("sun"))
-        )));
+                        new SpellGroup("Sun", MatchRule.ofTexture("sun"))
+                )));
 
 
 
@@ -308,14 +320,14 @@ public class SpellRegistry {
         ARCHER_SPELLS.add(new SpellConfig("Arrows",
                 "Affects all arrows rendered in the world that are arrow entities.\n\nThis includes arrows fired by the player, other players, and mobs.\n\nThe transparency on the arrows is currently not implemented.",
                 List.of(
-                new SpellGroup("Arrows", MatchRule.ofEntityType("arrow"))
-        )));
+                        new SpellGroup("Arrows", MatchRule.ofEntityType("arrow"))
+                )));
 
         ARCHER_SPELLS.add(new SpellConfig("Arrow Bomb",
                 "Arrow bomb explosion will also effect exploding puppets.\n\nThey use the same textures.",
                 List.of(
-                new SpellGroup("Arrow bomb explosion", MatchRule.ofTexture(range("arrowbombexplosion", 1, 8)))
-        )));
+                        new SpellGroup("Arrow bomb explosion", MatchRule.ofTexture(range("arrowbombexplosion", 1, 8)))
+                )));
 
         ARCHER_SPELLS.add(new SpellConfig("Escape", List.of(
                 new SpellGroup("Escape", MatchRule.ofTexture(range("archerescape", 1, 5)))
@@ -361,26 +373,26 @@ public class SpellRegistry {
         ARCHER_SPELLS.add(new SpellConfig("Basaltic Trap",
                 "The transparency on the basaltic trap model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
                 List.of(
-                new SpellGroup("Basaltic trap", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.TRAP_0, ArmorStandRule.ArmorStandModel.TRAP_1)),
-                new SpellGroup("% Damage name tag (all)", MatchRule.ofTextDisplay("^\\+\\d{1,3}% Damage$", TextDisplayRule.OwnerFilter.ALL)),
-                new SpellGroup("Arming name tag (all)", MatchRule.ofTextDisplay("^Arming\\.\\.\\.$", TextDisplayRule.OwnerFilter.ALL))
-        )));
+                        new SpellGroup("Basaltic trap", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.TRAP_0, ArmorStandRule.ArmorStandModel.TRAP_1)),
+                        new SpellGroup("% Damage name tag (all)", MatchRule.ofTextDisplay("^\\+\\d{1,3}% Damage$", TextDisplayRule.OwnerFilter.ALL)),
+                        new SpellGroup("Arming name tag (all)", MatchRule.ofTextDisplay("^Arming\\.\\.\\.$", TextDisplayRule.OwnerFilter.ALL))
+                )));
 
         ARCHER_SPELLS.add(new SpellConfig("Murder Flock",
                 "The transparency on the Crow model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
                 List.of(
-                new SpellGroup("Crow", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.CROW_BODY, ArmorStandRule.ArmorStandModel.CROW_WING_LEFT, ArmorStandRule.ArmorStandModel.CROW_WING_RIGHT)),
-                new SpellGroup("Crow name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Crow name tag (others)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
-        )));
+                        new SpellGroup("Crow", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.CROW_BODY, ArmorStandRule.ArmorStandModel.CROW_WING_LEFT, ArmorStandRule.ArmorStandModel.CROW_WING_RIGHT)),
+                        new SpellGroup("Crow name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                        new SpellGroup("Crow name tag (others)", MatchRule.ofTextDisplay(".*('s|') Crow\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                )));
 
         ARCHER_SPELLS.add(new SpellConfig("Ivyroot Mamba",
                 "The transparency on the Ivyroot Mamba model is not implemented.\n\nThis is because this still uses the old armor stand way of making models.",
                 List.of(
-                new SpellGroup("Mamba", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.MAMBA_HEAD, ArmorStandRule.ArmorStandModel.MAMBA_BODY, ArmorStandRule.ArmorStandModel.MAMBA_BUSH)),
-                new SpellGroup("Snake name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
-                new SpellGroup("Snake mamba name tag (others)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
-        )));
+                        new SpellGroup("Mamba", MatchRule.ofArmorStand(ArmorStandRule.ArmorStandModel.MAMBA_HEAD, ArmorStandRule.ArmorStandModel.MAMBA_BODY, ArmorStandRule.ArmorStandModel.MAMBA_BUSH)),
+                        new SpellGroup("Snake name tag (yours)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.LOCAL_PLAYER)),
+                        new SpellGroup("Snake mamba name tag (others)", MatchRule.ofTextDisplay(".*('s|') Snake\n.*", TextDisplayRule.OwnerFilter.OTHER_PLAYERS))
+                )));
 
 
         ARCHER_SPELLS.add(new SpellConfig("Call of the Hound", List.of(
@@ -412,8 +424,8 @@ public class SpellRegistry {
         ARCHER_SPELLS.add(new SpellConfig("Arsenal Synergy",
                 "This is a global toggle for all flint entities.\n\nIn my testing it does not effect ingredients that look like flint.\n\nTransparency does not work with this for now.",
                 List.of(
-                new SpellGroup("Arsenal synergy flint arrow", MatchRule.ofItemEntity(Items.FLINT))
-        )));
+                        new SpellGroup("Arsenal synergy flint arrow", MatchRule.ofItemEntity(Items.FLINT))
+                )));
 
         ARCHER_SPELLS.add(new SpellConfig("Fierce Stomp", List.of(
                 new SpellGroup("Fierce stomp", MatchRule.ofTexture(range("fiercestomp", 1, 9)))
@@ -431,7 +443,7 @@ public class SpellRegistry {
                         new SpellGroup("Angelic ascension melee", MatchRule.ofTexture("angelicascensionmelee")),
                         new SpellGroup("Angelic ascension guardian angel", MatchRule.ofTexture("angelicascensionguardianangel")),
                         new SpellGroup("Angelic ascension wings", MatchRule.ofTexture(range("angelicascensionwings", 1, 2)))
-        )));
+                )));
 
 
 
@@ -632,9 +644,9 @@ public class SpellRegistry {
         SHAMAN_SPELLS.add(new SpellConfig("Sundered Skies",
                 "If you want to configure the thunderstorm effects. Please configure the mage ability.",
                 List.of(
-                new SpellGroup("Sundered skies cloud", MatchRule.ofTexture("sunderedskiescloud")),
-                new SpellGroup("Sundered skies circles", MatchRule.ofTexture("sunderedskiescircles"))
-        )));
+                        new SpellGroup("Sundered skies cloud", MatchRule.ofTexture("sunderedskiescloud")),
+                        new SpellGroup("Sundered skies circles", MatchRule.ofTexture("sunderedskiescircles"))
+                )));
 
         //Summoner
         SHAMAN_SPELLS.add(new SpellConfig("Puppet Master", List.of(
@@ -678,21 +690,21 @@ public class SpellRegistry {
         GLOBAL_SPELLS.add(new SpellConfig("Mob totem & Judgement border",
                 "This setting adjusts the mob totem & Judgement border circle.\n\nThey use the same textures.",
                 List.of(
-                new SpellGroup("Mob totem & Judgement border", MatchRule.ofTexture("totembordercircle"))
-        )));
+                        new SpellGroup("Mob totem & Judgement border", MatchRule.ofTexture("totembordercircle"))
+                )));
 
         GLOBAL_SPELLS.add(new SpellConfig("NOTG & Judgement Shockwave",
                 "This setting adjusts the Grootslang Wyrmling's shockwave and the Judgement Shockwave.\n\nThey use the same textures.",
                 List.of(
-                new SpellGroup("NOTG & Judgement Shockwave", MatchRule.ofTexture("judgementwhitecircle", Set.of("0d547f7ab5d93aab99699369054910576bab7388ecfa6c69e56a57dd6be88ac1")))
-        )));
+                        new SpellGroup("NOTG & Judgement Shockwave", MatchRule.ofTexture("judgementwhitecircle", Set.of("0d547f7ab5d93aab99699369054910576bab7388ecfa6c69e56a57dd6be88ac1")))
+                )));
 
         GLOBAL_SPELLS.add(new SpellConfig("Fireballs",
-            "This setting adjusts Dawn's fireball and Dimensional Tear's purple fireball.\n\nThis setting also effects the fireballs in NOL during the sun and black hole attacks.",
-            List.of(
-                new SpellGroup("Fireball (NOL & Dawn)", MatchRule.ofTexture("fireball")),
-                new SpellGroup("Purple fireball (NOL & Dimensional tear)", MatchRule.ofTexture("purplefireball"))
-        )));
+                "This setting adjusts Dawn's fireball and Dimensional Tear's purple fireball.\n\nThis setting also effects the fireballs in NOL during the sun and black hole attacks.",
+                List.of(
+                        new SpellGroup("Fireball (NOL & Dawn)", MatchRule.ofTexture("fireball")),
+                        new SpellGroup("Purple fireball (NOL & Dimensional tear)", MatchRule.ofTexture("purplefireball"))
+                )));
 
         GLOBAL_SPELLS.add(new SpellConfig("Ultimate Charged", List.of(
                 new SpellGroup("Ultimate charged", MatchRule.ofTexture(range("ultimatecharged", 1, 16)))
@@ -720,71 +732,181 @@ public class SpellRegistry {
 
 
 
+        // Build the lookup map.
+        CLASS_SPELLS.put(WynnClass.WARRIOR, WARRIOR_SPELLS);
+        CLASS_SPELLS.put(WynnClass.MAGE, MAGE_SPELLS);
+        CLASS_SPELLS.put(WynnClass.ARCHER, ARCHER_SPELLS);
+        CLASS_SPELLS.put(WynnClass.ASSASSIN, ASSASSIN_SPELLS);
+        CLASS_SPELLS.put(WynnClass.SHAMAN, SHAMAN_SPELLS);
+        CLASS_SPELLS.put(WynnClass.GLOBAL, GLOBAL_SPELLS);
+    }
+    // spotless:on
 
-        //collect all spells for ALL_SPELLS list.
-        for (WynnClass wynnClass : WynnClass.values()) ALL_SPELLS.addAll(getSpells(wynnClass));
-
-        //build static caches.
-        for (SpellConfig spell : getAllSpells()) {
-            for (SpellGroup group : spell.groups) {
-                for (MatchRule rule : group.rules) {
-                    if (rule instanceof TextDisplayRule) TEXT_SPELL_GROUPS_CACHE.add(group);
-                    if (rule instanceof EntityTypeRule etr) ENTITY_TYPE_GROUP_CACHE.put(etr.entityType, group);
-                    if (rule instanceof ItemEntityRule ier) ITEM_ENTITY_GROUP_CACHE.put(ier.item, group);
-                    if (rule instanceof ArmorStandRule asr) {
-                        for (ArmorStandRule.ArmorStandModel model : asr.models) {
-                            ARMOR_STAND_GROUP_CACHE.put(model, group);
-                        }
-                    }
-                }
-            }
-        }
-
+    public static void exportToFile() {
+        exportToFile(Models.configModel.configFolder.toPath());
     }
 
-    public static List<SpellConfig> getSpells(WynnClass wynnClass) {
-        return switch (wynnClass) {
-            case WARRIOR  -> WARRIOR_SPELLS;
-            case MAGE     -> MAGE_SPELLS;
-            case ARCHER   -> ARCHER_SPELLS;
-            case ASSASSIN -> ASSASSIN_SPELLS;
-            case SHAMAN   -> SHAMAN_SPELLS;
-            case GLOBAL   -> GLOBAL_SPELLS;
+    private static void exportToFile(Path configDir) {
+        try {
+            Files.createDirectories(configDir);
+            Path out = configDir.resolve("spell_registry.json");
+            String json = export();
+            Files.writeString(out, json, StandardCharsets.UTF_8);
+            System.out.println("[SpellModelExporter] Written to: " + out.toAbsolutePath());
+        } catch (Exception e) {
+            System.err.println("[SpellModelExporter] Failed: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    private static String export() {
+        JsonObject root = new JsonObject();
+        root.addProperty("version", VERSION);
+        root.addProperty("schemaVersion", SCHEMA_VERSION);
+
+        JsonObject classes = new JsonObject();
+        for (WynnClass wynnClass : WynnClass.values()) {
+            classes.add(wynnClass.name(), serializeSpellConfigs(CLASS_SPELLS.get(wynnClass)));
+        }
+        root.add("classes", classes);
+
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create()
+                .toJson(root);
+    }
+
+    private static JsonArray serializeSpellConfigs(List<SpellConfig> configs) {
+        JsonArray array = new JsonArray();
+        for (SpellConfig config : configs) {
+            array.add(serializeSpellConfig(config));
+        }
+        return array;
+    }
+
+    private static JsonObject serializeSpellConfig(SpellConfig config) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("name", config.name);
+        if (config.description != null) {
+            obj.addProperty("description", config.description);
+        }
+        JsonArray groups = new JsonArray();
+        for (SpellGroup group : config.groups) {
+            groups.add(serializeSpellGroup(group));
+        }
+        obj.add("groups", groups);
+        return obj;
+    }
+
+    private static JsonObject serializeSpellGroup(SpellGroup group) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("name", group.name);
+        if (group.description != null) {
+            obj.addProperty("description", group.description);
+        }
+        JsonArray rules = new JsonArray();
+        for (MatchRule rule : group.rules) {
+            JsonObject serialized = serializeMatchRule(rule);
+            if (serialized != null) rules.add(serialized);
+        }
+        obj.add("rules", rules);
+        return obj;
+    }
+
+    private static JsonObject serializeMatchRule(MatchRule rule) {
+        return switch (rule) {
+            case TextureRule tr -> serializeTextureRule(tr);
+            case EntityTypeRule etr -> serializeEntityTypeRule(etr);
+            case TextDisplayRule tdr -> serializeTextDisplayRule(tdr);
+            case ArmorStandRule asr -> serializeArmorStandRule(asr);
+            case ItemEntityRule ier -> serializeItemEntityRule(ier);
         };
     }
 
-    public static List<SpellConfig> getAllSpells() {
-        return ALL_SPELLS;
+    private static JsonObject serializeTextureRule(TextureRule rule) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "texture");
+        obj.add("names", serializeNames(rule.textureNames));
+        if (rule.hasFingerprints()) {
+            JsonArray fps = new JsonArray();
+            new TreeSet<>(rule.fingerprints).forEach(fps::add);
+            obj.add("fingerprints", fps);
+        }
+        return obj;
     }
 
-    //some of these group getters are also handled in TexturepackModel, because they rely on the texturepack and are not static.
-    public static SpellGroup getGroupForModel(String textureName, String fingerprint) {
-        for (SpellConfig spell : getAllSpells())
-            for (SpellGroup group : spell.groups)
-                if (group.matches(textureName, fingerprint)) return group;
-        return null;
-    }
-
-    public static SpellGroup getGroupForTextDisplay(String plainText, boolean isLocalPlayer) {
-        for (SpellGroup group : TEXT_SPELL_GROUPS_CACHE) {
-            if (group.isTextDisplayMatch(plainText, isLocalPlayer)) {
-                return group;
+    private static JsonArray serializeNames(Set<String> names) {
+        Map<String, List<Integer>> prefixGroups = new TreeMap<>();
+        List<String> plainNames = new ArrayList<>();
+        for (String name : names) {
+            Matcher m = NUMBERED.matcher(name);
+            if (m.matches()) {
+                String prefix = m.group(1);
+                int num = Integer.parseInt(m.group(2));
+                prefixGroups.computeIfAbsent(prefix, k -> new ArrayList<>()).add(num);
+            } else {
+                plainNames.add(name);
             }
         }
-        return null;
+        Collections.sort(plainNames);
+
+        JsonArray array = new JsonArray();
+        for (Map.Entry<String, List<Integer>> entry : prefixGroups.entrySet()) {
+            List<Integer> nums = entry.getValue();
+            Collections.sort(nums);
+            int min = nums.get(0);
+            int max = nums.get(nums.size() - 1);
+            boolean isConsecutive = nums.size() == (max - min + 1);
+            if (isConsecutive) {
+                JsonObject range = new JsonObject();
+                range.addProperty("prefix", entry.getKey());
+                range.addProperty("from", min);
+                range.addProperty("to", max);
+                array.add(range);
+            } else {
+                for (int n : nums) {
+                    array.add(entry.getKey() + " (" + n + ")");
+                }
+            }
+        }
+        for (String name : plainNames) {
+            array.add(name);
+        }
+        return array;
     }
 
-    public static SpellGroup getGroupForArmorStand(String itemId, int damage) {
-        ArmorStandRule.ArmorStandModel model = ArmorStandRule.ArmorStandModel.get(itemId, damage);
-        if (model == null) return null;
-        return ARMOR_STAND_GROUP_CACHE.get(model);
+    private static JsonObject serializeEntityTypeRule(EntityTypeRule rule) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "entity_type");
+        obj.addProperty("entityType", rule.entityType);
+        return obj;
     }
 
-    public static SpellGroup getGroupForEntityType(String entityType) {
-        return ENTITY_TYPE_GROUP_CACHE.get(entityType);
+    private static JsonObject serializeTextDisplayRule(TextDisplayRule rule) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "text_display");
+        obj.addProperty("regex", rule.pattern.pattern());
+        if (rule.ownerFilter != null && rule.ownerFilter != TextDisplayRule.OwnerFilter.ALL) {
+            obj.addProperty("ownerFilter", rule.ownerFilter.name());
+        }
+        return obj;
     }
 
-    public static SpellGroup getGroupForItemEntity(ItemStack stack) {
-        return ITEM_ENTITY_GROUP_CACHE.get(stack.getItem());
+    private static JsonObject serializeArmorStandRule(ArmorStandRule rule) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "armor_stand");
+        JsonArray models = new JsonArray();
+        rule.models.stream().map(Enum::name).sorted().forEach(models::add);
+        obj.add("models", models);
+        return obj;
+    }
+
+    private static JsonObject serializeItemEntityRule(ItemEntityRule rule) {
+        JsonObject obj = new JsonObject();
+        obj.addProperty("type", "item_entity");
+        String itemId = BuiltInRegistries.ITEM.getKey(rule.item).toString();
+        obj.addProperty("item", itemId);
+        return obj;
     }
 }

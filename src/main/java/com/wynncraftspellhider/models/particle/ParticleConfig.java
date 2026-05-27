@@ -1,10 +1,10 @@
-package com.wynncraftspellhider.models.particles;
+package com.wynncraftspellhider.models.particle;
 
 import net.minecraft.core.particles.ParticleType;
 
 /**
- * Represents a single configurable particle entry in the ParticleRegistry.
- * Analogous to SpellConfig but flat — no groups, no transforms.
+ * Represents a single configurable particle entry in the ParticleRegistry. Analogous to SpellConfig
+ * but flat — no groups, no transforms.
  */
 public class ParticleConfig {
 
