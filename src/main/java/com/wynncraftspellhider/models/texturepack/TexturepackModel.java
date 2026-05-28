@@ -81,8 +81,8 @@ public class TexturepackModel {
         }
     }
 
-    public void listResourcesAsync(Boolean verbose) {
-        CompletableFuture.runAsync(() -> listResources(verbose), Util.ioPool()).exceptionally(e -> {
+    public CompletableFuture<Void> listResourcesAsync(Boolean verbose) {
+        return CompletableFuture.runAsync(() -> listResources(verbose), Util.ioPool()).exceptionally(e -> {
             WynncraftSpellHider.error("Async texture load failed: " + e.getMessage());
             return null;
         });

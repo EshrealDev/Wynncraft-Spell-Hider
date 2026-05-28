@@ -146,7 +146,20 @@ public class CommandModel {
                         if (texturesResult == UpdateResult.UPDATED) {
                             source.sendFeedback(
                                     Component.literal("Texture hashes were updated — reloading texture pack model..."));
-                            Models.texturepackModel.listResourcesAsync(false);
+                            Models.texturepackModel.listResourcesAsync(false)
+                                    .thenRun(() -> Minecraft.getInstance()
+                                            .execute(() -> source.sendFeedback(
+                                                    Component.literal("Texture pack model reloaded successfully.")
+                                                            .withStyle(s -> s.withColor(ChatFormatting.GREEN)))))
+                                    .exceptionally(e -> {
+                                        WynncraftSpellHider.error(
+                                                "Failed to reload texture pack model after update: " + e.getMessage());
+                                        Minecraft.getInstance()
+                                                .execute(() -> source.sendFeedback(
+                                                        Component.literal("Texture pack model reload failed. Check logs.")
+                                                                .withStyle(s -> s.withColor(ChatFormatting.RED))));
+                                        return null;
+                                    });
                         }
                     });
                 });
