@@ -1,8 +1,13 @@
 package com.wynncraftspellhider.models.spell;
 
+import com.wynncraftspellhider.WynncraftSpellHider;
+import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.models.config.ProfileConfig;
+import com.wynncraftspellhider.models.config.ProfileRegistry;
 import com.wynncraftspellhider.models.spell.rules.*;
 import java.nio.file.Path;
 import java.util.*;
+import net.minecraft.client.Minecraft;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -34,7 +39,20 @@ public class SpellModel {
 
     public static void init(Path configDir) {
         if (initialized) throw new IllegalStateException("SpellModel already initialized");
+        populate(configDir);
+        scheduleUpdateCheck(configDir);
+    }
 
+    public static void reinit(Path configDir) {
+        if (!initialized) throw new IllegalStateException("SpellModel not yet initialized");
+        clearAll();
+        populate(configDir);
+        // apply profile, because repopulating the spell arrays resets the spell groups.
+        ProfileConfig active = ProfileRegistry.getActiveProfile();
+        if (active != null) active.apply();
+    }
+
+    private static void populate(Path configDir) {
         Map<WynnClass, List<SpellConfig>> loaded = SpellModelLoader.load(configDir);
 
         WARRIOR_SPELLS.addAll(loaded.getOrDefault(WynnClass.WARRIOR, List.of()));
@@ -50,9 +68,7 @@ public class SpellModel {
         initialized = true;
     }
 
-    public static void reinit(Path configDir) {
-        if (!initialized) throw new IllegalStateException("SpellModel not yet initialized");
-
+    private static void clearAll() {
         WARRIOR_SPELLS.clear();
         MAGE_SPELLS.clear();
         ARCHER_SPELLS.clear();
@@ -64,9 +80,16 @@ public class SpellModel {
         ARMOR_STAND_GROUP_CACHE.clear();
         ENTITY_TYPE_GROUP_CACHE.clear();
         ITEM_ENTITY_GROUP_CACHE.clear();
-
         initialized = false;
-        init(configDir);
+    }
+
+    private static void scheduleUpdateCheck(Path configDir) {
+        UpdateManager.checkSpellRegistryAsync(configDir).thenAccept(updated -> {
+            if (updated) {
+                WynncraftSpellHider.info("Spell registry updated — reloading.");
+                Minecraft.getInstance().execute(() -> reinit(configDir));
+            }
+        });
     }
 
     private static void buildCaches() {

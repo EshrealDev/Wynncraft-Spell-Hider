@@ -52,7 +52,10 @@ public class UpdateManager {
         if (remote == null || !remote.has("version")) return false;
 
         int remoteVersion = remote.get("version").getAsInt();
-        if (remoteVersion <= getLocalSpellRegistryVersion(configDir)) return false;
+        if (remoteVersion <= getLocalSpellRegistryVersion(configDir)) {
+            WynncraftSpellHider.info("SpellRegistry is up to date. version: " + remoteVersion);
+            return false;
+        }
 
         SpellModelDeserializer.deserialize(remote); // validate before writing
 
@@ -109,7 +112,10 @@ public class UpdateManager {
         if (remote == null || !remote.has("version")) return false;
 
         int remoteVersion = remote.get("version").getAsInt();
-        if (remoteVersion <= getLocalTextureHashesVersion(configDir)) return false;
+        if (remoteVersion <= getLocalTextureHashesVersion(configDir)) {
+            WynncraftSpellHider.info("TextureHashes are up to date. version: " + remoteVersion);
+            return false;
+        }
 
         Files.createDirectories(configDir);
         String json = new Gson().toJson(remote);

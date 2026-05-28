@@ -3,7 +3,6 @@ package com.wynncraftspellhider.models.spell;
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wynncraftspellhider.WynncraftSpellHider;
-import com.wynncraftspellhider.managers.UpdateManager;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
@@ -16,8 +15,6 @@ public class SpellModelLoader {
     private static final String REGISTRY_FILENAME = "spell_registry.json";
 
     public static Map<SpellModel.WynnClass, List<SpellConfig>> load(Path configDir) {
-        UpdateManager.checkSpellRegistryAsync(configDir).join();
-
         Map<SpellModel.WynnClass, List<SpellConfig>> fromDisk = loadFromDisk(configDir);
         if (fromDisk != null) {
             WynncraftSpellHider.info("Loaded spell registry from disk.");

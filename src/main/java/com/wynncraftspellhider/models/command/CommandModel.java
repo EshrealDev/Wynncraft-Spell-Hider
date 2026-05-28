@@ -7,7 +7,6 @@ import com.wynncraftspellhider.gui.GuiState;
 import com.wynncraftspellhider.managers.NetworkManager;
 import com.wynncraftspellhider.managers.UpdateManager;
 import com.wynncraftspellhider.models.Models;
-import com.wynncraftspellhider.models.config.ProfileConfig;
 import com.wynncraftspellhider.models.config.ProfileRegistry;
 import com.wynncraftspellhider.models.particle.ParticleRegistry;
 import com.wynncraftspellhider.models.spell.SpellConfig;
@@ -117,8 +116,6 @@ public class CommandModel {
                                     Component.literal("Spell registry was updated — reloading spell model..."));
                             try {
                                 SpellModel.reinit(configDir);
-                                ProfileConfig active = ProfileRegistry.getActiveProfile();
-                                if (active != null) active.apply();
                                 source.sendFeedback(Component.literal("Spell model reloaded successfully.")
                                         .withStyle(s -> s.withColor(ChatFormatting.GREEN)));
                             } catch (Exception e) {
