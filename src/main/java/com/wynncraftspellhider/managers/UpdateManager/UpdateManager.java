@@ -1,8 +1,9 @@
-package com.wynncraftspellhider.managers;
+package com.wynncraftspellhider.managers.UpdateManager;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 import com.wynncraftspellhider.WynncraftSpellHider;
+import com.wynncraftspellhider.managers.NetworkManager;
 import com.wynncraftspellhider.models.spell.SpellModelDeserializer;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
@@ -17,13 +18,20 @@ public class UpdateManager {
     private static final String REGISTRY_FILENAME = "spell_registry.json";
     private static final String TEXTURE_HASHES_FILENAME = "texture_hashes.json";
 
-    public static void checkModVersionAsync(Consumer<String> onUpdateAvailable, Runnable onUpToDate) {
+    public static void checkModVersionAsync(
+            Consumer<String> onUpdateAvailable, Runnable onUpToDate, Runnable onFailed) {
         CompletableFuture.runAsync(() -> {
             String current = WynncraftSpellHider.getCurrentVersion();
-            if (current == null) return;
+            if (current == null) {
+                onFailed.run();
+                return;
+            }
 
             JsonObject json = NetworkManager.fetchJson("update");
-            if (json == null) return;
+            if (json == null) {
+                onFailed.run();
+                return;
+            }
 
             String latest = json.get("currentVersion").getAsString();
             WynncraftSpellHider.info("Update check — current: " + current + ", latest: " + latest);
@@ -36,41 +44,38 @@ public class UpdateManager {
         });
     }
 
-    public static CompletableFuture<Boolean> checkSpellRegistryAsync(Path configDir) {
+    public static CompletableFuture<UpdateResult> checkSpellRegistryAsync(Path configDir) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return tryDownloadSpellRegistry(configDir);
             } catch (Exception e) {
                 WynncraftSpellHider.error("Failed to download " + REGISTRY_FILENAME + " from GitHub.");
-                return false;
+                return UpdateResult.FAILED;
             }
         });
     }
 
-    private static boolean tryDownloadSpellRegistry(Path configDir) throws Exception {
+    private static UpdateResult tryDownloadSpellRegistry(Path configDir) throws Exception {
         JsonObject remote = NetworkManager.fetchJson("spell_registry");
-        if (remote == null || !remote.has("version")) return false;
+        if (remote == null || !remote.has("version")) return UpdateResult.FAILED;
 
         int remoteVersion = remote.get("version").getAsInt();
         if (remoteVersion <= getLocalSpellRegistryVersion(configDir)) {
             WynncraftSpellHider.info("SpellRegistry is up to date. version: " + remoteVersion);
-            return false;
+            return UpdateResult.UP_TO_DATE;
         }
 
-        SpellModelDeserializer.deserialize(remote); // validate before writing
+        SpellModelDeserializer.deserialize(remote);
 
         Files.createDirectories(configDir);
         String json = new Gson().toJson(remote);
         Path tmp = configDir.resolve(REGISTRY_FILENAME + ".tmp");
         Files.writeString(tmp, json, StandardCharsets.UTF_8);
-        Files.move(
-                tmp,
-                configDir.resolve(REGISTRY_FILENAME),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE);
+        Files.move(tmp, configDir.resolve(REGISTRY_FILENAME),
+                StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
 
         WynncraftSpellHider.info("Spell registry updated to version " + remoteVersion + ".");
-        return true;
+        return UpdateResult.UPDATED;
     }
 
     private static int getLocalSpellRegistryVersion(Path configDir) {
@@ -96,39 +101,36 @@ public class UpdateManager {
         return -1;
     }
 
-    public static CompletableFuture<Boolean> checkTextureHashesAsync(Path configDir) {
+    public static CompletableFuture<UpdateResult> checkTextureHashesAsync(Path configDir) {
         return CompletableFuture.supplyAsync(() -> {
             try {
                 return tryDownloadTextureHashes(configDir);
             } catch (Exception e) {
                 WynncraftSpellHider.error("Failed to download " + TEXTURE_HASHES_FILENAME + " from GitHub.");
-                return false;
+                return UpdateResult.FAILED;
             }
         });
     }
 
-    private static boolean tryDownloadTextureHashes(Path configDir) throws Exception {
+    private static UpdateResult tryDownloadTextureHashes(Path configDir) throws Exception {
         JsonObject remote = NetworkManager.fetchJson("texture_hashes");
-        if (remote == null || !remote.has("version")) return false;
+        if (remote == null || !remote.has("version")) return UpdateResult.FAILED;
 
         int remoteVersion = remote.get("version").getAsInt();
         if (remoteVersion <= getLocalTextureHashesVersion(configDir)) {
             WynncraftSpellHider.info("TextureHashes are up to date. version: " + remoteVersion);
-            return false;
+            return UpdateResult.UP_TO_DATE;
         }
 
         Files.createDirectories(configDir);
         String json = new Gson().toJson(remote);
         Path tmp = configDir.resolve(TEXTURE_HASHES_FILENAME + ".tmp");
         Files.writeString(tmp, json, StandardCharsets.UTF_8);
-        Files.move(
-                tmp,
-                configDir.resolve(TEXTURE_HASHES_FILENAME),
-                StandardCopyOption.REPLACE_EXISTING,
-                StandardCopyOption.ATOMIC_MOVE);
+        Files.move(tmp, configDir.resolve(TEXTURE_HASHES_FILENAME),
+                StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
 
         WynncraftSpellHider.info("Texture hashes updated to version " + remoteVersion + ".");
-        return true;
+        return UpdateResult.UPDATED;
     }
 
     private static int getLocalTextureHashesVersion(Path configDir) {

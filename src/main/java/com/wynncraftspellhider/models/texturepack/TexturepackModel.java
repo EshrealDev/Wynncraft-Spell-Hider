@@ -7,7 +7,7 @@ import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.mojang.blaze3d.platform.NativeImage;
 import com.wynncraftspellhider.WynncraftSpellHider;
-import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateManager;
 import com.wynncraftspellhider.models.config.ConfigModel;
 import com.wynncraftspellhider.models.spell.SpellConfig;
 import com.wynncraftspellhider.models.spell.SpellGroup;

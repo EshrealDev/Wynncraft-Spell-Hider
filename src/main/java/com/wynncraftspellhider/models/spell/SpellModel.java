@@ -1,7 +1,8 @@
 package com.wynncraftspellhider.models.spell;
 
 import com.wynncraftspellhider.WynncraftSpellHider;
-import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateResult;
 import com.wynncraftspellhider.models.config.ProfileConfig;
 import com.wynncraftspellhider.models.config.ProfileRegistry;
 import com.wynncraftspellhider.models.spell.rules.*;
@@ -84,8 +85,8 @@ public class SpellModel {
     }
 
     private static void scheduleUpdateCheck(Path configDir) {
-        UpdateManager.checkSpellRegistryAsync(configDir).thenAccept(updated -> {
-            if (updated) {
+        UpdateManager.checkSpellRegistryAsync(configDir).thenAccept(result -> {
+            if (result == UpdateResult.UPDATED) {
                 WynncraftSpellHider.info("Spell registry updated — reloading.");
                 Minecraft.getInstance().execute(() -> reinit(configDir));
             }

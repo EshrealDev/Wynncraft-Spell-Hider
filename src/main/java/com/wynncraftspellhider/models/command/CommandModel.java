@@ -5,7 +5,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.wynncraftspellhider.WynncraftSpellHider;
 import com.wynncraftspellhider.gui.GuiState;
 import com.wynncraftspellhider.managers.NetworkManager;
-import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateResult;
 import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.models.config.ProfileRegistry;
 import com.wynncraftspellhider.models.particle.ParticleRegistry;
@@ -69,14 +70,13 @@ public class CommandModel {
                 return 1;
             }));
 
-            // /wynncraftspellhider update
+// /wynncraftspellhider update
             root.then(ClientCommandManager.literal("update").executes(ctx -> {
                 FabricClientCommandSource source = ctx.getSource();
                 Path configDir = Models.configModel.configFolder.toPath();
 
                 source.sendFeedback(Component.literal("Checking for updates..."));
 
-                // Mod version check (callback-based, fire and forget)
                 UpdateManager.checkModVersionAsync(
                         latestVersion -> Minecraft.getInstance()
                                 .execute(() -> source.sendFeedback(Component.literal("Mod update available! Click ")
@@ -90,28 +90,45 @@ public class CommandModel {
                         () -> Minecraft.getInstance()
                                 .execute(() -> source.sendFeedback(Component.literal("Mod: ")
                                         .append(Component.literal("up to date")
-                                                .withStyle(s -> s.withColor(ChatFormatting.GREEN))))));
+                                                .withStyle(s -> s.withColor(ChatFormatting.GREEN))))),
+                        () -> Minecraft.getInstance()
+                                .execute(() -> source.sendFeedback(Component.literal("Mod: ")
+                                        .append(Component.literal("failed to reach server")
+                                                .withStyle(s -> s.withColor(ChatFormatting.RED))))));
 
-                // Spell registry + texture hashes run concurrently, then report + maybe reinit
-                CompletableFuture<Boolean> spellFuture = UpdateManager.checkSpellRegistryAsync(configDir);
-                CompletableFuture<Boolean> texturesFuture = UpdateManager.checkTextureHashesAsync(configDir);
+                CompletableFuture<UpdateResult> spellFuture = UpdateManager.checkSpellRegistryAsync(configDir);
+                CompletableFuture<UpdateResult> texturesFuture = UpdateManager.checkTextureHashesAsync(configDir);
 
                 CompletableFuture.allOf(spellFuture, texturesFuture).thenRun(() -> {
-                    boolean spellUpdated = spellFuture.join();
-                    boolean texturesUpdated = texturesFuture.join();
+                    UpdateResult spellResult = spellFuture.join();
+                    UpdateResult texturesResult = texturesFuture.join();
 
                     Minecraft.getInstance().execute(() -> {
                         source.sendFeedback(Component.literal("Spell registry: ")
-                                .append(Component.literal(spellUpdated ? "updated" : "up to date")
-                                        .withStyle(s -> s.withColor(
-                                                spellUpdated ? ChatFormatting.AQUA : ChatFormatting.GREEN))));
+                                .append(Component.literal(switch (spellResult) {
+                                            case UPDATED -> "updated";
+                                            case UP_TO_DATE -> "up to date";
+                                            case FAILED -> "failed to reach server";
+                                        })
+                                        .withStyle(s -> s.withColor(switch (spellResult) {
+                                            case UPDATED -> ChatFormatting.AQUA;
+                                            case UP_TO_DATE -> ChatFormatting.GREEN;
+                                            case FAILED -> ChatFormatting.RED;
+                                        }))));
 
                         source.sendFeedback(Component.literal("Texture hashes: ")
-                                .append(Component.literal(texturesUpdated ? "updated" : "up to date")
-                                        .withStyle(s -> s.withColor(
-                                                texturesUpdated ? ChatFormatting.AQUA : ChatFormatting.GREEN))));
+                                .append(Component.literal(switch (texturesResult) {
+                                            case UPDATED -> "updated";
+                                            case UP_TO_DATE -> "up to date";
+                                            case FAILED -> "failed to reach server";
+                                        })
+                                        .withStyle(s -> s.withColor(switch (texturesResult) {
+                                            case UPDATED -> ChatFormatting.AQUA;
+                                            case UP_TO_DATE -> ChatFormatting.GREEN;
+                                            case FAILED -> ChatFormatting.RED;
+                                        }))));
 
-                        if (spellUpdated) {
+                        if (spellResult == UpdateResult.UPDATED) {
                             source.sendFeedback(
                                     Component.literal("Spell registry was updated — reloading spell model..."));
                             try {
@@ -126,7 +143,7 @@ public class CommandModel {
                             }
                         }
 
-                        if (texturesUpdated) {
+                        if (texturesResult == UpdateResult.UPDATED) {
                             source.sendFeedback(
                                     Component.literal("Texture hashes were updated — reloading texture pack model..."));
                             Models.texturepackModel.listResourcesAsync(false);
@@ -136,6 +153,7 @@ public class CommandModel {
 
                 return 1;
             }));
+
             // dev subcommands — only registered if devMode is on
             if (WynncraftSpellHider.devMode) {
                 LiteralArgumentBuilder<FabricClientCommandSource> dev = ClientCommandManager.literal("dev");

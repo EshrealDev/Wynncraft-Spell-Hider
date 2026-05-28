@@ -2,7 +2,7 @@ package com.wynncraftspellhider;
 
 import com.wynncraftspellhider.gui.GuiState;
 import com.wynncraftspellhider.gui.UpdateScreen;
-import com.wynncraftspellhider.managers.UpdateManager;
+import com.wynncraftspellhider.managers.UpdateManager.UpdateManager;
 import com.wynncraftspellhider.models.Models;
 import com.wynncraftspellhider.models.command.CommandModel;
 import com.wynncraftspellhider.models.config.ProfileRegistry;
@@ -114,6 +114,7 @@ public class WynncraftSpellHider implements ClientModInitializer {
                                 client.execute(() -> client.setScreen(new UpdateScreen(screen, latestVersion)));
                             }
                         },
+                        () -> {},
                         () -> {});
             }
         });
