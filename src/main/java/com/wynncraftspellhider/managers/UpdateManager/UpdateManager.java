@@ -71,8 +71,11 @@ public class UpdateManager {
         String json = new Gson().toJson(remote);
         Path tmp = configDir.resolve(REGISTRY_FILENAME + ".tmp");
         Files.writeString(tmp, json, StandardCharsets.UTF_8);
-        Files.move(tmp, configDir.resolve(REGISTRY_FILENAME),
-                StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        Files.move(
+                tmp,
+                configDir.resolve(REGISTRY_FILENAME),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE);
 
         WynncraftSpellHider.info("Spell registry updated to version " + remoteVersion + ".");
         return UpdateResult.UPDATED;
@@ -126,8 +129,11 @@ public class UpdateManager {
         String json = new Gson().toJson(remote);
         Path tmp = configDir.resolve(TEXTURE_HASHES_FILENAME + ".tmp");
         Files.writeString(tmp, json, StandardCharsets.UTF_8);
-        Files.move(tmp, configDir.resolve(TEXTURE_HASHES_FILENAME),
-                StandardCopyOption.REPLACE_EXISTING, StandardCopyOption.ATOMIC_MOVE);
+        Files.move(
+                tmp,
+                configDir.resolve(TEXTURE_HASHES_FILENAME),
+                StandardCopyOption.REPLACE_EXISTING,
+                StandardCopyOption.ATOMIC_MOVE);
 
         WynncraftSpellHider.info("Texture hashes updated to version " + remoteVersion + ".");
         return UpdateResult.UPDATED;

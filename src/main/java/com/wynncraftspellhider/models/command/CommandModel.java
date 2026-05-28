@@ -70,7 +70,7 @@ public class CommandModel {
                 return 1;
             }));
 
-// /wynncraftspellhider update
+            // /wynncraftspellhider update
             root.then(ClientCommandManager.literal("update").executes(ctx -> {
                 FabricClientCommandSource source = ctx.getSource();
                 Path configDir = Models.configModel.configFolder.toPath();
@@ -105,28 +105,32 @@ public class CommandModel {
 
                     Minecraft.getInstance().execute(() -> {
                         source.sendFeedback(Component.literal("Spell registry: ")
-                                .append(Component.literal(switch (spellResult) {
-                                            case UPDATED -> "updated";
-                                            case UP_TO_DATE -> "up to date";
-                                            case FAILED -> "failed to reach server";
-                                        })
-                                        .withStyle(s -> s.withColor(switch (spellResult) {
-                                            case UPDATED -> ChatFormatting.AQUA;
-                                            case UP_TO_DATE -> ChatFormatting.GREEN;
-                                            case FAILED -> ChatFormatting.RED;
-                                        }))));
+                                .append(Component.literal(
+                                                switch (spellResult) {
+                                                    case UPDATED -> "updated";
+                                                    case UP_TO_DATE -> "up to date";
+                                                    case FAILED -> "failed to reach server";
+                                                })
+                                        .withStyle(s -> s.withColor(
+                                                switch (spellResult) {
+                                                    case UPDATED -> ChatFormatting.AQUA;
+                                                    case UP_TO_DATE -> ChatFormatting.GREEN;
+                                                    case FAILED -> ChatFormatting.RED;
+                                                }))));
 
                         source.sendFeedback(Component.literal("Texture hashes: ")
-                                .append(Component.literal(switch (texturesResult) {
-                                            case UPDATED -> "updated";
-                                            case UP_TO_DATE -> "up to date";
-                                            case FAILED -> "failed to reach server";
-                                        })
-                                        .withStyle(s -> s.withColor(switch (texturesResult) {
-                                            case UPDATED -> ChatFormatting.AQUA;
-                                            case UP_TO_DATE -> ChatFormatting.GREEN;
-                                            case FAILED -> ChatFormatting.RED;
-                                        }))));
+                                .append(Component.literal(
+                                                switch (texturesResult) {
+                                                    case UPDATED -> "updated";
+                                                    case UP_TO_DATE -> "up to date";
+                                                    case FAILED -> "failed to reach server";
+                                                })
+                                        .withStyle(s -> s.withColor(
+                                                switch (texturesResult) {
+                                                    case UPDATED -> ChatFormatting.AQUA;
+                                                    case UP_TO_DATE -> ChatFormatting.GREEN;
+                                                    case FAILED -> ChatFormatting.RED;
+                                                }))));
 
                         if (spellResult == UpdateResult.UPDATED) {
                             source.sendFeedback(
@@ -146,7 +150,8 @@ public class CommandModel {
                         if (texturesResult == UpdateResult.UPDATED) {
                             source.sendFeedback(
                                     Component.literal("Texture hashes were updated — reloading texture pack model..."));
-                            Models.texturepackModel.listResourcesAsync(false)
+                            Models.texturepackModel
+                                    .listResourcesAsync(false)
                                     .thenRun(() -> Minecraft.getInstance()
                                             .execute(() -> source.sendFeedback(
                                                     Component.literal("Texture pack model reloaded successfully.")
@@ -155,9 +160,9 @@ public class CommandModel {
                                         WynncraftSpellHider.error(
                                                 "Failed to reload texture pack model after update: " + e.getMessage());
                                         Minecraft.getInstance()
-                                                .execute(() -> source.sendFeedback(
-                                                        Component.literal("Texture pack model reload failed. Check logs.")
-                                                                .withStyle(s -> s.withColor(ChatFormatting.RED))));
+                                                .execute(() -> source.sendFeedback(Component.literal(
+                                                                "Texture pack model reload failed. Check logs.")
+                                                        .withStyle(s -> s.withColor(ChatFormatting.RED))));
                                         return null;
                                     });
                         }
