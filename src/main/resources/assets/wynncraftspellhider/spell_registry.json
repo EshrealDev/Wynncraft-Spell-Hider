@@ -2617,17 +2617,6 @@
                 ]
               }
             ]
-          },
-          {
-            "name": "Tribal chant circle",
-            "rules": [
-              {
-                "type": "texture",
-                "names": [
-                  "tribalchantcircle"
-                ]
-              }
-            ]
           }
         ]
       },
