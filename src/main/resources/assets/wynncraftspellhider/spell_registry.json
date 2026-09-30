@@ -157,7 +157,7 @@
                   {
                     "prefix": "shieldstrike",
                     "from": 1,
-                    "to": 13
+                    "to": 7
                   }
                 ]
               }
@@ -388,7 +388,7 @@
                   {
                     "prefix": "airshout",
                     "from": 1,
-                    "to": 18
+                    "to": 10
                   }
                 ]
               }
@@ -496,11 +496,7 @@
               {
                 "type": "texture",
                 "names": [
-                  {
-                    "prefix": "warriorthunderclap",
-                    "from": 1,
-                    "to": 2
-                  }
+                  "warriorthunderclap"
                 ]
               }
             ]
@@ -810,11 +806,7 @@
               {
                 "type": "texture",
                 "names": [
-                  {
-                    "prefix": "burningsigilcircle",
-                    "from": 1,
-                    "to": 2
-                  }
+                  "burningsigilcircle"
                 ]
               }
             ]
@@ -829,21 +821,6 @@
                     "prefix": "burningsigilemblem",
                     "from": 1,
                     "to": 10
-                  }
-                ]
-              }
-            ]
-          },
-          {
-            "name": "Burning sigil text",
-            "rules": [
-              {
-                "type": "texture",
-                "names": [
-                  {
-                    "prefix": "burningsigiltext",
-                    "from": 1,
-                    "to": 11
                   }
                 ]
               }
@@ -962,7 +939,7 @@
                   {
                     "prefix": "yellowdragonbeam",
                     "from": 1,
-                    "to": 41
+                    "to": 4
                   }
                 ]
               }
@@ -1814,11 +1791,7 @@
               {
                 "type": "texture",
                 "names": [
-                  {
-                    "prefix": "multihitenemy",
-                    "from": 1,
-                    "to": 2
-                  }
+                  "multihitenemy"
                 ]
               }
             ]
@@ -1853,7 +1826,7 @@
                   {
                     "prefix": "assassinripple",
                     "from": 1,
-                    "to": 14
+                    "to": 5
                   }
                 ]
               }
@@ -2295,11 +2268,7 @@
               {
                 "type": "texture",
                 "names": [
-                  {
-                    "prefix": "shamantotem",
-                    "from": 1,
-                    "to": 2
-                  }
+                  "shamantotem"
                 ]
               }
             ]
@@ -2482,7 +2451,7 @@
                   {
                     "prefix": "bloodsorroweffects",
                     "from": 1,
-                    "to": 21
+                    "to": 12
                   }
                 ]
               }
@@ -2533,7 +2502,7 @@
                   {
                     "prefix": "raindancerain",
                     "from": 1,
-                    "to": 4
+                    "to": 3
                   }
                 ]
               }
@@ -2574,6 +2543,26 @@
                     "prefix": "totemicshatter",
                     "from": 1,
                     "to": 9
+                  }
+                ]
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "name": "Ritual Circle",
+        "groups": [
+          {
+            "name": "Ritual circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  {
+                    "prefix": "ritualcircle",
+                    "from": 1,
+                    "to": 19
                   }
                 ]
               }
@@ -2625,6 +2614,17 @@
                     "from": 1,
                     "to": 10
                   }
+                ]
+              }
+            ]
+          },
+          {
+            "name": "Tribal chant circle",
+            "rules": [
+              {
+                "type": "texture",
+                "names": [
+                  "tribalchantcircle"
                 ]
               }
             ]
@@ -3043,7 +3043,7 @@
                   {
                     "prefix": "cursespecial",
                     "from": 1,
-                    "to": 21
+                    "to": 15
                   }
                 ]
               }
